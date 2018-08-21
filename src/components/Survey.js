@@ -3,6 +3,7 @@ import fireDB from '../fireDB';
 import Heading from './Heading';
 import Radio from './Radio';
 import Input from './Input';
+import RadioWithInput from './RadioWithInput';
 
 class Survey extends Component {
 
@@ -57,15 +58,21 @@ class Survey extends Component {
                     <Radio
                     question={questions[2]} 
                     handleOptionChange={(e) => this.handleAnswer(questions[2], e)} />
-                    
                     <Input 
                     question={questions[3]}
                     handleTextInput={(e) => this.handleAnswer(questions[3], e)}
                     />
+
                     <Input 
                     question={questions[4]}
                     tooltip={'answer is..'}
                     handleTextInput={(e) => this.handleAnswer(questions[4], e)}
+                    />
+                    <RadioWithInput 
+                    question={questions[5]}
+                    answer={'default'}
+                    tooltip={'answer is..'}
+                    handleAnswer={(e) => this.handleAnswer(questions[5], e)}
                     />
 
                     <Input 
@@ -73,13 +80,21 @@ class Survey extends Component {
                     tooltip={'answer is..'}
                     handleTextInput={(e) => this.handleAnswer(questions[4], e)}
                     />
+                    <RadioWithInput 
+                    question={questions[7]}
+                    answer={'default'}
+                    tooltip={'answer is..'}
+                    handleAnswer={(e) => this.handleAnswer(questions[7], e)}
+                    />
 
                     <Input 
                     question={questions[8]}
                     handleTextInput={(e) => this.handleAnswer(questions[4], e)}
                     />
+
                     {/* <input type="text" ref={el => this.inputEl = el} /> */}
                     <input type="submit" />
+
                     <ul>
                         { /* Render the list of messages */
                             this.state.messages.map(message => <li key={message.id}>{message.text}</li>)
