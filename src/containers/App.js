@@ -4,6 +4,7 @@ import Survey from '../components/Survey';
 import PrevBtn from '../components/PrevBtn';
 import NextBtn from '../components/NextBtn';
 import SaveBtn from '../components/SaveBtn';
+// import fireDB from '../fireDB';
 
 import logo from './logo.svg';
 import './App.css';
@@ -20,7 +21,7 @@ class App extends Component {
 
         <div className="App-content">
           <Text />
-          <Survey onSubmit= {this.addMessage}/>
+          <Survey />
           <PrevBtn />
           <NextBtn />
           <SaveBtn />
