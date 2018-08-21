@@ -22,9 +22,6 @@ class App extends Component {
         <div className="App-content">
           <Text />
           <Survey />
-          <PrevBtn />
-          <NextBtn />
-          <SaveBtn />
         </div>
       </div>
     );

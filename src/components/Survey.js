@@ -4,13 +4,23 @@ import Heading from './Heading';
 import Radio from './Radio';
 import Input from './Input';
 import RadioWithInput from './RadioWithInput';
+import PrevBtn from '../components/PrevBtn';
+import NextBtn from '../components/NextBtn';
 
 class Survey extends Component {
 
     constructor(props) {
         super(props);
         this.state = { 
-            messages: [],
+            questions: ['empty',
+            'q1',
+            'q2',
+            'q3',
+            'q4',
+            'q5',
+            'q6',
+            'q7',
+            'q8']
         }; // <- set up react state
     }
 
@@ -30,28 +40,30 @@ class Survey extends Component {
         console.log(this.state);
     }
 
-    addMessage = (e) => {
+    addAnswers = (e, state, post) => {
         e.preventDefault(); // <- prevent form submit from reloading the page
         /* Send the message to Firebase */
-        fireDB.database().ref('masterSheet').push(this.state.q3);
+        const {questions} = this.state;
+        fireDB.database().ref(`masterSheet/${post}`).update({
+            '3': this.state[questions[1]],
+            '4': this.state[questions[2]],
+            '5': this.state[questions[3]],
+            '6': this.state[questions[4]],
+            '7': this.state[questions[5]],
+            '8': this.state[questions[6]],
+            '9': this.state[questions[7]],
+            '10': this.state[questions[8]],
+        });
         // this.inputEl.value = ''; // <- clear the input
     }
 
     render() {
-        const questions = ['empty',
-        'q1',
-        'q2',
-        'q3',
-        'q4',
-        'q5',
-        'q6',
-        'q7',
-        'q8'];
-
+        const {questions} = this.state;
+        let post = 1;
         return (
             <div className="Survey">
                 <Heading heading={"Post Review (Your input)"} />
-                <form onSubmit={this.addMessage}>
+                <form onSubmit={(e) => this.addAnswers(e, this.state, post)}>
                     <Radio
                     question={questions[1]} 
                     handleOptionChange={(e) => this.handleAnswer(questions[1], e)} />
@@ -78,7 +90,7 @@ class Survey extends Component {
                     <Input 
                     question={questions[6]}
                     tooltip={'answer is..'}
-                    handleTextInput={(e) => this.handleAnswer(questions[4], e)}
+                    handleTextInput={(e) => this.handleAnswer(questions[6], e)}
                     />
                     <RadioWithInput 
                     question={questions[7]}
@@ -89,15 +101,17 @@ class Survey extends Component {
 
                     <Input 
                     question={questions[8]}
-                    handleTextInput={(e) => this.handleAnswer(questions[4], e)}
+                    handleTextInput={(e) => this.handleAnswer(questions[8], e)}
                     />
 
                     {/* <input type="text" ref={el => this.inputEl = el} /> */}
+                    <PrevBtn />
+                    <NextBtn />
                     <input type="submit" />
 
                     <ul>
                         { /* Render the list of messages */
-                            this.state.messages.map(message => <li key={message.id}>{message.text}</li>)
+                            // this.state.messages.map(message => <li key={message.id}>{message.text}</li>)
                         }
                     </ul>
 
