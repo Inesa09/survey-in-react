@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import RadioBtn from './RadioBtn';
 
-const RadioQuestion = ({question, handleOptionChange}) => {
+const Radio = ({question, handleOptionChange}) => {
     const btns = [];
     for (let i = 1; i<=5; i++){
         btns.push(
@@ -21,4 +21,4 @@ const RadioQuestion = ({question, handleOptionChange}) => {
     )
 }
 
-export default RadioQuestion;
+export default Radio;

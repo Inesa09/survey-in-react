@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import fireDB from '../fireDB';
 import Heading from './Heading';
-import RadioQuestion from './RadioQuestion';
+import Radio from './Radio';
+import Input from './Input';
 
 class Survey extends Component {
 
@@ -22,43 +23,62 @@ class Survey extends Component {
         })
     }
 
-    handleOptionChange = (question, e) => {
+    handleAnswer = (question, e) => {
         this.state[question] = e.target.value;
         // this.setState({[question]: e.target.value});
-        console.log(this.state);
-    }
-
-    handleTextInput = (question, text) => {
-        this.state[question] = text;
         console.log(this.state);
     }
 
     addMessage = (e) => {
         e.preventDefault(); // <- prevent form submit from reloading the page
         /* Send the message to Firebase */
-        fireDB.database().ref('masterSheet').push(this.inputEl.value);
-        this.inputEl.value = ''; // <- clear the input
+        fireDB.database().ref('masterSheet').push(this.state.q3);
+        // this.inputEl.value = ''; // <- clear the input
     }
 
     render() {
-        const questions = ['q1', 'q2', 'q3'];
+        const questions = ['empty',
+        'q1',
+        'q2',
+        'q3',
+        'q4',
+        'q5',
+        'q6',
+        'q7',
+        'q8'];
 
         return (
             <div className="Survey">
                 <Heading heading={"Post Review (Your input)"} />
                 <form onSubmit={this.addMessage}>
-                    <RadioQuestion 
-                    question={questions[0]} 
-                    handleOptionChange={(e) => this.handleOptionChange(questions[0], e)} />
-                    <RadioQuestion 
+                    <Radio
                     question={questions[1]} 
-                    handleOptionChange={(e) => this.handleOptionChange(questions[1], e)} />
+                    handleOptionChange={(e) => this.handleAnswer(questions[1], e)} />
+                    <Radio
+                    question={questions[2]} 
+                    handleOptionChange={(e) => this.handleAnswer(questions[2], e)} />
                     
-                    {/* <Input 
-                    question={questions[2]}
-                    onInput={(text) => this.handleTextInput(questions[2], text)}
-                    /> */}
-                    <input type="text" ref={el => this.inputEl = el} />
+                    <Input 
+                    question={questions[3]}
+                    handleTextInput={(e) => this.handleAnswer(questions[3], e)}
+                    />
+                    <Input 
+                    question={questions[4]}
+                    tooltip={'answer is..'}
+                    handleTextInput={(e) => this.handleAnswer(questions[4], e)}
+                    />
+
+                    <Input 
+                    question={questions[6]}
+                    tooltip={'answer is..'}
+                    handleTextInput={(e) => this.handleAnswer(questions[4], e)}
+                    />
+
+                    <Input 
+                    question={questions[8]}
+                    handleTextInput={(e) => this.handleAnswer(questions[4], e)}
+                    />
+                    {/* <input type="text" ref={el => this.inputEl = el} /> */}
                     <input type="submit" />
                     <ul>
                         { /* Render the list of messages */
