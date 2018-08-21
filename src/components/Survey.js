@@ -25,13 +25,7 @@ class Survey extends Component {
     }
 
     componentWillMount() {
-        /* Create reference to messages in Firebase Database */
-        let messagesRef = fireDB.database().ref('masterSheet').orderByKey().limitToLast(100);
-        messagesRef.on('child_added', snapshot => {
-            /* Update React state when message is added at Firebase Database */
-            let message = { text: snapshot.val(), id: snapshot.key };
-            this.setState({ messages: [message].concat(this.state.messages) });
-        })
+
     }
 
     handleAnswer = (question, e) => {
@@ -57,13 +51,23 @@ class Survey extends Component {
         // this.inputEl.value = ''; // <- clear the input
     }
 
+    showPrev = (e, addAnswers, state, post) => {
+        console.log("showPrev");
+        addAnswers(e, state, post);
+    }
+
+    showNext = (e, addAnswers, state, post) => {
+        console.log("showNext");
+        addAnswers(e, state, post);
+    }
+
     render() {
         const {questions} = this.state;
         let post = 1;
         return (
             <div className="Survey">
                 <Heading heading={"Post Review (Your input)"} />
-                <form onSubmit={(e) => this.addAnswers(e, this.state, post)}>
+                <form>
                     <Radio
                     question={questions[1]} 
                     handleOptionChange={(e) => this.handleAnswer(questions[1], e)} />
@@ -105,9 +109,18 @@ class Survey extends Component {
                     />
 
                     {/* <input type="text" ref={el => this.inputEl = el} /> */}
-                    <PrevBtn />
-                    <NextBtn />
-                    <input type="submit" />
+                    {/* <PrevBtn />
+                    <NextBtn /> */}
+                    <button 
+                        onClick={(e) => this.showPrev(e, this.addAnswers, this.state, post)} > 
+                        Prev </button>
+                    <button 
+                        onClick={(e) => this.showNext(e, this.addAnswers, this.state, post)} > 
+                        Next </button>
+
+                    <button 
+                        onClick={(e) => this.addAnswers(e, this.state, post)}> 
+                        Submit </button>
 
                     <ul>
                         { /* Render the list of messages */

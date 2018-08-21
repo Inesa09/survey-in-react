@@ -16,12 +16,14 @@ const RadioWithInput = ({question, tooltip='', answer, handleAnswer}) => {
             <label className="container"> Other
                 <input type="radio" 
                 name={question} 
-                id="radio"/>
+                id="radio"
+                required />
                 <span className="checkmark"></span>
 
                 <input type="text" 
                 name={question} 
-                onChange={handleAnswer} />
+                onChange={handleAnswer} 
+                />
             </label>
         </div>
     )

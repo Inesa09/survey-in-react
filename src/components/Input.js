@@ -5,7 +5,7 @@ const Input = ({question, tooltip='', handleTextInput}) => {
         <div> 
             <h1> {question} </h1>
             <p> {tooltip} </p>
-            <input type="text" onChange={handleTextInput} />
+            <input type="text" onChange={handleTextInput} required />
         </div>
     )
 }

@@ -8,7 +8,8 @@ const RadioBtn = ({value, onChange, question}) => {
             <input type="radio" 
             name={question}
             value={value}
-            onChange={onChange} />
+            onChange={onChange} 
+            required />
             <span className="checkmark"></span>
         </label>
     )
