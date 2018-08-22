@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
-import Heading from './Heading';
 
-class Text extends Component {
+const Text = ({text}) => {
+    return (
+        <div> 
+            {text}
+        </div>
+    )
+};
 
-    render() {
-        return (
-            <div className="Text">
-            text
-            </div>
-        )
-    }
-}
 
 export default Text;
