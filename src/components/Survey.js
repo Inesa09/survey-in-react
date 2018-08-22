@@ -4,8 +4,6 @@ import Heading from './Heading';
 import Radio from './Radio';
 import Input from './Input';
 import RadioWithInput from './RadioWithInput';
-import PrevBtn from '../components/PrevBtn';
-import NextBtn from '../components/NextBtn';
 
 class Survey extends Component {
 
@@ -13,14 +11,15 @@ class Survey extends Component {
         super(props);
         this.state = { 
             questions: ['empty',
-            'q1',
-            'q2',
-            'q3',
-            'q4',
-            'q5',
-            'q6',
-            'q7',
-            'q8']
+                'q1',
+                'q2',
+                'q3',
+                'q4',
+                'q5',
+                'q6',
+                'q7',
+                'q8'],
+            addAnswers: this.addAnswers,
         }; // <- set up react state
     }
 
@@ -29,36 +28,37 @@ class Survey extends Component {
     }
 
     handleAnswer = (question, e) => {
-        this.state[question] = e.target.value;
-        // this.setState({[question]: e.target.value});
+        this.setState({[question]: e.target.value});
         console.log(this.state);
     }
 
-    addAnswers = (e, state, post) => {
+    addAnswers = (e, post) => {
         e.preventDefault(); // <- prevent form submit from reloading the page
-        /* Send the message to Firebase */
+
         const {questions} = this.state;
-        fireDB.database().ref(`masterSheet/${post}`).update({
-            '3': this.state[questions[1]],
-            '4': this.state[questions[2]],
-            '5': this.state[questions[3]],
-            '6': this.state[questions[4]],
-            '7': this.state[questions[5]],
-            '8': this.state[questions[6]],
-            '9': this.state[questions[7]],
-            '10': this.state[questions[8]],
-        });
-        // this.inputEl.value = ''; // <- clear the input
+        let answers = {};
+        for (let i = 1; i <= 8; i++) 
+            answers[i+2] = this.state[questions[i]];
+
+        /* Send the answers to Firebase */
+        fireDB.database().ref(`masterSheet/${post}`).update(answers);
+        document.getElementById("form").reset(); // <- clear the input
     }
 
-    showPrev = (e, addAnswers, state, post) => {
+    showPrev = (e, post) => {
         console.log("showPrev");
-        addAnswers(e, state, post);
+        this.state.addAnswers(e, post);
     }
 
-    showNext = (e, addAnswers, state, post) => {
+    showNext = (e, post) => {
         console.log("showNext");
-        addAnswers(e, state, post);
+        this.state.addAnswers(e, post);
+
+    }
+
+    submit = (e, post) => {
+        alert("submit");
+        this.state.addAnswers(e, post);
     }
 
     render() {
@@ -67,7 +67,7 @@ class Survey extends Component {
         return (
             <div className="Survey">
                 <Heading heading={"Post Review (Your input)"} />
-                <form>
+                <form id='form'>
                     <Radio
                     question={questions[1]} 
                     handleOptionChange={(e) => this.handleAnswer(questions[1], e)} />
@@ -108,26 +108,15 @@ class Survey extends Component {
                     handleTextInput={(e) => this.handleAnswer(questions[8], e)}
                     />
 
-                    {/* <input type="text" ref={el => this.inputEl = el} /> */}
-                    {/* <PrevBtn />
-                    <NextBtn /> */}
                     <button 
-                        onClick={(e) => this.showPrev(e, this.addAnswers, this.state, post)} > 
-                        Prev </button>
+                        onClick={(e) => this.showPrev(e, post)} > Prev 
+                    </button>
                     <button 
-                        onClick={(e) => this.showNext(e, this.addAnswers, this.state, post)} > 
-                        Next </button>
-
+                        onClick={(e) => this.showNext(e, post)} > Next 
+                    </button>
                     <button 
-                        onClick={(e) => this.addAnswers(e, this.state, post)}> 
-                        Submit </button>
-
-                    <ul>
-                        { /* Render the list of messages */
-                            // this.state.messages.map(message => <li key={message.id}>{message.text}</li>)
-                        }
-                    </ul>
-
+                        onClick={(e) => this.submit(e, post)}> Submit 
+                    </button>
                 </form>
             </div>
         )
