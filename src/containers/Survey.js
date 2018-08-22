@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import fireDB from '../fireDB';
-import Heading from './Heading';
-import Radio from './Radio';
-import Input from './Input';
-import RadioWithInput from './RadioWithInput';
+import Heading from '../components/Heading';
+import Radio from '../components/Radio';
+import Input from '../components/Input';
+import RadioWithInput from '../components/RadioWithInput';
 
 class Survey extends Component {
 
@@ -19,6 +19,7 @@ class Survey extends Component {
                 'q6',
                 'q7',
                 'q8'],
+            answers: [],
             addAnswers: this.addAnswers,
         }; // <- set up react state
     }
@@ -28,17 +29,17 @@ class Survey extends Component {
     }
 
     handleAnswer = (question, e) => {
-        this.setState({[question]: e.target.value});
-        console.log(this.state);
+        let copy = this.state.answers;
+        copy[question] = e.target.value;
+        this.setState({answers: copy});
     }
 
     addAnswers = (e, post) => {
         e.preventDefault(); // <- prevent form submit from reloading the page
 
-        const {questions} = this.state;
         let answers = {};
         for (let i = 1; i <= 8; i++) 
-            answers[i+2] = this.state[questions[i]];
+            answers[i+2] = this.state.answers[i];
 
         /* Send the answers to Firebase */
         fireDB.database().ref(`masterSheet/${post}`).update(answers);
@@ -48,12 +49,13 @@ class Survey extends Component {
     showPrev = (e, post) => {
         console.log("showPrev");
         this.state.addAnswers(e, post);
+        this.props.showPrev(post);
     }
 
     showNext = (e, post) => {
         console.log("showNext");
         this.state.addAnswers(e, post);
-
+        this.props.showNext(post);
     }
 
     submit = (e, post) => {
@@ -63,49 +65,49 @@ class Survey extends Component {
 
     render() {
         const {questions} = this.state;
-        let post = 1;
+        const post = this.props.post;
         return (
             <div className="Survey">
                 <Heading heading={"Post Review (Your input)"} />
                 <form id='form'>
                     <Radio
                     question={questions[1]} 
-                    handleOptionChange={(e) => this.handleAnswer(questions[1], e)} />
+                    handleOptionChange={(e) => this.handleAnswer(1, e)} />
                     <Radio
                     question={questions[2]} 
-                    handleOptionChange={(e) => this.handleAnswer(questions[2], e)} />
+                    handleOptionChange={(e) => this.handleAnswer(2, e)} />
                     <Input 
                     question={questions[3]}
-                    handleTextInput={(e) => this.handleAnswer(questions[3], e)}
+                    handleTextInput={(e) => this.handleAnswer(3, e)}
                     />
 
                     <Input 
                     question={questions[4]}
                     tooltip={'answer is..'}
-                    handleTextInput={(e) => this.handleAnswer(questions[4], e)}
+                    handleTextInput={(e) => this.handleAnswer(4, e)}
                     />
                     <RadioWithInput 
                     question={questions[5]}
                     answer={'default'}
                     tooltip={'answer is..'}
-                    handleAnswer={(e) => this.handleAnswer(questions[5], e)}
+                    handleAnswer={(e) => this.handleAnswer(5, e)}
                     />
 
                     <Input 
                     question={questions[6]}
                     tooltip={'answer is..'}
-                    handleTextInput={(e) => this.handleAnswer(questions[6], e)}
+                    handleTextInput={(e) => this.handleAnswer(6, e)}
                     />
                     <RadioWithInput 
                     question={questions[7]}
                     answer={'default'}
                     tooltip={'answer is..'}
-                    handleAnswer={(e) => this.handleAnswer(questions[7], e)}
+                    handleAnswer={(e) => this.handleAnswer(7, e)}
                     />
 
                     <Input 
                     question={questions[8]}
-                    handleTextInput={(e) => this.handleAnswer(questions[8], e)}
+                    handleTextInput={(e) => this.handleAnswer(8, e)}
                     />
 
                     <button 
