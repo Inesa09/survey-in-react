@@ -20,7 +20,6 @@ class Text extends Component {
 
 
     render() {
-        const oldLength = filteredList.length;
         const filteredList = Object.values(this.state.text).filter(elem => {
             return elem[3].length === 0;
         });
