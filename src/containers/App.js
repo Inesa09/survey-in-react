@@ -1,15 +1,27 @@
 import React, { Component } from 'react';
 import Text from '../components/Text';
-import Survey from '../components/Survey';
-import PrevBtn from '../components/PrevBtn';
-import NextBtn from '../components/NextBtn';
-import SaveBtn from '../components/SaveBtn';
+import Survey from './Survey';
 // import fireDB from '../fireDB';
 
 import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { 
+        post: 1,
+    }; // <- set up react state
+}
+
+  showPrev = (post) => {
+    console.log("showPrev" + (post-1));
+  }
+
+  showNext = (post) => {
+    console.log("showNext" + (post+1));
+  }
 
   render() {
     return (
@@ -20,8 +32,8 @@ class App extends Component {
         </header>
 
         <div className="App-content">
-          <Text />
-          <Survey />
+          <Text post={this.state.post} />
+          <Survey post={this.state.post} showPrev={this.showPrev} showNext={this.showNext} />
         </div>
       </div>
     );

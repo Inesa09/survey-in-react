@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import RadioBtn from './RadioBtn';
-// import './RadioBtn.css';
 
 const RadioWithInput = ({question, tooltip='', answer, handleAnswer}) => {
 
