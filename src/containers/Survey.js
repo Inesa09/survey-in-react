@@ -45,7 +45,8 @@ class Survey extends Component {
             document.getElementById("form").reset(); // <- clear the input
             this.setState({answers: []}); // <- clear the state
         } catch (err) {
-            alert("Fill all...")
+            const el = document.getElementById('error');
+            el.style.display = 'block';
         }
     }
 
@@ -62,8 +63,9 @@ class Survey extends Component {
     }
 
     submit = (e, post) => {
-        alert("submit");
         this.state.addAnswers(e, post);
+        const el = document.getElementById('success');
+        el.style.display = 'block';
     }
 
     submitBtnHover = (color) => {
@@ -153,6 +155,29 @@ class Survey extends Component {
                         onMouseOut={() => this.submitBtnHover('rgb(109, 97, 136)')}> 
                         Submit 
                     </button>
+
+                    <div class='ui success message' id='success'
+                        style={{
+                            margin: '40px',
+                            marginTop: '0',
+                            display: 'none',
+                        }}>
+                        <div class='content'>
+                            <div class='header'>Form Completed</div>
+                            <p>You&#x27;re all signed up for the newsletter</p>
+                        </div>
+                    </div>
+                    <div class='ui error message' id='error'
+                        style={{
+                            margin: '40px',
+                            marginTop: '0',
+                            display: 'none',
+                        }}>
+                        <div class='content'>
+                            <div class='header'>Action Forbidden</div>
+                            <p>You can only sign up for an account once with a given e-mail address.</p>
+                        </div>
+                    </div>
                 </form>
             </div>
         )
