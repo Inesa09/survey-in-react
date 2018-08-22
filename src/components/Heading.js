@@ -1,10 +1,14 @@
 import React from 'react';
-import './Heading.css';
 
 const Heading = ({heading}) => {
     return (
-        <div style={{position: 'reletive',}}> 
-            {heading}
+        <div className="ui violet segment"
+            style={{
+            padding: '12px',
+            margin: '20px',
+            font: `1.5em 'Georgia', cursive`,
+            textAlign: 'center'
+            }}>  {heading}
         </div>
     )
 }

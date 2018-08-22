@@ -3,7 +3,6 @@ import Text from '../components/Text';
 import Survey from './Survey';
 // import fireDB from '../fireDB';
 
-import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
@@ -27,7 +26,6 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Survey</h1>
         </header>
 

@@ -11,14 +11,14 @@ class Survey extends Component {
         super(props);
         this.state = { 
             questions: ['empty',
-                'q1',
-                'q2',
-                'q3',
-                'q4',
-                'q5',
-                'q6',
-                'q7',
-                'q8'],
+                'How relevant is the post to the place?',
+                'How interesting is the post?',
+                'Summary of the post',
+                'Trivia Question About it #1',
+                'Trivia Question About it #1',
+                'Trivia Question About it #2',
+                'Trivia Question About it #2',
+                'Free Notes'],
             answers: [],
             addAnswers: this.addAnswers,
         }; // <- set up react state
@@ -35,15 +35,18 @@ class Survey extends Component {
     }
 
     addAnswers = (e, post) => {
-        e.preventDefault(); // <- prevent form submit from reloading the page
-
-        let answers = {};
-        for (let i = 1; i <= 8; i++) 
-            answers[i+2] = this.state.answers[i];
-
-        /* Send the answers to Firebase */
-        fireDB.database().ref(`masterSheet/${post}`).update(answers);
-        document.getElementById("form").reset(); // <- clear the input
+        try {
+            e.preventDefault(); // <- prevent form submit from reloading the page
+            let answers = {};
+            for (let i = 1; i <= 8; i++) 
+                answers[i+2] = this.state.answers[i];
+            /* Send the answers to Firebase */
+            fireDB.database().ref(`masterSheet/${post}`).update(answers);
+            document.getElementById("form").reset(); // <- clear the input
+            this.setState({answers: []}); // <- clear the state
+        } catch (err) {
+            alert("Fill all...")
+        }
     }
 
     showPrev = (e, post) => {
@@ -61,6 +64,11 @@ class Survey extends Component {
     submit = (e, post) => {
         alert("submit");
         this.state.addAnswers(e, post);
+    }
+
+    submitBtnHover = (color) => {
+        const btn = document.getElementById('submitBtn');
+        btn.style.backgroundColor = color;
     }
 
     render() {
@@ -110,14 +118,40 @@ class Survey extends Component {
                     handleTextInput={(e) => this.handleAnswer(8, e)}
                     />
 
-                    <button 
-                        onClick={(e) => this.showPrev(e, post)} > Prev 
-                    </button>
-                    <button 
-                        onClick={(e) => this.showNext(e, post)} > Next 
-                    </button>
-                    <button 
-                        onClick={(e) => this.submit(e, post)}> Submit 
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                    }}>
+                        <button className='ui left animated violet basic button' role='button'
+                            style={{margin: '30px'}}
+                            onClick={(e) => this.showPrev(e, post)}>
+                            <div className='visible content'> Previous Text</div>
+                            <div className='hidden content'>
+                                <i aria-hidden='true' className='arrow left icon' />
+                            </div>
+                        </button>
+                        <button className='ui animated violet basic button' role='button'
+                            style={{margin: '30px'}}
+                            onClick={(e) => this.showNext(e, post)}>
+                            <div className='visible content'>Next Text</div>
+                            <div className='hidden content'>
+                                <i aria-hidden='true' className='arrow right icon' />
+                            </div>
+                        </button>
+                    </div>
+
+                    <button className='ui big button' id='submitBtn'
+                        style={{    
+                            backgroundColor: 'rgb(109, 97, 136)',
+                            color: 'white',
+                            marginLeft: '285px',
+                            marginBottom: '30px',
+                            marginTop: '-10px',
+                        }}
+                        onClick={(e) => this.submit(e, post)}
+                        onMouseOver={() => this.submitBtnHover('rgb(58, 46, 87)')}
+                        onMouseOut={() => this.submitBtnHover('rgb(109, 97, 136)')}> 
+                        Submit 
                     </button>
                 </form>
             </div>

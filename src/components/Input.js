@@ -1,11 +1,16 @@
 import React from 'react';
+import Question from './Question';
+import './Input.css';
 
 const Input = ({question, tooltip='', handleTextInput}) => {
     return (
         <div> 
-            <h1> {question} </h1>
-            <p> {tooltip} </p>
-            <input type="text" onChange={handleTextInput} required />
+            <Question question={question} tooltip={tooltip}/>
+            <div className='ui small input'>
+                <input type="text" onChange={handleTextInput} 
+                placeholder='Type your answer' required 
+                id='input'/>   
+            </div>
         </div>
     )
 }
