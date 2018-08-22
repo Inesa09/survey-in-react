@@ -2,9 +2,9 @@ import React from 'react'
 
 const Heading = ({heading}) => {
     return (
-        <div style={{position: 'reletive',}}> 
+        <h3 style={{position: 'reletive',}}> 
             {heading}
-        </div>
+        </h3>
     )
 }
 
