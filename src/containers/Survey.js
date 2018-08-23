@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import fireDB from '../fireDB';
-import Heading from '../components/Heading';
 import Radio from '../components/Radio';
 import Input from '../components/Input';
 import RadioWithInput from '../components/RadioWithInput';
-
-import Flex from './Flex';
+import Flex from '../components/Flex';
 
 class Survey extends Component {
 
@@ -59,7 +57,7 @@ class Survey extends Component {
 
     hideEl = (el) => {
         document.getElementById(el).style.display = 'none';
-        document.getElementById('text').scrollIntoView(true);
+        document.getElementById('top').scrollIntoView(true);
     }
 
     submitBtnHover = (color) => {
@@ -71,7 +69,6 @@ class Survey extends Component {
         const post = this.props.post;
         return (
             <div className="Survey">
-                <Heading heading={"Post Review (Your input)"} />
                 <form id='form'>
                     <Radio
                     question={questions[1]} 
