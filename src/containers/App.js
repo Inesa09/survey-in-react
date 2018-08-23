@@ -91,7 +91,7 @@ class App extends Component {
             </div>
             <button className = {this.state.previosIndexList.length > 0 ? 
               'ui left animated violet basic massive button' : 'ui grey basic massive button'}
-                  style= {{margin: '30px 200px' }}
+                  style= {{margin: '30px 33%' }}
                   onClick={this.showPrev}>
                   <div className='visible content'> Previous Text</div>
                   <div className='hidden content'>
