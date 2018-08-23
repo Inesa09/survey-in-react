@@ -18,9 +18,9 @@ class App extends Component {
 }
   showPrev = (post) => {
     let temporaryList = this.state.previosIndexList;
-    temporaryList.pop();
+    let previosElement = temporaryList.pop();
     console.log("showPrev" + (post-1));
-    this.setState({post : temporaryList[temporaryList.length - 1], previosIndexList : temporaryList});
+    this.setState({post : previosElement, previosIndexList : temporaryList});
   }
 
   showNext = (post) => {
