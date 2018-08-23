@@ -64,6 +64,7 @@ class App extends Component {
       number = post;
     }
     let isNextElementExist = this.findNextUnsubmitedElement(number) != undefined;
+    console.log(text);
     return (post != undefined && text.length != 0 ? (
         <div className="App" id='top'>
           <header className="App-header">
