@@ -32,6 +32,7 @@ class Survey extends Component {
         this.setState({answers: copy});
     }
 
+    //Submit
     addAnswers = (e, post) => {
         var size = Object.keys(this.state.answers).length;
         if( size !== 8)
@@ -42,23 +43,8 @@ class Survey extends Component {
             fireDB.database().ref(`masterSheet/${post}`).update(this.state.answers);
             document.getElementById("form").reset(); // <- clear the input
             this.setState({answers: {}}); // <- clear the state
+            this.showEl('success');
         }
-    }
-
-    //Submit
-    showPrev = (e, post) => {
-        this.state.addAnswers(e, post);
-        this.props.showPrev(post);
-    }
-
-    showNext = (e, post) => {
-        this.state.addAnswers(e, post);
-        this.props.showNext(post);
-    }
-
-    submit = (e, post) => {
-        this.showNext(e, post);
-        this.showEl('success');
     }
 
     //CSS methods
@@ -136,10 +122,25 @@ class Survey extends Component {
                     value={answers['10']}
                     />
 
+
+                    <Flex>
+                    <button className='ui big button' id='submitBtn'
+                        style={{    
+                            backgroundColor: 'rgb(109, 97, 136)',
+                            color: 'white',
+                            marginTop: '20px',
+                        }}
+                        onClick={(e) => this.addAnswers(e, post)}
+                        onMouseOver={() => this.submitBtnHover('rgb(58, 46, 87)')}
+                        onMouseOut={() => this.submitBtnHover('rgb(109, 97, 136)')}> 
+                        Submit 
+                    </button>
+                    </Flex>
+
                     <Flex>
                         <button className='ui left animated violet basic button'
                             style={{margin: '30px'}}
-                            onClick={(e) => this.showPrev(e, post)}>
+                            onClick={() => this.props.showPrev(post)}>
                             <div className='visible content'> Previous Text</div>
                             <div className='hidden content'>
                                 <i aria-hidden='true' className='arrow left icon' />
@@ -147,7 +148,7 @@ class Survey extends Component {
                         </button>
                         <button className='ui animated violet basic button'
                             style={{margin: '30px'}}
-                            onClick={(e) => this.showNext(e, post)}>
+                            onClick={() => this.props.showNext(post)}>
                             <div className='visible content'>Next Text</div>
                             <div className='hidden content'>
                                 <i aria-hidden='true' className='arrow right icon' />
@@ -155,20 +156,6 @@ class Survey extends Component {
                         </button>
                     </Flex>
 
-                    <Flex>
-                    <button className='ui big button' id='submitBtn'
-                        style={{    
-                            backgroundColor: 'rgb(109, 97, 136)',
-                            color: 'white',
-                            marginBottom: '30px',
-                            marginTop: '-10px',
-                        }}
-                        onClick={(e) => this.submit(e, post)}
-                        onMouseOver={() => this.submitBtnHover('rgb(58, 46, 87)')}
-                        onMouseOut={() => this.submitBtnHover('rgb(109, 97, 136)')}> 
-                        Submit 
-                    </button>
-                    </Flex>
 
                     <div className='ui success message' id='success'
                         style={{
