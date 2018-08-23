@@ -11,39 +11,44 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = { 
-        post: 1,
-        text: []
+        post: 0,
+        text: [],
+        previosIndexList :[]
     }; // <- set up react state
 }
-updateDB(){
-  fireDB.database().ref('masterSheet/').on('value', snapshot => { 
-    this.setState({text : snapshot.val()});
-}); 
-}
-componentDidMount() { 
-  this.updateDB();
-  console.log(this.state.text);
-  } 
   showPrev = (post) => {
+    let temporaryList = this.state.previosIndexList;
+    temporaryList.pop();
     console.log("showPrev" + (post-1));
+    this.setState({post : temporaryList[temporaryList.length - 1], previosIndexList : temporaryList});
   }
 
   showNext = (post) => {
     console.log("showNext" + (post+1));
+    let temporaryList = this.state.previosIndexList;
+    let number = this.findNextUnsubmitedElement(post);
+    if(number != undefined) temporaryList.push(this.state.post);
+    this.setState({post : number, previosIndexList : temporaryList});
   }
-  findNextUnsubmitedElement(){
-    const { post, text} = this.state;
-    this.updateDB;
-    for(let i = post + 1, size = fireDB.database().ref('masterSheet/').length; i < size; i++){
-        if(text[i][3].length === 0){
-          this.setState({post : i});
-          return;
+  findNextUnsubmitedElement= (post) => {
+    let list = this.state.previosIndexList;
+    for(let i = post + 1, size = Object.values(this.state.text).length; i < size; i++){
+        if(this.state.text[i][3].length === 0){
+          return i;
         }
     }
-    this.setState({post : undefined});
   }
+  componentDidMount() { 
+    fireDB.database().ref('masterSheet/').on('value', snapshot => { 
+      this.setState({text : snapshot.val()});
+  }); 
+    } 
   render() {
     const { post, text} = this.state;
+    let number = this.findNextUnsubmitedElement(post);
+    if(post != 0){
+      number = post;
+      }
   return post != undefined && text.length != 0 ? (
       <div className="App">
         <header className="App-header">
@@ -51,9 +56,9 @@ componentDidMount() {
         </header>
 
         <div className="App-content">
-          <Heading heading = {text[post][1]}/>
-          <Text text={text[post][2]}/>
-          <Survey post={this.state.post} showPrev={this.showPrev} showNext={this.showNext} />
+          <Heading heading = {text[number][1]}/>
+          <Text text={text[number][2]}/>
+          <Survey post={number} showPrev={this.showPrev} showNext={this.showNext} />
         </div>
       </div>
     )
