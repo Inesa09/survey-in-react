@@ -26,13 +26,17 @@ class App extends Component {
     this.scrollToTop();
     }
   }
-
+ toUndef(post){
+  let temporaryList = this.state.previosIndexList;
+  temporaryList.push(post);
+  this.setState({post : undefined, previosIndexList : temporaryList});
+ }
   showNext = (post, e) => {
     e.preventDefault();
     let temporaryList = this.state.previosIndexList;
     let number = this.findNextUnsubmitedElement(post);
     if(number != undefined) {
-    temporaryList.push(this.state.post);
+    temporaryList.push(post);
     this.setState({post : number, previosIndexList : temporaryList});
     this.scrollToTop();
     }
