@@ -71,7 +71,7 @@ class Survey extends Component {
         // for(let i=6; i <=629;i++)
         // fireDB.database().ref(`masterSheet/${i}`).remove();
         const {questions, answers} = this.state;
-        const post = this.props.post;
+        const {post, numberOfPreviousElemnts, nextElementExistanse, showNext, showPrev} = this.props;
         return (
             <div className="Survey">
                 <form id='form'>
@@ -145,25 +145,25 @@ class Survey extends Component {
                         display: 'flex',
                         justifyContent: 'space-between',
                     }}>
-                        <button className = {this.props.numberOfPreviousElemnts > 0 ? 
+                        <button className = {numberOfPreviousElemnts > 0 ? 
                         'ui left animated violet basic button' : 'ui grey basic button'}
                             style= {{margin: '30px 50px'}}
-                            onClick={this.props.showPrev}>
+                            onClick={showPrev}>
                             <div className='visible content'> Previous Text</div>
                             <div className='hidden content'>
                                 <i aria-hidden='true' 
-                                className={this.props.numberOfPreviousElemnts > 0 ? 'arrow left icon' : ''} />
+                                className={numberOfPreviousElemnts > 0 ? 'arrow left icon' : ''} />
                             </div>
                         </button>
-                        <button className= {this.props.nextElementExistanse ? 
+                        <button className= {nextElementExistanse ? 
                         'ui animated violet basic button' : 'ui grey basic button'}
                             style={{margin: '30px 50px'}}
-                            onClick={this.props.nextElementExistanse ?
-                                (e) => this.props.showNext(post, e) : ''}>
+                            onClick={nextElementExistanse ?
+                                (e) => showNext(post, e) : ''}>
                             <div className='visible content'>Next Text</div>
                             <div className='hidden content'>
                                 <i aria-hidden='true' 
-                                className={this.props.nextElementExistanse > 0 ? 'arrow right icon' : ''} />
+                                className={nextElementExistanse > 0 ? 'arrow right icon' : ''} />
                             </div>
                         </button>
                     </div>

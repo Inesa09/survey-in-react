@@ -82,8 +82,8 @@ class App extends Component {
           <header className="App-header">
             <h1 className="App-title">Survey</h1>
           </header>
-          <div className="App-content" style={{marginTop:'2%'}}>
-            <div className='ui icon green massive message' style={{width:'640px', height:'150px', margin: '20px'}}>
+          <div className="App-content" style={{marginTop:'2%', padding:'20px'}}>
+            <div className='ui icon green massive message' >
               <i aria-hidden='true' className='check icon' />
               <div className='content'>
                 <div className='header'>Sorry</div>All of the texts are already reviewed.
@@ -91,7 +91,7 @@ class App extends Component {
             </div>
             <button className = {this.state.previosIndexList.length > 0 ? 
               'ui left animated violet basic massive button' : 'ui grey basic massive button'}
-                  style= {{margin: '30px 220px' }}
+                  style= {{margin: '30px 200px' }}
                   onClick={this.showPrev}>
                   <div className='visible content'> Previous Text</div>
                   <div className='hidden content'>
