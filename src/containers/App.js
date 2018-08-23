@@ -27,7 +27,11 @@ class App extends Component {
     this.scrollToTop();
     }
   }
-
+ toUndef(post){
+  let temporaryList = this.state.previosIndexList;
+  temporaryList.push(post);
+  this.setState({post : undefined, previosIndexList : temporaryList});
+ }
   showNext = (post, e) => {
     e.preventDefault();
     let temporaryList = this.state.previosIndexList;
@@ -70,10 +74,15 @@ class App extends Component {
       number = post;
     }
     let isNextElementExist = this.findNextUnsubmitedElement(number) != undefined;
+<<<<<<< HEAD
 
 
     if (post != undefined && text.length != 0) 
       return (
+=======
+    console.log(text);
+    return (post != undefined && text.length != 0 ? (
+>>>>>>> 4dc3a7748a1fa6f4e495bc1670c2cfeeb25122aa
         <div className="App" id='top'>
           <header className="App-header">
             <h1 className="App-title">Survey</h1>

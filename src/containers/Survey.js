@@ -38,6 +38,7 @@ class Survey extends Component {
             e.preventDefault(); // <- prevent form submit from reloading the page
             this.props.showNext(post, e);
             /* Send the answers to Firebase */
+            this.props.showNext(post, e);
             fireDB.database().ref(`masterSheet/${post}`).update(this.state.answers);
             document.getElementById("form").reset(); // <- clear the input
             this.setState({answers: {}}); // <- clear the state
