@@ -19,9 +19,11 @@ class App extends Component {
   showPrev = (e) => {
     e.preventDefault();
     let temporaryList = this.state.previosIndexList;
+    if(temporaryList.length > 0){
     let previosElement = temporaryList.pop();
     this.setState({post : previosElement, previosIndexList : temporaryList});
     this.scrollToTop();
+    }
   }
 
   showNext = (post, e) => {
@@ -64,7 +66,7 @@ class App extends Component {
         <div className="App-content">
           <Heading heading = {`Post Content - Related to ${text[number][1]}`}/>
           <Text text={text[number][2]}/>
-          <Survey post={number} showPrev={this.showPrev} showNext={this.showNext} />
+          <Survey post={number} showPrev={this.showPrev} showNext={this.showNext} numberOfPreviousElemnts={this.state.previosIndexList.length}/>
         </div>
       </div>
     )

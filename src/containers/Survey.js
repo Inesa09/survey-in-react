@@ -137,7 +137,7 @@ class Survey extends Component {
                     </Flex>
 
                     <Flex>
-                        <button className='ui left animated violet basic button'
+                        <button className = {this.props.numberOfPreviousElemnts > 0 ? 'ui left animated violet basic button' : 'ui left animated grey basic button'}
                             style={{margin: '30px'}}
                             onClick={this.props.showPrev}>
                             <div className='visible content'> Previous Text</div>
