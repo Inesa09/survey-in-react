@@ -57,7 +57,6 @@ class Survey extends Component {
 
     hideEl = (el) => {
         document.getElementById(el).style.display = 'none';
-        document.getElementById('top').scrollIntoView(true);
     }
 
     submitBtnHover = (color) => {
