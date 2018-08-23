@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-
+import './Text.css';
 const Text = ({text}) => {
     return (
-        <div> 
+        <div id= "text"> 
             {text}
         </div>
     )
