@@ -33,7 +33,6 @@ class App extends Component {
     this.scrollToTop();
   }
   findNextUnsubmitedElement= (post) => {
-    let list = this.state.previosIndexList;
     for(let i = post + 1, size = Object.values(this.state.text).length; i < size; i++){
         if(this.state.text[i][3].length === 0){
           return i;
