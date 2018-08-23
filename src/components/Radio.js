@@ -26,8 +26,8 @@ const Radio = ({question, tooltip= '', handleOptionChange}) => {
                 display:'flex', 
                 flexDirection: 'row', 
                 justifyContent: 'space-around',
-                width: '70%',
-                marginLeft: '15%',
+                width: '60%',
+                marginLeft: '20%',
                 marginTop: '50px',
                 marginBottom: '30px',
             }}> {btns} </div>

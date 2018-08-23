@@ -4,7 +4,7 @@ import './RadioBtn.css';
 const RadioBtn = ({value, question, answer='', onChange}) => {
 
     return (
-        <label className="container">
+        <label className="container" style={{fontSize: '18px'}}>
             <input type="radio" 
             name={question}
             value={value}

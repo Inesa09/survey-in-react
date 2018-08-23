@@ -3,7 +3,6 @@ import fireDB from '../fireDB';
 import Radio from '../components/Radio';
 import Input from '../components/Input';
 import RadioWithInput from '../components/RadioWithInput';
-import Flex from '../components/Flex';
 
 class Survey extends Component {
 
@@ -37,6 +36,7 @@ class Survey extends Component {
             this.showEl('error');
         else {
             e.preventDefault(); // <- prevent form submit from reloading the page
+            this.props.showNext(post, e);
             /* Send the answers to Firebase */
             this.props.showNext(post, e);
             fireDB.database().ref(`masterSheet/${post}`).update(this.state.answers);
@@ -57,7 +57,10 @@ class Survey extends Component {
     }
 
     hideEl = (el) => {
-        document.getElementById(el).style.display = 'none';
+        try{
+            document.getElementById(el).style.display = 'none';
+        } catch(err){
+        }
     }
 
     submitBtnHover = (color) => {
@@ -65,6 +68,8 @@ class Survey extends Component {
     }
 
     render() {
+        // for(let i=6; i <=629;i++)
+        // fireDB.database().ref(`masterSheet/${i}`).remove();
         const {questions, answers} = this.state;
         const post = this.props.post;
         return (
@@ -92,7 +97,7 @@ class Survey extends Component {
                     />
                     <RadioWithInput 
                     question={questions[5]}
-                    answer={'default'}
+                    answer={'Default'}
                     tooltip={'answer is..'}
                     handleAnswer={(e) => this.handleAnswer(5, e)}
                     value={answers['7']}
@@ -106,7 +111,7 @@ class Survey extends Component {
                     />
                     <RadioWithInput 
                     question={questions[7]}
-                    answer={'default'}
+                    answer={'Default'}
                     tooltip={'answer is..'}
                     handleAnswer={(e) => this.handleAnswer(7, e)}
                     value={answers['9']}
@@ -119,38 +124,49 @@ class Survey extends Component {
                     />
 
 
-                    <Flex>
-                    <button className='ui big button' id='submitBtn'
-                        style={{    
-                            backgroundColor: 'rgb(109, 97, 136)',
-                            color: 'white',
-                            marginTop: '20px',
-                        }}
-                        onClick={(e) => this.addAnswers(e, post)}
-                        onMouseOver={() => this.submitBtnHover('rgb(58, 46, 87)')}
-                        onMouseOut={() => this.submitBtnHover('rgb(109, 97, 136)')}> 
-                        Submit 
-                    </button>
-                    </Flex>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                    }}>
+                        <button className='ui big button' id='submitBtn'
+                            style={{    
+                                backgroundColor: 'rgb(109, 97, 136)',
+                                color: 'white',
+                                marginTop: '20px',
+                            }}
+                            onClick={(e) => this.addAnswers(e, post)}
+                            onMouseOver={() => this.submitBtnHover('rgb(58, 46, 87)')}
+                            onMouseOut={() => this.submitBtnHover('rgb(109, 97, 136)')}> 
+                            Submit 
+                        </button>
+                    </div>
 
-                    <Flex>
-                        <button className = {this.props.numberOfPreviousElemnts > 0 ? 'ui left animated violet basic button' : 'ui left animated grey basic button'}
-                            style={{margin: '30px'}}
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                    }}>
+                        <button className = {this.props.numberOfPreviousElemnts > 0 ? 
+                        'ui left animated violet basic button' : 'ui grey basic button'}
+                            style= {{margin: '30px 50px'}}
                             onClick={this.props.showPrev}>
                             <div className='visible content'> Previous Text</div>
                             <div className='hidden content'>
-                                <i aria-hidden='true' className='arrow left icon' />
+                                <i aria-hidden='true' 
+                                className={this.props.numberOfPreviousElemnts > 0 ? 'arrow left icon' : ''} />
                             </div>
                         </button>
-                        <button className= {this.props.nextElementExistanse ? 'ui animated violet basic button' : 'ui animated grey basic button'}
-                            style={{margin: '30px'}}
-                            onClick={(e) => this.props.showNext(post, e)}>
+                        <button className= {this.props.nextElementExistanse ? 
+                        'ui animated violet basic button' : 'ui grey basic button'}
+                            style={{margin: '30px 50px'}}
+                            onClick={this.props.nextElementExistanse ?
+                                (e) => this.props.showNext(post, e) : ''}>
                             <div className='visible content'>Next Text</div>
                             <div className='hidden content'>
-                                <i aria-hidden='true' className='arrow right icon' />
+                                <i aria-hidden='true' 
+                                className={this.props.nextElementExistanse > 0 ? 'arrow right icon' : ''} />
                             </div>
                         </button>
-                    </Flex>
+                    </div>
 
 
                     <div className='ui success message' id='success'
