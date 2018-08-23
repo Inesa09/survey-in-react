@@ -11,7 +11,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = { 
-        post: 0,
+        post: undefined,
         text: [],
         previosIndexList :[]
     }; // <- set up react state
