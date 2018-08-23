@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import fireDB from '../fireDB';
 import Radio from '../components/Radio';
 import Input from '../components/Input';
+import SmallMessage from '../components/SmallMessage';
 import RadioWithInput from '../components/RadioWithInput';
 
 class Survey extends Component {
@@ -36,12 +37,16 @@ class Survey extends Component {
             this.showEl('error');
         else {
             e.preventDefault(); // <- prevent form submit from reloading the page
+
+        if(this.props.nextElementExistanse)
             this.props.showNext(post, e);
-            /* Send the answers to Firebase */
-            fireDB.database().ref(`masterSheet/${post}`).update(this.state.answers);
-            document.getElementById("form").reset(); // <- clear the input
-            this.setState({answers: {}}); // <- clear the state
-            this.showEl('success');
+        else
+            this.props.toUndef(post, e);
+
+        fireDB.database().ref(`masterSheet/${post}`).update(this.state.answers);
+        document.getElementById("form").reset(); // <- clear the input
+        this.setState({answers: {}}); // <- clear the state
+        this.showEl('success');
         }
     }
 
@@ -133,7 +138,7 @@ class Survey extends Component {
                                 color: 'white',
                                 marginTop: '20px',
                             }}
-                            onClick={(e) => this.addAnswers(e, post)}
+                            onClick={(e) => { this.addAnswers(e, post)}}
                             onMouseOver={() => this.submitBtnHover('rgb(58, 46, 87)')}
                             onMouseOut={() => this.submitBtnHover('rgb(109, 97, 136)')}> 
                             Submit 
@@ -157,8 +162,7 @@ class Survey extends Component {
                         <button className= {nextElementExistanse ? 
                         'ui animated violet basic button' : 'ui grey basic button'}
                             style={{margin: '30px 50px'}}
-                            onClick={nextElementExistanse ?
-                                (e) => showNext(post, e) : (e) => {}}>
+                            onClick={(e) => showNext(post, e) }>
                             <div className='visible content'>Next Text</div>
                             <div className='hidden content'>
                                 <i aria-hidden='true' 
@@ -168,28 +172,10 @@ class Survey extends Component {
                     </div>
 
 
-                    <div className='ui success message' id='success'
-                        style={{
-                            margin: '40px',
-                            marginTop: '0',
-                            display: 'none',
-                        }}>
-                        <div className='content'>
-                            <div className='header'>Form Completed</div>
-                            <p>You have saved your answers.</p>
-                        </div>
-                    </div>
-                    <div className='ui error message' id='error'
-                        style={{
-                            margin: '40px',
-                            marginTop: '0',
-                            display: 'none',
-                        }}>
-                        <div className='content'>
-                            <div className='header'>Action Forbidden</div>
-                            <p>You have to answer on all questions.</p>
-                        </div>
-                    </div>
+                    <SmallMessage name='success' text1='Form Completed'
+                        text2='You have saved your answers.' />
+                    <SmallMessage name='error' text1='Action Forbidden'
+                        text2='You have to answer on all questions.' />
                 </form>
             </div>
         )

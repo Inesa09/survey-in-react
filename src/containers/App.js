@@ -4,6 +4,7 @@ import Top from '../components/Top';
 import Survey from './Survey';
 import fireDB from '../fireDB';
 import Heading from '../components/Heading';
+import Message from '../components/Message';
 
 class App extends Component {
 
@@ -26,7 +27,9 @@ class App extends Component {
     this.scrollToTop();
     }
   }
- toUndef(post){
+ toUndef = (post,e) =>{
+    e.preventDefault();
+  console.log(this.state.previosIndexList);
   let temporaryList = this.state.previosIndexList;
   temporaryList.push(post);
   this.setState({post : undefined, previosIndexList : temporaryList});
@@ -35,12 +38,15 @@ class App extends Component {
     e.preventDefault();
     let temporaryList = this.state.previosIndexList;
     let number = this.findNextUnsubmitedElement(post);
+    console.log(this.state.previosIndexList);
     if(number != undefined) {
       temporaryList.push(post);
       this.setState({post : number, previosIndexList : temporaryList});
       this.scrollToTop();
-    } else
-      this.setState({post: undefined});
+    } 
+    // else
+    //   this.setState({post: undefined});
+    // } 
   }
 
   findNextUnsubmitedElement= (post) => {
@@ -76,23 +82,15 @@ class App extends Component {
     if(text.length === 0)  //Loading
       return (
         <Top>
-          <div class='ui icon teal message'>
-            <i aria-hidden='true' class='circle notched loading icon' />
-            <div class='content'>
-              <div class='header'>Just one second</div>We are fetching that content for you.
-            </div>
-          </div>
+          <Message color='teal' icon='circle notched loading icon'
+            text1='Just one second' text2='We are fetching that content for you.'/>
         </Top>
       )
     else if (post === undefined || (post === 0 && number === undefined)) //All text submitted
       return (
         <Top>
-          <div className='ui icon green massive message' >
-            <i aria-hidden='true' className='check icon' />
-            <div className='content'>
-              <div className='header'>Sorry</div>All of the texts are already reviewed.
-            </div>
-          </div>
+          <Message color='green' icon='check icon'
+            text1='Sorry' text2='All of the texts are already reviewed.'/>
           <button className = {this.state.previosIndexList.length > 0 ? 
             'ui left animated violet basic massive button' : 'ui grey basic massive button'}
                 style= {{margin: '30px 33%' }}
@@ -108,13 +106,14 @@ class App extends Component {
     else if(number !=undefined  && text.length != 0) //Main
       return (
         <Top>
-          <Heading heading = {`Post Content - Related to ${text[number][1]}`}/>
+         <Heading heading = {`Post Content - Related to ${text[number][1]}`}/>
           <Text text={text[number][2]}/>
           <Heading heading={"Post Review (Your input)"} />
           <Survey post={number} 
-            showPrev={this.showPrev} showNext={this.showNext}
-            numberOfPreviousElemnts={this.state.previosIndexList.length} 
-            nextElementExistanse ={isNextElementExist}/>
+             showPrev={this.showPrev} showNext={this.showNext}
+             numberOfPreviousElemnts={this.state.previosIndexList.length} 
+             nextElementExistanse ={isNextElementExist}
+             toUndef = {this.toUndef}/>
         </Top>
       )
   }
