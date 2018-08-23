@@ -11,7 +11,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = { 
-        post: undefined,
+        post: 0,
         text: [],
         previosIndexList :[],
         show: true
@@ -27,7 +27,9 @@ class App extends Component {
     this.scrollToTop();
     }
   }
- toUndef(post){
+ toUndef = (post,e) =>{
+    e.preventDefault();
+  console.log(this.state.previosIndexList);
   let temporaryList = this.state.previosIndexList;
   temporaryList.push(post);
   this.setState({post : undefined, previosIndexList : temporaryList});
@@ -36,13 +38,12 @@ class App extends Component {
     e.preventDefault();
     let temporaryList = this.state.previosIndexList;
     let number = this.findNextUnsubmitedElement(post);
+    console.log(this.state.previosIndexList);
     if(number != undefined) {
       temporaryList.push(post);
       this.setState({post : number, previosIndexList : temporaryList});
       this.scrollToTop();
-    } else
-      this.setState({post: undefined});
-
+    } 
   }
 
   findNextUnsubmitedElement= (post) => {
@@ -75,8 +76,8 @@ class App extends Component {
     }
     let isNextElementExist = this.findNextUnsubmitedElement(number) != undefined;
 
-
-    if (post === undefined || post === 0) //All text submitted
+    console.log(this.state.previosIndexList);
+    if (post === undefined || (post === 0 && number === undefined)) //All text submitted
       return (
         <div className="App" id='top'>
           <header className="App-header">
@@ -102,7 +103,7 @@ class App extends Component {
           </div>
         </div>
       )
-    else if(post != 0  && text.length != 0) //Main
+    else if(number !=undefined  && text.length != 0) //Main
       return (
         <div className="App" id='top'>
           <header className="App-header">
@@ -115,7 +116,8 @@ class App extends Component {
             <Survey post={number} 
              showPrev={this.showPrev} showNext={this.showNext}
              numberOfPreviousElemnts={this.state.previosIndexList.length} 
-             nextElementExistanse ={isNextElementExist}/>
+             nextElementExistanse ={isNextElementExist}
+             toUndef = {this.toUndef}/>
           </div>
         </div>
       )

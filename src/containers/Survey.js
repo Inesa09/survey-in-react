@@ -36,9 +36,12 @@ class Survey extends Component {
             this.showEl('error');
         else {
             e.preventDefault(); // <- prevent form submit from reloading the page
+            if(this.props.nextElementExistanse){
             this.props.showNext(post, e);
-            /* Send the answers to Firebase */
-            this.props.showNext(post, e);
+        }
+            else{
+            this.props.toUndef(post, e);
+        }
             fireDB.database().ref(`masterSheet/${post}`).update(this.state.answers);
             document.getElementById("form").reset(); // <- clear the input
             this.setState({answers: {}}); // <- clear the state
@@ -134,7 +137,7 @@ class Survey extends Component {
                                 color: 'white',
                                 marginTop: '20px',
                             }}
-                            onClick={(e) => this.addAnswers(e, post)}
+                            onClick={(e) => { this.addAnswers(e, post)}}
                             onMouseOver={() => this.submitBtnHover('rgb(58, 46, 87)')}
                             onMouseOut={() => this.submitBtnHover('rgb(109, 97, 136)')}> 
                             Submit 
@@ -158,8 +161,7 @@ class Survey extends Component {
                         <button className= {nextElementExistanse ? 
                         'ui animated violet basic button' : 'ui grey basic button'}
                             style={{margin: '30px 50px'}}
-                            onClick={nextElementExistanse ?
-                                (e) => showNext(post, e) : ''}>
+                            onClick={(e) => showNext(post, e) }>
                             <div className='visible content'>Next Text</div>
                             <div className='hidden content'>
                                 <i aria-hidden='true' 
