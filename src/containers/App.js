@@ -31,9 +31,11 @@ class App extends Component {
     e.preventDefault();
     let temporaryList = this.state.previosIndexList;
     let number = this.findNextUnsubmitedElement(post);
-    if(number != undefined) temporaryList.push(this.state.post);
+    if(number != undefined) {
+    temporaryList.push(this.state.post);
     this.setState({post : number, previosIndexList : temporaryList});
     this.scrollToTop();
+    }
   }
 
   findNextUnsubmitedElement= (post) => {
@@ -61,7 +63,7 @@ class App extends Component {
     if(post != 0){
       number = post;
     }
-
+    let isNextElementExist = this.findNextUnsubmitedElement(number) != undefined;
     return (post != undefined && text.length != 0 ? (
         <div className="App" id='top'>
           <header className="App-header">
@@ -71,7 +73,7 @@ class App extends Component {
             <Heading heading = {`Post Content - Related to ${text[number][1]}`}/>
             <Text text={text[number][2]}/>
             <Heading heading={"Post Review (Your input)"} />
-            <Survey post={number} showPrev={this.showPrev} showNext={this.showNext} numberOfPreviousElemnts={this.state.previosIndexList.length}/>
+            <Survey post={number} showPrev={this.showPrev} showNext={this.showNext} numberOfPreviousElemnts={this.state.previosIndexList.length} nextElementExistanse ={isNextElementExist}/>
           </div>
           </div>
     )

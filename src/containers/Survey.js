@@ -141,7 +141,7 @@ class Survey extends Component {
                                 <i aria-hidden='true' className='arrow left icon' />
                             </div>
                         </button>
-                        <button className='ui animated violet basic button'
+                        <button className= {this.props.nextElementExistanse ? 'ui animated violet basic button' : 'ui animated grey basic button'}
                             style={{margin: '30px'}}
                             onClick={(e) => this.props.showNext(post, e)}>
                             <div className='visible content'>Next Text</div>
