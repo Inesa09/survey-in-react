@@ -38,7 +38,6 @@ class Survey extends Component {
             e.preventDefault(); // <- prevent form submit from reloading the page
             this.props.showNext(post, e);
             /* Send the answers to Firebase */
-            this.props.showNext(post, e);
             fireDB.database().ref(`masterSheet/${post}`).update(this.state.answers);
             document.getElementById("form").reset(); // <- clear the input
             this.setState({answers: {}}); // <- clear the state
@@ -68,7 +67,7 @@ class Survey extends Component {
     }
 
     render() {
-        // for(let i=6; i <=629;i++)
+        // for(let i=3; i <=629;i++)
         // fireDB.database().ref(`masterSheet/${i}`).remove();
         const {questions, answers} = this.state;
         const {post, numberOfPreviousElemnts, nextElementExistanse, showNext, showPrev} = this.props;
@@ -159,7 +158,7 @@ class Survey extends Component {
                         'ui animated violet basic button' : 'ui grey basic button'}
                             style={{margin: '30px 50px'}}
                             onClick={nextElementExistanse ?
-                                (e) => showNext(post, e) : ''}>
+                                (e) => showNext(post, e) : (e) => {}}>
                             <div className='visible content'>Next Text</div>
                             <div className='hidden content'>
                                 <i aria-hidden='true' 

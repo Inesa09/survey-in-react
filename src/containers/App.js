@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
 import Text from '../components/Text';
+import Top from '../components/Top';
 import Survey from './Survey';
 import fireDB from '../fireDB';
 import Heading from '../components/Heading';
-
-import './App.css';
 
 class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = { 
-        post: undefined,
+        post: 0,
         text: [],
         previosIndexList :[],
-        show: true
+        show: 0
     }; // <- set up react state
   }
 
@@ -42,7 +41,6 @@ class App extends Component {
       this.scrollToTop();
     } else
       this.setState({post: undefined});
-
   }
 
   findNextUnsubmitedElement= (post) => {
@@ -67,7 +65,6 @@ class App extends Component {
   }
 
   render() {
-    console.log('render');
     const { post, text} = this.state;
     let number = this.findNextUnsubmitedElement(post);
     if(post != 0){
@@ -76,50 +73,50 @@ class App extends Component {
     let isNextElementExist = this.findNextUnsubmitedElement(number) != undefined;
 
 
-    if (post === undefined || post === 0) //All text submitted
+    if(text.length === 0)  //Loading
       return (
-        <div className="App" id='top'>
-          <header className="App-header">
-            <h1 className="App-title">Survey</h1>
-          </header>
-          <div className="App-content" style={{marginTop:'2%', padding:'20px'}}>
-            <div className='ui icon green massive message' >
-              <i aria-hidden='true' className='check icon' />
-              <div className='content'>
-                <div className='header'>Sorry</div>All of the texts are already reviewed.
-              </div>
+        <Top>
+          <div class='ui icon teal message'>
+            <i aria-hidden='true' class='circle notched loading icon' />
+            <div class='content'>
+              <div class='header'>Just one second</div>We are fetching that content for you.
             </div>
-            <button className = {this.state.previosIndexList.length > 0 ? 
-              'ui left animated violet basic massive button' : 'ui grey basic massive button'}
-                  style= {{margin: '30px 33%' }}
-                  onClick={this.showPrev}>
-                  <div className='visible content'> Previous Text</div>
-                  <div className='hidden content'>
-                      <i aria-hidden='true' 
-                      className={this.state.previosIndexList.length > 0 ? 'arrow left icon' : ''} />
-                  </div>
-              </button>
           </div>
-        </div>
+        </Top>
       )
-    else if(post != 0  && text.length != 0) //Main
+    else if (post === undefined || (post === 0 && number === undefined)) //All text submitted
       return (
-        <div className="App" id='top'>
-          <header className="App-header">
-            <h1 className="App-title">Survey</h1>
-          </header>
-          <div className="App-content">
-            <Heading heading = {`Post Content - Related to ${text[number][1]}`}/>
-            <Text text={text[number][2]}/>
-            <Heading heading={"Post Review (Your input)"} />
-            <Survey post={number} 
-             showPrev={this.showPrev} showNext={this.showNext}
-             numberOfPreviousElemnts={this.state.previosIndexList.length} 
-             nextElementExistanse ={isNextElementExist}/>
+        <Top>
+          <div className='ui icon green massive message' >
+            <i aria-hidden='true' className='check icon' />
+            <div className='content'>
+              <div className='header'>Sorry</div>All of the texts are already reviewed.
+            </div>
           </div>
-        </div>
+          <button className = {this.state.previosIndexList.length > 0 ? 
+            'ui left animated violet basic massive button' : 'ui grey basic massive button'}
+                style= {{margin: '30px 33%' }}
+                onClick={this.showPrev}>
+                <div className='visible content'> Previous Text</div>
+                <div className='hidden content'>
+                    <i aria-hidden='true' 
+                    className={this.state.previosIndexList.length > 0 ? 'arrow left icon' : ''} />
+                </div>
+          </button>
+        </Top>
       )
-    else return (<div> </div>) //Loading
+    else if(number !=undefined  && text.length != 0) //Main
+      return (
+        <Top>
+          <Heading heading = {`Post Content - Related to ${text[number][1]}`}/>
+          <Text text={text[number][2]}/>
+          <Heading heading={"Post Review (Your input)"} />
+          <Survey post={number} 
+            showPrev={this.showPrev} showNext={this.showNext}
+            numberOfPreviousElemnts={this.state.previosIndexList.length} 
+            nextElementExistanse ={isNextElementExist}/>
+        </Top>
+      )
   }
 }
 
