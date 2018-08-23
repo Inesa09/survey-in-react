@@ -16,19 +16,21 @@ class App extends Component {
         previosIndexList :[]
     }; // <- set up react state
 }
-  showPrev = (post) => {
+  showPrev = (e) => {
+    e.preventDefault();
     let temporaryList = this.state.previosIndexList;
     let previosElement = temporaryList.pop();
-    console.log("showPrev" + (post-1));
     this.setState({post : previosElement, previosIndexList : temporaryList});
+    this.scrollToTop();
   }
 
-  showNext = (post) => {
-    console.log("showNext" + (post+1));
+  showNext = (post, e) => {
+    e.preventDefault();
     let temporaryList = this.state.previosIndexList;
     let number = this.findNextUnsubmitedElement(post);
     if(number != undefined) temporaryList.push(this.state.post);
     this.setState({post : number, previosIndexList : temporaryList});
+    this.scrollToTop();
   }
   findNextUnsubmitedElement= (post) => {
     let list = this.state.previosIndexList;
@@ -43,6 +45,11 @@ class App extends Component {
       this.setState({text : snapshot.val()});
   }); 
     } 
+
+    scrollToTop = () => {
+      document.getElementById("form").reset(); 
+      document.getElementById('text').scrollIntoView(true);
+    }
   render() {
     const { post, text} = this.state;
     let number = this.findNextUnsubmitedElement(post);
@@ -50,13 +57,13 @@ class App extends Component {
       number = post;
       }
   return post != undefined && text.length != 0 ? (
-      <div className="App">
+      <div className="App" id='text'>
         <header className="App-header">
           <h1 className="App-title">Survey</h1>
         </header>
 
         <div className="App-content">
-          <Heading heading = {text[number][1]}/>
+          <Heading heading = {`Post Content - Related to ${text[number][1]}`}/>
           <Text text={text[number][2]}/>
           <Survey post={number} showPrev={this.showPrev} showNext={this.showNext} />
         </div>

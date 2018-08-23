@@ -53,18 +53,17 @@ class Survey extends Component {
             const current = document.getElementById(el);
             current.style.display = 'block';
             current.scrollIntoView(true);
-            setTimeout(this.hideEl, 3000, el);
+            setTimeout(this.hideEl, 2000, el);
         }
     }
 
     hideEl = (el) => {
-        const current = document.getElementById(el);
-        current.style.display = 'none';
+        document.getElementById(el).style.display = 'none';
+        document.getElementById('text').scrollIntoView(true);
     }
 
     submitBtnHover = (color) => {
-        const btn = document.getElementById('submitBtn');
-        btn.style.backgroundColor = color;
+        document.getElementById('submitBtn').style.backgroundColor = color;
     }
 
     render() {
@@ -140,7 +139,7 @@ class Survey extends Component {
                     <Flex>
                         <button className='ui left animated violet basic button'
                             style={{margin: '30px'}}
-                            onClick={() => this.props.showPrev(post)}>
+                            onClick={this.props.showPrev}>
                             <div className='visible content'> Previous Text</div>
                             <div className='hidden content'>
                                 <i aria-hidden='true' className='arrow left icon' />
@@ -148,7 +147,7 @@ class Survey extends Component {
                         </button>
                         <button className='ui animated violet basic button'
                             style={{margin: '30px'}}
-                            onClick={() => this.props.showNext(post)}>
+                            onClick={(e) => this.props.showNext(post, e)}>
                             <div className='visible content'>Next Text</div>
                             <div className='hidden content'>
                                 <i aria-hidden='true' className='arrow right icon' />

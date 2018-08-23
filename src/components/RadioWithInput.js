@@ -34,7 +34,7 @@ const RadioWithInput = ({question, tooltip='', answer, handleAnswer, value=''}) 
                         onChange={handleAnswer} 
                         placeholder='Type your answer'
                         value={
-                            value === answer ? '' : value     //to not show 'default' in the text input field
+                            value === answer ? '' : value
                         }
                         />
                     </div>
