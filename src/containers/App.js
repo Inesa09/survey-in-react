@@ -13,7 +13,8 @@ class App extends Component {
     this.state = { 
         post: 0,
         text: [],
-        previosIndexList :[]
+        previosIndexList :[],
+        show: true
     }; // <- set up react state
   }
 
@@ -32,10 +33,12 @@ class App extends Component {
     let temporaryList = this.state.previosIndexList;
     let number = this.findNextUnsubmitedElement(post);
     if(number != undefined) {
-    temporaryList.push(this.state.post);
-    this.setState({post : number, previosIndexList : temporaryList});
-    this.scrollToTop();
-    }
+      temporaryList.push(post);
+      this.setState({post : number, previosIndexList : temporaryList});
+      this.scrollToTop();
+    } else
+      this.setState({post: undefined});
+
   }
 
   findNextUnsubmitedElement= (post) => {
@@ -53,18 +56,24 @@ class App extends Component {
   } 
 
   scrollToTop = () => {
-    document.getElementById("form").reset(); 
-    document.getElementById('top').scrollIntoView(true);
+    try{
+      document.getElementById("form").reset(); 
+      document.getElementById('top').scrollIntoView(true);
+    } catch (err){ }
   }
 
   render() {
+    console.log('render');
     const { post, text} = this.state;
     let number = this.findNextUnsubmitedElement(post);
     if(post != 0){
       number = post;
     }
     let isNextElementExist = this.findNextUnsubmitedElement(number) != undefined;
-    return (post != undefined && text.length != 0 ? (
+
+
+    if (post != undefined && text.length != 0) 
+      return (
         <div className="App" id='top'>
           <header className="App-header">
             <h1 className="App-title">Survey</h1>
@@ -73,12 +82,40 @@ class App extends Component {
             <Heading heading = {`Post Content - Related to ${text[number][1]}`}/>
             <Text text={text[number][2]}/>
             <Heading heading={"Post Review (Your input)"} />
-            <Survey post={number} showPrev={this.showPrev} showNext={this.showNext} numberOfPreviousElemnts={this.state.previosIndexList.length} nextElementExistanse ={isNextElementExist}/>
+            <Survey post={number} 
+             showPrev={this.showPrev} showNext={this.showNext}
+             numberOfPreviousElemnts={this.state.previosIndexList.length} 
+             nextElementExistanse ={isNextElementExist}/>
           </div>
+        </div>
+      )
+    else if(post === undefined)
+      return (
+        <div className="App" id='top'>
+          <header className="App-header">
+            <h1 className="App-title">Survey</h1>
+          </header>
+          <div className="App-content" style={{marginTop:'2%'}}>
+            <div className='ui icon green massive message' style={{width:'640px', height:'150px', margin: '20px'}}>
+              <i aria-hidden='true' className='check icon' />
+              <div className='content'>
+                <div className='header'>Sorry</div>All of the texts are already reviewed.
+              </div>
+            </div>
+            <button className = {this.state.previosIndexList.length > 0 ? 
+              'ui left animated violet basic massive button' : 'ui grey basic massive button'}
+                  style= {{margin: '30px 220px' }}
+                  onClick={this.showPrev}>
+                  <div className='visible content'> Previous Text</div>
+                  <div className='hidden content'>
+                      <i aria-hidden='true' 
+                      className={this.state.previosIndexList.length > 0 ? 'arrow left icon' : ''} />
+                  </div>
+              </button>
           </div>
-    )
-      :
-      <div></div>)
+        </div>
+      )
+    else return (<div> </div>)
   }
 }
 

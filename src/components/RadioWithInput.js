@@ -16,7 +16,7 @@ const RadioWithInput = ({question, tooltip='', answer, handleAnswer, value=''}) 
                     answer={answer}
                 />
                 <div style={{display: 'flex', marginTop:'20px', flexWrap: 'wrap'}}>
-                    <label className="container">
+                    <label className="container" style={{fontSize: '18px'}}>
                         <input type="radio" 
                         name={question} 
                         id="radio"
@@ -26,7 +26,6 @@ const RadioWithInput = ({question, tooltip='', answer, handleAnswer, value=''}) 
                     </label>
                     <div className='ui small input'
                         style={{
-                        marginLeft: '20px',
                         marginTop: '-20px',
                     }}> 
                         <input type="text" id='input'
