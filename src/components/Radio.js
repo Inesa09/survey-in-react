@@ -9,10 +9,9 @@ const Radio = ({question, tooltip= '', handleOptionChange}) => {
             <div style={{
                 display: 'flex',
                 flexDirection: 'column',
-            }}>
+            }} key={i}>
                 <h3 style={{marginLeft: '6px'}}> {i} </h3>
                 <RadioBtn 
-                    key={i}
                     value={i}
                     onChange={handleOptionChange}
                     question={question}

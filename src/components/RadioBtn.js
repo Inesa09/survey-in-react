@@ -1,14 +1,14 @@
 import React from 'react';
 import './RadioBtn.css';
 
-const RadioBtn = ({value, onChange, question, answer=''}) => {
+const RadioBtn = ({value, question, answer='', onChange}) => {
 
     return (
         <label className="container">
             <input type="radio" 
             name={question}
             value={value}
-            onChange={onChange} 
+            onClick={onChange} 
             required />
             <span className="checkmark"></span>
             {answer}
