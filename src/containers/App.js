@@ -76,24 +76,7 @@ class App extends Component {
     let isNextElementExist = this.findNextUnsubmitedElement(number) != undefined;
 
 
-    if (post != undefined && text.length != 0) 
-      return (
-        <div className="App" id='top'>
-          <header className="App-header">
-            <h1 className="App-title">Survey</h1>
-          </header>
-          <div className="App-content">
-            <Heading heading = {`Post Content - Related to ${text[number][1]}`}/>
-            <Text text={text[number][2]}/>
-            <Heading heading={"Post Review (Your input)"} />
-            <Survey post={number} 
-             showPrev={this.showPrev} showNext={this.showNext}
-             numberOfPreviousElemnts={this.state.previosIndexList.length} 
-             nextElementExistanse ={isNextElementExist}/>
-          </div>
-        </div>
-      )
-    else if(post === undefined)
+    if (post === undefined || post === 0) //All text submitted
       return (
         <div className="App" id='top'>
           <header className="App-header">
@@ -119,7 +102,24 @@ class App extends Component {
           </div>
         </div>
       )
-    else return (<div> </div>)
+    else if(post != 0  && text.length != 0) //Main
+      return (
+        <div className="App" id='top'>
+          <header className="App-header">
+            <h1 className="App-title">Survey</h1>
+          </header>
+          <div className="App-content">
+            <Heading heading = {`Post Content - Related to ${text[number][1]}`}/>
+            <Text text={text[number][2]}/>
+            <Heading heading={"Post Review (Your input)"} />
+            <Survey post={number} 
+             showPrev={this.showPrev} showNext={this.showNext}
+             numberOfPreviousElemnts={this.state.previosIndexList.length} 
+             nextElementExistanse ={isNextElementExist}/>
+          </div>
+        </div>
+      )
+    else return (<div> </div>) //Loading
   }
 }
 
