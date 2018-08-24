@@ -175,10 +175,9 @@ class Survey extends Component {
                   className={numberOfPreviousElemnts > 0 ? 'arrow left icon' : ''} />
               </div>
             </button>
-            <button className={nextElementExistanse ?
-              'ui animated violet basic button' : 'ui grey basic button'}
+            <button className='ui animated violet basic button'
               style={{ margin: '30px 50px' }}
-              onClick={(e) => showNext(post, e)}>
+              onClick={(e) => { this.addAnswers(e, post) }}>
               <div className='visible content'>Next Text</div>
               <div className='hidden content'>
                 <i aria-hidden='true'
