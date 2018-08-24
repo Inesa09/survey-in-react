@@ -3,7 +3,7 @@ import RadioBtn from './RadioBtn';
 import Question from './Question';
 
 const Radio = ({question, tooltip= '', handleOptionChange}) => {
-    const btns = [];
+    let btns = [];
     for (let i = 1; i<=5; i++){
         btns.push(
             <div style={{

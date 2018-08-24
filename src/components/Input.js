@@ -1,16 +1,13 @@
 import React from 'react';
-import Question from './Question';
 import './Input.css';
 
-const Input = ({question, tooltip='', handleTextInput, value='', rows='1'}) => {
+const Input = ({number, handleTextInput, placeholder='', value=''}) => {
 
     return (
-        <div> 
-            <Question question={question} tooltip={tooltip}/>
-            <div className='field'>
-                <textarea onChange={handleTextInput} value={value}
-                placeholder='Type your answer' id='input' rows={rows} required />   
-            </div>
+        <div className='ui small input'>
+            <input type="text" id='input' value={value}
+            onChange={(e) => handleTextInput(number, e)} 
+            placeholder={placeholder}  required />   
         </div>
     )
    

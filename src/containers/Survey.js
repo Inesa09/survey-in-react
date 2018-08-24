@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import fireDB from '../fireDB';
 import Radio from '../components/Radio';
-import Input from '../components/Input';
+import TextArea from '../components/TextArea';
 import SmallMessage from '../components/SmallMessage';
 import RadioWithInput from '../components/RadioWithInput';
+import TriviaQuestion from '../components/TriviaQuestion';
 
 class Survey extends Component {
 
@@ -17,25 +18,26 @@ class Survey extends Component {
         'Trivia Question About it #1',
         'Trivia Question About it #2',
         'Free Notes'],
-      answers: {'5': "Summary"},
+      summary: 'Summary',
+      answers: {},
     }; // <- set up react state
   }
 
   handleAnswer = (question, e) => {
     let copy = this.state.answers;
-    copy[question + 2] = e.target.value;
+    copy[question] = e.target.value;
     this.setState({ answers: copy });
   }
 
   //Submit
   addAnswers = (e, post) => {
-    const { answers } = this.state;
+    const { answers, summary } = this.state;
     const { nextElementExistanse, showNext, toUndef } = this.props;
 
     var size = Object.keys(answers).length;
-    if (size !== 8){
+    if (size !== 14){
       document.getElementById("form").reset(); // <- clear the input
-      this.setState({ answers: {} }); // <- clear the state
+      this.setState({ answers: {'5': summary} }); // <- clear the state
       showNext(post, e);
     }
     else {
@@ -48,19 +50,17 @@ class Survey extends Component {
 
       fireDB.database().ref(`masterSheet/${post}`).update(answers);
       document.getElementById("form").reset(); // <- clear the input
-      this.setState({ answers: {} }); // <- clear the state
+      this.setState({ answers: {'5': summary} }); // <- clear the state
       this.showEl('success');
     }
   }
 
   //CSS methods
   showEl = (el) => {
-    if (document.getElementById('error').style.display === 'none') { //to avoid two messages when error in addMessage
       const current = document.getElementById(el);
       current.style.display = 'block';
       current.scrollIntoView(true);
       setTimeout(this.hideEl, 2000, el);
-    }
   }
 
   hideEl = (el) => {
@@ -70,107 +70,74 @@ class Survey extends Component {
     }
   }
 
-  submitBtnHover = (color) => {
-    document.getElementById('submitBtn').style.backgroundColor = color;
+  componentDidMount = () => {
+    this.setState({ answers: {'5': this.state.summary} });
   }
 
   render() {
+    // for (let i=3; i<=629; i++)
+    // fireDB.database().ref(`masterSheet/${i}`).remove();
     const { questions, answers } = this.state;
-    const { post, numberOfPreviousElemnts, nextElementExistanse, showNext, showPrev } = this.props;
+    const { post, numberOfPreviousElemnts, nextElementExistanse, showPrev } = this.props;
+
     return (
       <div className="Survey">
         <form id='form'>
           <Radio
             question={questions[1]}
-            handleOptionChange={(e) => this.handleAnswer(1, e)}
+            handleOptionChange={(e) => this.handleAnswer(3, e)}
           />
           <Radio
             question={questions[2]}
-            handleOptionChange={(e) => this.handleAnswer(2, e)}
+            handleOptionChange={(e) => this.handleAnswer(4, e)}
           />
-          <Input
+          <TextArea
             question={questions[3]}
-            handleTextInput={(e) => this.handleAnswer(3, e)}
+            handleTextInput={(e) => this.handleAnswer(5, e)}
             value={answers['5']}
             rows= {'10'}
           />
 
-          {/* <TriviaQuestion
+          <TriviaQuestion
             question={questions[4]}
-            answer={'Default'}
             tooltip={'answer is..'}
-            handleAnswer={(e) => this.handleAnswer(5, e)}
-            value={answers['7']}
+            numbers={[6, 7, 8, 9, 10]} 
+            handleTextInput={(e, number) => this.handleAnswer(number, e)}
+            value1={answers['6']}
+            value2={answers['7']}
+            value3={answers['8']}
+            value4={answers['9']}
+            value5={answers['10']}
           />
 
           <TriviaQuestion
             question={questions[5]}
-            answer={'Default'}
             tooltip={'answer is..'}
-            handleAnswer={(e) => this.handleAnswer(5, e)}
-            value={answers['7']}
-          /> */}
-
-          {/* <Input
-            question={questions[4]}
-            tooltip={'answer is..'}
-            handleTextInput={(e) => this.handleAnswer(4, e)}
-            value={answers['6']}
-          />
-          <RadioWithInput
-            question={questions[5]}
-            answer={'Default'}
-            tooltip={'answer is..'}
-            handleAnswer={(e) => this.handleAnswer(5, e)}
-            value={answers['7']}
+            numbers={[11, 12, 13, 14, 15]} 
+            handleTextInput={(e, number) => this.handleAnswer(number, e)}
+            value1={answers['11']}
+            value2={answers['12']}
+            value3={answers['13']}
+            value4={answers['14']}
+            value5={answers['15']}
           />
 
-          <Input
+          <TextArea
             question={questions[6]}
-            tooltip={'answer is..'}
-            handleTextInput={(e) => this.handleAnswer(6, e)}
-            value={answers['8']}
-          />
-          <RadioWithInput
-            question={questions[7]}
-            answer={'Default'}
-            tooltip={'answer is..'}
-            handleAnswer={(e) => this.handleAnswer(7, e)}
-            value={answers['9']}
-          /> */}
-
-          <Input
-            question={questions[6]}
-            handleTextInput={(e) => this.handleAnswer(8, e)}
-            value={answers['10']}
+            handleTextInput={(e) => this.handleAnswer(16, e)}
+            value={answers['16']}
             rows= {'5'}
           />
 
 
           <div style={{
             display: 'flex',
-            justifyContent: 'center',
-          }}>
-            <button className='ui big button' id='submitBtn'
-              style={{
-                backgroundColor: 'rgb(109, 97, 136)',
-                color: 'white',
-                marginTop: '20px',
-              }}
-              onClick={(e) => { this.addAnswers(e, post) }}
-              onMouseOver={() => this.submitBtnHover('rgb(58, 46, 87)')}
-              onMouseOut={() => this.submitBtnHover('rgb(109, 97, 136)')}>
-              Submit
-                        </button>
-          </div>
-
-          <div style={{
-            display: 'flex',
             justifyContent: 'space-between',
+            marginTop: '20px'
           }}>
             <button className={numberOfPreviousElemnts > 0 ?
               'ui left animated violet basic button' : 'ui grey basic button'}
-              style={{ margin: '30px 50px' }}
+              style={{ margin: '30px' }}
               onClick={showPrev}>
               <div className='visible content'> Previous Text</div>
               <div className='hidden content'>
@@ -179,12 +146,11 @@ class Survey extends Component {
               </div>
             </button>
             <button className='ui animated violet basic button'
-              style={{ margin: '30px 50px' }}
+              style={{ margin: '30px' }}
               onClick={(e) => { this.addAnswers(e, post) }}>
               <div className='visible content'>Next Text</div>
               <div className='hidden content'>
-                <i aria-hidden='true'
-                  className={nextElementExistanse > 0 ? 'arrow right icon' : ''} />
+                <i aria-hidden='true' className='arrow right icon' />
               </div>
             </button>
           </div>
@@ -192,8 +158,6 @@ class Survey extends Component {
 
           <SmallMessage name='success' text1='Form Completed'
             text2='You have saved your answers.' />
-          <SmallMessage name='error' text1='Action Forbidden'
-            text2='You have to answer on all questions.' />
         </form>
       </div>
     )

@@ -32,7 +32,6 @@ class App extends Component {
     e.preventDefault();
     let temporaryList = this.state.previosIndexList;
     let number = this.findNextUnsubmitedElement(post);
-    console.log(this.state.previosIndexList);
     if (number !== undefined) {
       temporaryList.push(post);
       this.setState({ post: number, previosIndexList: temporaryList });
@@ -42,7 +41,6 @@ class App extends Component {
 
   toUndef = (post, e) => {
     e.preventDefault();
-    console.log(this.state.previosIndexList);
     let temporaryList = this.state.previosIndexList;
     temporaryList.push(post);
     this.setState({ post: undefined, previosIndexList: temporaryList });
