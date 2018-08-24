@@ -26,13 +26,15 @@ const TriviaQuestion = ({numbers, question, tooltip='', handleTextInput, value1,
             />
             <div style={{
                 display:'flex', 
-                justifyContent:'flex-end', 
+                justifyContent:'flex-end',
                 marginTop: '20px',
-                marginRight:'35px'
+                marginRight:'35px',
+                marginLeft: '8px'
             }}>
                 <div style={{
                     display:'flex', 
                     flexDirection: 'column', 
+                    flexGrow: '1'
                 }}> {inputs} </div>
                 <div style={{
                     display:'flex', 
@@ -41,7 +43,7 @@ const TriviaQuestion = ({numbers, question, tooltip='', handleTextInput, value1,
                     justifyContent:'space-between',
                     height: '65px',
                     marginTop: '15px',
-                    marginLeft: '20px'
+                    marginLeft: '10px'
                 }}> {text} </div>
             </div>
         </div>

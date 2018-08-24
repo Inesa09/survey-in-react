@@ -4,7 +4,7 @@ import Question from './Question';
 
 const Radio = ({question, tooltip= '', handleOptionChange}) => {
     let btns = [];
-    for (let i = 1; i<=5; i++){
+    for (let i = 5; i>=1; i--){
         btns.push(
             <div style={{
                 display: 'flex',
