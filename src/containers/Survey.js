@@ -32,8 +32,11 @@ class Survey extends Component {
   //Submit
   addAnswers = (e, post) => {
     var size = Object.keys(this.state.answers).length;
-    if (size !== 8)
-      this.showEl('error');
+    if (size !== 8){
+      document.getElementById("form").reset(); // <- clear the input
+      this.setState({ answers: {} }); // <- clear the state
+      this.props.showNext(post, e);
+    }
     else {
       e.preventDefault(); // <- prevent form submit from reloading the page
 
@@ -158,10 +161,9 @@ class Survey extends Component {
                   className={numberOfPreviousElemnts > 0 ? 'arrow left icon' : ''} />
               </div>
             </button>
-            <button className={nextElementExistanse ?
-              'ui animated violet basic button' : 'ui grey basic button'}
+            <button className='ui animated violet basic button'
               style={{ margin: '30px 50px' }}
-              onClick={(e) => showNext(post, e)}>
+              onClick={(e) => { this.addAnswers(e, post) }}>
               <div className='visible content'>Next Text</div>
               <div className='hidden content'>
                 <i aria-hidden='true'
