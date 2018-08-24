@@ -33,8 +33,11 @@ class Survey extends Component {
     const { nextElementExistanse, showNext, toUndef } = this.props;
 
     var size = Object.keys(answers).length;
-    if (size !== 8)
-      this.showEl('error');
+    if (size !== 8){
+      document.getElementById("form").reset(); // <- clear the input
+      this.setState({ answers: {} }); // <- clear the state
+      showNext(post, e);
+    }
     else {
       e.preventDefault(); // <- prevent form submit from reloading the page
 
