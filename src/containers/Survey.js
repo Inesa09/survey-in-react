@@ -38,7 +38,10 @@ class Survey extends Component {
     if (size !== 14){
       document.getElementById("form").reset(); // <- clear the input
       this.setState({ answers: {'5': summary} }); // <- clear the state
-      showNext(post, e);
+      if (nextElementExistanse)
+        showNext(post, e);
+      else
+        toUndef(post, e);
     }
     else {
       e.preventDefault(); // <- prevent form submit from reloading the page
