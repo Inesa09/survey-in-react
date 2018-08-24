@@ -33,7 +33,7 @@ class App extends Component {
     let temporaryList = this.state.previosIndexList;
     let number = this.findNextUnsubmitedElement(post);
     console.log(this.state.previosIndexList);
-    if (number != undefined) {
+    if (number !== undefined) {
       temporaryList.push(post);
       this.setState({ post: number, previosIndexList: temporaryList });
       this.scrollToTop();
@@ -72,10 +72,10 @@ class App extends Component {
   render() {
     const { post, text } = this.state;
     let number = this.findNextUnsubmitedElement(post);
-    if (post != 0) {
+    if (post !== 0) {
       number = post;
     }
-    let isNextElementExist = this.findNextUnsubmitedElement(number) != undefined;
+    let isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
 
 
     if (text.length === 0)  //Loading
@@ -102,7 +102,7 @@ class App extends Component {
           </button>
         </Top>
       )
-    else if (number != undefined && text.length != 0) //Main
+    else if (number !== undefined && text.length !== 0) //Main
       return (
         <Top>
           <Heading heading={`Post Content - Related to ${text[number][1]}`} />

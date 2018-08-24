@@ -7,14 +7,14 @@ const RadioWithInput = ({question, tooltip='', answer, handleAnswer, value=''}) 
 
     return (
         <div>
-            <Question question={question} tooltip={tooltip}/>
+            {/* <Question question={question} tooltip={tooltip}/> */}
             <div style={{marginTop: '20px', marginLeft: '35px'}}>
-                <RadioBtn
+                {/* <RadioBtn
                     value={answer}
                     onChange={handleAnswer}
                     question={question}
                     answer={answer}
-                />
+                /> */}
                 <div style={{display: 'flex', marginTop:'20px', flexWrap: 'wrap'}}>
                     <label className="container" style={{fontSize: '18px'}}>
                         <input type="radio" 

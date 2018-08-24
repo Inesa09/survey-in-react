@@ -15,11 +15,9 @@ class Survey extends Component {
         'How interesting is the post?',
         'Summary of the post',
         'Trivia Question About it #1',
-        'Trivia Question About it #1',
-        'Trivia Question About it #2',
         'Trivia Question About it #2',
         'Free Notes'],
-      answers: {},
+      answers: {'5': "Summary"},
     }; // <- set up react state
   }
 
@@ -31,18 +29,21 @@ class Survey extends Component {
 
   //Submit
   addAnswers = (e, post) => {
-    var size = Object.keys(this.state.answers).length;
+    const { answers } = this.state;
+    const { nextElementExistanse, showNext, toUndef } = this.props;
+
+    var size = Object.keys(answers).length;
     if (size !== 8)
       this.showEl('error');
     else {
       e.preventDefault(); // <- prevent form submit from reloading the page
 
-      if (this.props.nextElementExistanse)
-        this.props.showNext(post, e);
+      if (nextElementExistanse)
+        showNext(post, e);
       else
-        this.props.toUndef(post, e);
+        toUndef(post, e);
 
-      fireDB.database().ref(`masterSheet/${post}`).update(this.state.answers);
+      fireDB.database().ref(`masterSheet/${post}`).update(answers);
       document.getElementById("form").reset(); // <- clear the input
       this.setState({ answers: {} }); // <- clear the state
       this.showEl('success');
@@ -71,8 +72,6 @@ class Survey extends Component {
   }
 
   render() {
-    // for(let i=3; i <=629;i++)
-    // fireDB.database().ref(`masterSheet/${i}`).remove();
     const { questions, answers } = this.state;
     const { post, numberOfPreviousElemnts, nextElementExistanse, showNext, showPrev } = this.props;
     return (
@@ -90,9 +89,26 @@ class Survey extends Component {
             question={questions[3]}
             handleTextInput={(e) => this.handleAnswer(3, e)}
             value={answers['5']}
+            rows= {'10'}
           />
 
-          <Input
+          {/* <TriviaQuestion
+            question={questions[4]}
+            answer={'Default'}
+            tooltip={'answer is..'}
+            handleAnswer={(e) => this.handleAnswer(5, e)}
+            value={answers['7']}
+          />
+
+          <TriviaQuestion
+            question={questions[5]}
+            answer={'Default'}
+            tooltip={'answer is..'}
+            handleAnswer={(e) => this.handleAnswer(5, e)}
+            value={answers['7']}
+          /> */}
+
+          {/* <Input
             question={questions[4]}
             tooltip={'answer is..'}
             handleTextInput={(e) => this.handleAnswer(4, e)}
@@ -118,12 +134,13 @@ class Survey extends Component {
             tooltip={'answer is..'}
             handleAnswer={(e) => this.handleAnswer(7, e)}
             value={answers['9']}
-          />
+          /> */}
 
           <Input
-            question={questions[8]}
+            question={questions[6]}
             handleTextInput={(e) => this.handleAnswer(8, e)}
             value={answers['10']}
+            rows= {'5'}
           />
 
 
