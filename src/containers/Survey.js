@@ -20,6 +20,7 @@ class Survey extends Component {
         'Free Notes'],
       summary: 'Summary',
       answers: {},
+      listWithPreviosAnswers:[]
     }; // <- set up react state
   }
 
@@ -35,6 +36,9 @@ class Survey extends Component {
     const { nextElementExistanse, showNext, toUndef } = this.props;
 
     var size = Object.keys(answers).length;
+    let temporaryList = this.state.listWithPreviosAnswers;
+    temporaryList.push(answers);
+    this.setState({ listWithPreviosAnswers: temporaryList });
     if (size !== 14){
       document.getElementById("form").reset(); // <- clear the input
       this.setState({ answers: {'5': summary} }); // <- clear the state
