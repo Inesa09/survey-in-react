@@ -103,14 +103,15 @@ class App extends Component {
     else if (number !== undefined && text.length !== 0) //Main
       return (
         <Top>
-          <Heading heading={`Post Content - Related to ${text[number][1]}`} />
+          <Heading heading={`תוכן - בהקשר ל ${text[number][1]}`} />
           <Text text={text[number][2]} />
-          <Heading heading={"Post Review (Your input)"} />
+          <Heading heading={"שדות למילוי"} />
           <Survey post={number}
             showPrev={this.showPrev} showNext={this.showNext}
             numberOfPreviousElemnts={this.state.previosIndexList.length}
             nextElementExistanse={isNextElementExist}
-            toUndef={this.toUndef} />
+            toUndef={this.toUndef}
+            text={text[number][2]} />
         </Top>
       )
   }

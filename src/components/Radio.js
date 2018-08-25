@@ -28,7 +28,7 @@ const Radio = ({question, tooltip= '', handleOptionChange}) => {
                 justifyContent: 'space-around',
                 width: '60%',
                 marginLeft: '20%',
-                marginTop: '50px',
+                marginTop: '30px',
                 marginBottom: '30px',
             }}> {btns} </div>
         </div>

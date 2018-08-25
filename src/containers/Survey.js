@@ -12,13 +12,13 @@ class Survey extends Component {
     super(props);
     this.state = {
       questions: ['empty',
-        'How relevant is the post to the place?',
-        'How interesting is the post?',
-        'Summary of the post',
-        'Trivia Question About it #1',
-        'Trivia Question About it #2',
-        'Free Notes'],
-      summary: 'Summary',
+        'עד כמה התוכן רלוונטי למקום?',
+        'עד כמה התוכן מעניין?',
+        'תקציר התוכן',
+        '#1 שאלת טריוויה',
+        '#2 שאלת טריוויה',
+        'הערות'],
+      summary: this.props.text,
       answers: {},
     }; // <- set up react state
   }
@@ -81,7 +81,7 @@ class Survey extends Component {
     // for (let i=3; i<=629; i++)
     // fireDB.database().ref(`masterSheet/${i}`).remove();
     const { questions, answers } = this.state;
-    const { post, numberOfPreviousElemnts, nextElementExistanse, showPrev } = this.props;
+    const { post, numberOfPreviousElemnts, showPrev } = this.props;
 
     return (
       <div className="Survey">
@@ -142,7 +142,7 @@ class Survey extends Component {
               'ui left animated violet basic button' : 'ui grey basic button'}
               style={{ margin: '30px' }}
               onClick={showPrev}>
-              <div className='visible content'> Previous Text</div>
+              <div className='visible content'> הקודם</div>
               <div className='hidden content'>
                 <i aria-hidden='true'
                   className={numberOfPreviousElemnts > 0 ? 'arrow left icon' : ''} />
@@ -151,7 +151,7 @@ class Survey extends Component {
             <button className='ui animated violet basic button'
               style={{ margin: '30px' }}
               onClick={(e) => { this.addAnswers(e, post) }}>
-              <div className='visible content'>Next Text</div>
+              <div className='visible content'>הבא</div>
               <div className='hidden content'>
                 <i aria-hidden='true' className='arrow right icon' />
               </div>

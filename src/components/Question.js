@@ -1,10 +1,9 @@
 import React from 'react';
 import './Question.css';
-const Question = ({question, tooltip=''}) =>{
+const Question = ({question}) =>{
     return (
         <div>
             <h1 className='h1Teg'> {question} </h1>
-            <p className='pTeg'> {tooltip} </p>
         </div>
     )
 }

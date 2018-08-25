@@ -15,7 +15,7 @@ const TriviaQuestion = ({numbers, question, tooltip='', handleTextInput, value1,
             placeholder='Type the wrong answer...' value={value5}/>
     ];
 
-    let text = [<div key={1}>Correct answer:</div>, <div key={2}>Wrong answers:</div>];
+    let text = [<div key={1}>תשובה נכונה:</div>, <div key={2}>תשובות לא נכונות:</div>];
 
     return (
         <div style={{marginTop: '20px'}}> 
