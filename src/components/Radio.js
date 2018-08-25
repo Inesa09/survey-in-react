@@ -2,7 +2,7 @@ import React from 'react';
 import RadioBtn from './RadioBtn';
 import Question from './Question';
 
-const Radio = ({question, tooltip= '', handleOptionChange}) => {
+const Radio = ({question, handleOptionChange, answer}) => {
     let btns = [];
     for (let i = 5; i>=1; i--){
         btns.push(
@@ -15,13 +15,14 @@ const Radio = ({question, tooltip= '', handleOptionChange}) => {
                     value={i}
                     onChange={handleOptionChange}
                     question={question}
+                    answer={answer}
                 />
             </div>)
     }
 
     return (
         <div>
-            <Question question={question} tooltip={tooltip}/>
+            <Question question={question}/>
             <div style={{
                 display:'flex', 
                 flexDirection: 'row', 

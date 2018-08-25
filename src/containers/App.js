@@ -14,7 +14,6 @@ class App extends Component {
       post: 0,
       text: [],
       previosIndexList: [],
-      show: 0
     }; // <- set up react state
   }
 
@@ -39,6 +38,12 @@ class App extends Component {
     }
   }
 
+  scrollToTop = () => {
+    try {
+      document.getElementById('top').scrollIntoView(true);
+    } catch (err) { }
+  }
+
   toUndef = (post, e) => {
     e.preventDefault();
     let temporaryList = this.state.previosIndexList;
@@ -54,13 +59,6 @@ class App extends Component {
     }
   }
 
-  scrollToTop = () => {
-    try {
-      document.getElementById("form").reset();
-      document.getElementById('top').scrollIntoView(true);
-    } catch (err) { }
-  }
-
   componentDidMount() {
     fireDB.database().ref('masterSheet/').on('value', snapshot => {
       this.setState({ text: snapshot.val() });
@@ -68,34 +66,33 @@ class App extends Component {
   }
 
   render() {
-    const { post, text } = this.state;
+    const { post, text, previosIndexList } = this.state;
     let number = this.findNextUnsubmitedElement(post);
     if (post !== 0) {
       number = post;
     }
     let isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
 
-
     if (text.length === 0)  //Loading
       return (
         <Top>
           <Message color='teal' icon='circle notched loading icon'
-            text1='Just one second' text2='We are fetching that content for you.' />
+            text1='רק שניה' text2='מביאים לכם את התוכן' />
         </Top>
       )
     else if (post === undefined || (post === 0 && number === undefined)) //All text submitted
       return (
         <Top>
           <Message color='green' icon='check icon'
-            text1='Sorry' text2='All of the texts are already reviewed.' />
-          <button className={this.state.previosIndexList.length > 0 ?
+            text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
+          <button className={previosIndexList.length > 0 ?
             'ui left animated violet basic massive button' : 'ui grey basic massive button'}
             style={{ margin: '30px 33%' }}
             onClick={this.showPrev}>
             <div className='visible content'> Previous Text</div>
             <div className='hidden content'>
               <i aria-hidden='true'
-                className={this.state.previosIndexList.length > 0 ? 'arrow left icon' : ''} />
+                className={previosIndexList.length > 0 ? 'arrow left icon' : ''} />
             </div>
           </button>
         </Top>
@@ -108,7 +105,7 @@ class App extends Component {
           <Heading heading={"שדות למילוי"} />
           <Survey post={number}
             showPrev={this.showPrev} showNext={this.showNext}
-            numberOfPreviousElemnts={this.state.previosIndexList.length}
+            numberOfPreviousElemnts={previosIndexList.length}
             nextElementExistanse={isNextElementExist}
             toUndef={this.toUndef}
             text={text[number][2]} />

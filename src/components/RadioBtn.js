@@ -1,7 +1,7 @@
 import React from 'react';
 import './RadioBtn.css';
 
-const RadioBtn = ({value, question, answer='', onChange}) => {
+const RadioBtn = ({value, question, onChange, answer}) => {
 
     return (
         <label className="container" style={{fontSize: '18px'}}>
@@ -9,9 +9,10 @@ const RadioBtn = ({value, question, answer='', onChange}) => {
             name={question}
             value={value}
             onClick={onChange} 
+            onChange={onChange}
+            checked={String(answer) === String(value)}
             required />
             <span className="checkmark"></span>
-            {answer}
         </label>
     )
 }

@@ -3,7 +3,6 @@ import fireDB from '../fireDB';
 import Radio from '../components/Radio';
 import TextArea from '../components/TextArea';
 import SmallMessage from '../components/SmallMessage';
-import RadioWithInput from '../components/RadioWithInput';
 import TriviaQuestion from '../components/TriviaQuestion';
 
 class Survey extends Component {
@@ -18,12 +17,13 @@ class Survey extends Component {
         '#1 שאלת טריוויה',
         '#2 שאלת טריוויה',
         'הערות'],
-      summary: this.props.text,
       answers: {},
-      listWithPreviosAnswers:[]
+      listWithPreviosAnswers:[],
+      changed: false,
     }; // <- set up react state
   }
 
+  //Save answer in the state
   handleAnswer = (question, e) => {
     let copy = this.state.answers;
     copy[question] = e.target.value;
@@ -32,34 +32,42 @@ class Survey extends Component {
 
   //Submit
   addAnswers = (e, post) => {
-    const { answers, summary } = this.state;
+    const { answers } = this.state;
     const { nextElementExistanse, showNext, toUndef } = this.props;
 
-    var size = Object.keys(answers).length;
+    e.preventDefault(); // <- prevent form submit from reloading the page
     let temporaryList = this.state.listWithPreviosAnswers;
     temporaryList.push(answers);
     this.setState({ listWithPreviosAnswers: temporaryList });
-    if (size !== 14){
-      document.getElementById("form").reset(); // <- clear the input
-      this.setState({ answers: {'5': summary} }); // <- clear the state
-      if (nextElementExistanse)
-        showNext(post, e);
-      else
-        toUndef(post, e);
-    }
-    else {
-      e.preventDefault(); // <- prevent form submit from reloading the page
 
-      if (nextElementExistanse)
-        showNext(post, e);
-      else
-        toUndef(post, e);
+    document.getElementById("form").reset(); // <- clear the input
+    if (nextElementExistanse)
+      showNext(post, e);
+    else
+      toUndef(post, e);
 
-      fireDB.database().ref(`masterSheet/${post}`).update(answers);
-      document.getElementById("form").reset(); // <- clear the input
-      this.setState({ answers: {'5': summary} }); // <- clear the state
+    var size = Object.keys(answers).length;
+    if (size === 14){
+      fireDB.database().ref(`masterSheet/${post}`).update(answers); // <- send to db
       this.showEl('success');
     }
+    this.setStateofSummary(); // <- clear the state
+    this.setState( {changed: true});
+  }
+
+  //Show previous answers
+  showPrev = (e) => {
+    e.preventDefault();
+    let temporaryList = this.state.listWithPreviosAnswers;
+    if (temporaryList.length > 0) {
+      let previosAnswers = temporaryList.pop();
+      this.setState({ answers: previosAnswers, listWithPreviosAnswers: temporaryList });
+    }
+    this.props.showPrev(e);
+  }
+
+  setStateofSummary = () => {
+    this.setState({ answers: {'5': this.props.text} });
   }
 
   //CSS methods
@@ -68,8 +76,8 @@ class Survey extends Component {
       current.style.display = 'block';
       current.scrollIntoView(true);
       setTimeout(this.hideEl, 2000, el);
-  }
 
+  }
   hideEl = (el) => {
     try {
       document.getElementById(el).style.display = 'none';
@@ -77,15 +85,20 @@ class Survey extends Component {
     }
   }
 
+
   componentDidMount = () => {
-    this.setState({ answers: {'5': this.state.summary} });
+    this.setStateofSummary();
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if (state.changed)
+      return {answers: { '5': props.text }, changed: false};
+    return null;
   }
 
   render() {
-    // for (let i=3; i<=629; i++)
-    // fireDB.database().ref(`masterSheet/${i}`).remove();
     const { questions, answers } = this.state;
-    const { post, numberOfPreviousElemnts, showPrev } = this.props;
+    const { post, numberOfPreviousElemnts } = this.props;
 
     return (
       <div className="Survey">
@@ -93,10 +106,12 @@ class Survey extends Component {
           <Radio
             question={questions[1]}
             handleOptionChange={(e) => this.handleAnswer(3, e)}
+            answer={answers['3']}
           />
           <Radio
             question={questions[2]}
             handleOptionChange={(e) => this.handleAnswer(4, e)}
+            answer={answers['4']}
           />
           <TextArea
             question={questions[3]}
@@ -145,7 +160,7 @@ class Survey extends Component {
             <button className={numberOfPreviousElemnts > 0 ?
               'ui left animated violet basic button' : 'ui grey basic button'}
               style={{ margin: '30px' }}
-              onClick={showPrev}>
+              onClick={this.showPrev}>
               <div className='visible content'> הקודם</div>
               <div className='hidden content'>
                 <i aria-hidden='true'
@@ -163,8 +178,8 @@ class Survey extends Component {
           </div>
 
 
-          <SmallMessage name='success' text1='Form Completed'
-            text2='You have saved your answers.' />
+          <SmallMessage name='success' text1='הטופס הושלם'
+            text2='התשובות נשמרו' />
         </form>
       </div>
     )

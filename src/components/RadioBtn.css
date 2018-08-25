@@ -55,7 +55,7 @@
 }
 
 /* Create the indicator (the dot/circle - hidden when not checked) */
-.checkmark:after {
+.container input ~ .checkmark:after {
     content: "";
     position: absolute;
     display: none;
