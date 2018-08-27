@@ -39,7 +39,6 @@ class Survey extends Component {
     let temporaryList = this.state.listWithPreviosAnswers;
     temporaryList.push(answers);
     this.setState({ listWithPreviosAnswers: temporaryList });
-
     document.getElementById("form").reset(); // <- clear the input
     if (nextElementExistanse)
       showNext(post, e);
@@ -59,7 +58,7 @@ class Survey extends Component {
   showPrev = (e) => {
     e.preventDefault();
     let temporaryList = this.state.listWithPreviosAnswers;
-    if (temporaryList.length > 0) {
+      if (temporaryList.length > 0) {
       let previosAnswers = temporaryList.pop();
       this.setState({ answers: previosAnswers, listWithPreviosAnswers: temporaryList });
     }
