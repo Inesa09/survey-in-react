@@ -85,7 +85,11 @@ class App extends Component {
         <Top>
           <Message color='green' icon='check icon'
             text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
-          <button className={previosIndexList.length > 0 ?
+          <Survey 
+            showPrev={this.showPrev} 
+            numberOfPreviousElemnts={previosIndexList.length}
+            submitted={true} />
+          {/* <button className={previosIndexList.length > 0 ?
             'ui left animated violet basic massive button' : 'ui grey basic massive button'}
             style={{ margin: '30px 33%' }}
             onClick={this.showPrev}>
@@ -94,7 +98,7 @@ class App extends Component {
               <i aria-hidden='true'
                 className={previosIndexList.length > 0 ? 'arrow left icon' : ''} />
             </div>
-          </button>
+          </button> */}
         </Top>
       )
     else if (number !== undefined && text.length !== 0) //Main
@@ -108,7 +112,8 @@ class App extends Component {
             numberOfPreviousElemnts={previosIndexList.length}
             nextElementExistanse={isNextElementExist}
             toUndef={this.toUndef}
-            text={text[number][2]} />
+            text={text[number][2]}
+            submitted={false} />
         </Top>
       )
   }

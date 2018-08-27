@@ -39,6 +39,9 @@ class Survey extends Component {
     let temporaryList = this.state.listWithPreviosAnswers;
     temporaryList.push(answers);
     this.setState({ listWithPreviosAnswers: temporaryList });
+    console.log("add aswers state ");
+    console.log(this.state.answers);
+
 
     document.getElementById("form").reset(); // <- clear the input
     if (nextElementExistanse)
@@ -47,8 +50,10 @@ class Survey extends Component {
       toUndef(post, e);
 
     var size = Object.keys(answers).length;
-    if (size === 14){
-      fireDB.database().ref(`masterSheet/${post}`).update(answers); // <- send to db
+    if (size > 1){
+      let copy = this.state.answers;
+      copy['21'] = new Date().toLocaleString("en-US");
+      fireDB.database().ref(`masterSheet/${post}`).update(copy); // <- send to db
       this.showEl('success');
     }
     this.setStateofSummary(); // <- clear the state
@@ -59,11 +64,14 @@ class Survey extends Component {
   showPrev = (e) => {
     e.preventDefault();
     let temporaryList = this.state.listWithPreviosAnswers;
+    console.log("show prev state ");
+    console.log(this.state.listWithPreviosAnswers);
     if (temporaryList.length > 0) {
       let previosAnswers = temporaryList.pop();
       this.setState({ answers: previosAnswers, listWithPreviosAnswers: temporaryList });
     }
     this.props.showPrev(e);
+    // this.setState( {changed: true});
   }
 
   setStateofSummary = () => {
@@ -91,17 +99,35 @@ class Survey extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (state.changed)
+    if (state.changed){
+      console.log("before render");
       return {answers: { '5': props.text }, changed: false};
+    }
+    console.log("before render--not changed");
+    console.log(state.answers);
     return null;
   }
 
   render() {
+    // for(let i = 5; i<=629; i++)
+    //   fireDB.database().ref(`masterSheet/${i}`).remove(); // <- send to db
     const { questions, answers } = this.state;
-    const { post, numberOfPreviousElemnts } = this.props;
+    const { post, numberOfPreviousElemnts, submitted } = this.props;
 
-    return (
-      <div className="Survey">
+    // console.log(this.state.answers);
+    return submitted ? 
+      (<button className={numberOfPreviousElemnts > 0 ?
+        'ui left animated violet basic massive button' : 'ui grey basic massive button'}
+        style={{ margin: '30px 33%' }}
+        onClick={this.showPrev}>
+        <div className='visible content'> Previous Text</div>
+        <div className='hidden content'>
+          <i aria-hidden='true'
+            className={numberOfPreviousElemnts > 0 ? 'arrow left icon' : ''} />
+        </div>
+      </button>)
+    :
+    (<div className="Survey">
         <form id='form'>
           <Radio
             question={questions[1]}
@@ -181,8 +207,7 @@ class Survey extends Component {
           <SmallMessage name='success' text1='הטופס הושלם'
             text2='התשובות נשמרו' />
         </form>
-      </div>
-    )
+      </div>)
   }
 }
 
