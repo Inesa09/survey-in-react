@@ -53,7 +53,7 @@ class App extends Component {
 
   findNextUnsubmitedElement = (post) => {
     for (let i = post + 1, size = Object.values(this.state.text).length; i < size; i++) {
-      if (this.state.text[i][3].length === 0) {
+      if (this.state.text[i][21].length === 0) {
         return i;
       }
     }
@@ -72,7 +72,6 @@ class App extends Component {
       number = post;
     }
     let isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
-
     if (text.length === 0)  //Loading
       return (
         <Top>
