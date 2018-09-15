@@ -72,6 +72,7 @@ class App extends Component {
       number = post;
     }
     let isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
+  
     if (text.length === 0)  //Loading
       return (
         <Top>
