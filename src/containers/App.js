@@ -88,17 +88,8 @@ class App extends Component {
           <Survey 
             showPrev={this.showPrev} 
             numberOfPreviousElemnts={previosIndexList.length}
-            submitted={true} />
-          {/* <button className={previosIndexList.length > 0 ?
-            'ui left animated violet basic massive button' : 'ui grey basic massive button'}
-            style={{ margin: '30px 33%' }}
-            onClick={this.showPrev}>
-            <div className='visible content'> Previous Text</div>
-            <div className='hidden content'>
-              <i aria-hidden='true'
-                className={previosIndexList.length > 0 ? 'arrow left icon' : ''} />
-            </div>
-          </button> */}
+            submitted={true}
+             />
         </Top>
       )
     else if (number !== undefined && text.length !== 0) //Main
@@ -113,7 +104,8 @@ class App extends Component {
             nextElementExistanse={isNextElementExist}
             toUndef={this.toUndef}
             text={text[number][2]}
-            submitted={false} />
+            submitted={false}
+             />
         </Top>
       )
   }

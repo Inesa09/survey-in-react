@@ -8,6 +8,7 @@ import TriviaQuestion from '../components/TriviaQuestion';
 class Survey extends Component {
 
   constructor(props) {
+    console.log("constructor");
     super(props);
     this.state = {
       questions: ['empty',
@@ -33,29 +34,33 @@ class Survey extends Component {
   //Submit
   addAnswers = (e, post) => {
     const { answers } = this.state;
-    const { nextElementExistanse, showNext, toUndef } = this.props;
+    const { nextElementExistanse, showNext, toUndef, text } = this.props;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
     let temporaryList = this.state.listWithPreviosAnswers;
     temporaryList.push(answers);
     this.setState({ listWithPreviosAnswers: temporaryList });
-    console.log("add aswers state ");
-    console.log(this.state.answers);
+    this.props.listWithPreviosAnswers = this.state.listWithPreviosAnswers;
+
+    console.log("previous answers NEXT");
+    console.log(this.state.listWithPreviosAnswers);
 
 
     document.getElementById("form").reset(); // <- clear the input
     if (nextElementExistanse)
       showNext(post, e);
-    else
+    else {
       toUndef(post, e);
+    }
 
     var size = Object.keys(answers).length;
-    if (size > 1){
+    if (size > 1 || answers['5'] !== text){
       let copy = this.state.answers;
       copy['21'] = new Date().toLocaleString("en-US");
       fireDB.database().ref(`masterSheet/${post}`).update(copy); // <- send to db
       this.showEl('success');
     }
+    
     this.setStateofSummary(); // <- clear the state
     this.setState( {changed: true});
   }
@@ -63,69 +68,70 @@ class Survey extends Component {
   //Show previous answers
   showPrev = (e) => {
     e.preventDefault();
-    let temporaryList = this.state.listWithPreviosAnswers;
-    console.log("show prev state ");
+    this.props.showPrev(e);
+    console.log("previous answers PREV");
     console.log(this.state.listWithPreviosAnswers);
+    let temporaryList = this.state.listWithPreviosAnswers;
     if (temporaryList.length > 0) {
       let previosAnswers = temporaryList.pop();
       this.setState({ answers: previosAnswers, listWithPreviosAnswers: temporaryList });
+    } else {
+      this.setState( {changed: true});
     }
-    this.props.showPrev(e);
-    // this.setState( {changed: true});
-  }
-
-  setStateofSummary = () => {
-    this.setState({ answers: {'5': this.props.text} });
   }
 
   //CSS methods
   showEl = (el) => {
       const current = document.getElementById(el);
-      current.style.display = 'block';
-      current.scrollIntoView(true);
-      setTimeout(this.hideEl, 2000, el);
+      if(current.style.display === 'none'){
+        current.style.display = 'block';
+        current.scrollIntoView(true);
+        setTimeout(this.hideEl, 1000, el);
+      }
 
   }
   hideEl = (el) => {
     try {
       document.getElementById(el).style.display = 'none';
+      document.getElementById('top').scrollIntoView(true);
     } catch (err) {
     }
   }
 
-
+  setStateofSummary = () => {
+    this.setState({ answers: {'5': this.props.text} });
+  }
+  
   componentDidMount = () => {
     this.setStateofSummary();
   }
 
   static getDerivedStateFromProps(props, state) {
     if (state.changed){
-      console.log("before render");
+      console.log("changed - true");
       return {answers: { '5': props.text }, changed: false};
     }
-    console.log("before render--not changed");
-    console.log(state.answers);
+    console.log("changed - false");
     return null;
   }
 
   render() {
-    // for(let i = 5; i<=629; i++)
-    //   fireDB.database().ref(`masterSheet/${i}`).remove(); // <- send to db
+//     for(let i=5; i<628; i++)
+// fireDB.database().ref(`masterSheet/${i}`).remove(); // <- send to db
     const { questions, answers } = this.state;
     const { post, numberOfPreviousElemnts, submitted } = this.props;
 
-    // console.log(this.state.answers);
-    return submitted ? 
-      (<button className={numberOfPreviousElemnts > 0 ?
-        'ui left animated violet basic massive button' : 'ui grey basic massive button'}
-        style={{ margin: '30px 33%' }}
-        onClick={this.showPrev}>
-        <div className='visible content'> Previous Text</div>
-        <div className='hidden content'>
-          <i aria-hidden='true'
-            className={numberOfPreviousElemnts > 0 ? 'arrow left icon' : ''} />
-        </div>
-      </button>)
+    return submitted ?
+    (<button className={numberOfPreviousElemnts > 0 ?
+      'ui left animated violet basic button' : 'ui grey basic button'}
+      style={{ margin: '30px 33%' }}
+      onClick={this.showPrev}>
+      <div className='visible content'> הקודם</div>
+      <div className='hidden content'>
+        <i aria-hidden='true'
+          className={numberOfPreviousElemnts > 0 ? 'arrow left icon' : ''} />
+      </div>
+    </button>)
     :
     (<div className="Survey">
         <form id='form'>
