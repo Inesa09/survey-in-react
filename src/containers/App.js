@@ -6,6 +6,8 @@ import fireDB from '../fireDB';
 import Heading from '../components/Heading';
 import Message from '../components/Message';
 
+import '../css/Hidden.css';
+
 class App extends Component {
 
   constructor(props) {
@@ -67,6 +69,8 @@ class App extends Component {
 
   render() {
     const { post, text, previosIndexList } = this.state;
+    let submitted = false;
+    let hideMessage, hideDiv;
     let number = this.findNextUnsubmitedElement(post);
     if (post !== 0) {
       number = post;
@@ -80,34 +84,37 @@ class App extends Component {
             text1='רק שניה' text2='מביאים לכם את התוכן' />
         </Top>
       )
-    else if (post === undefined || (post === 0 && number === undefined)) //All text submitted
-      return (
-        <Top>
-          <Message color='green' icon='check icon'
-            text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
-          <Survey 
-            showPrev={this.showPrev} 
-            numberOfPreviousElemnts={previosIndexList.length}
-            submitted={true}
-             />
-        </Top>
-      )
-    else if (number !== undefined && text.length !== 0) //Main
-      return (
-        <Top>
-          <Heading heading={`תוכן - בהקשר ל ${text[number][1]}`} />
-          <Text text={text[number][2]} heading={text[number][1]} />
+    else if (post === undefined || (post === 0 && number === undefined)){ //All text submitted
+      submitted = true;
+      hideMessage = false;
+      hideDiv = true;
+    } else { //Main
+      hideMessage = true;
+      hideDiv = false;
+    }
+    
+
+    return (
+      <Top>
+        <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
+          text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
+        <div className={hideDiv ? 'hidden' : ''}>
+          <Heading heading={hideDiv ? '' : `תוכן - בהקשר ל ${text[number][1]}`} />
+          <Text text={hideDiv ? '' : text[number][2]} heading={hideDiv ? '' : text[number][1]} />
           <Heading heading={"שדות למילוי"} />
-          <Survey post={number}
-            showPrev={this.showPrev} showNext={this.showNext}
-            numberOfPreviousElemnts={previosIndexList.length}
-            nextElementExistanse={isNextElementExist}
-            toUndef={this.toUndef}
-            text={text[number][2]}
-            submitted={false}
-             />
-        </Top>
-      )
+        </div>
+
+        <Survey post={number}
+          showPrev={this.showPrev} showNext={this.showNext}
+          numberOfPreviousElemnts={previosIndexList.length}
+          nextElementExistanse={isNextElementExist}
+          toUndef={this.toUndef}
+          text={submitted ? '' : text[number][2]}
+          place={submitted ? '' : text[number][1]}
+          submitted={submitted}
+            />
+      </Top>
+    )
   }
 }
 

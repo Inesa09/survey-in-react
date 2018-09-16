@@ -1,6 +1,6 @@
 import React from 'react';
 import Question from './Question';
-import './TextArea.css';
+import '../css/TextArea.css';
 
 const TextArea = ({question, handleTextInput, value='', rows='1'}) => {
 

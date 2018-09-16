@@ -1,5 +1,5 @@
 import React from 'react';
-import './Text.css';
+import '../css/Text.css';
 import LightText from './LightText';
 
 const Text = ({text,heading}) => {

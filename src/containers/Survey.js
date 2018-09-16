@@ -4,6 +4,7 @@ import Radio from '../components/Radio';
 import TextArea from '../components/TextArea';
 import SmallMessage from '../components/SmallMessage';
 import TriviaQuestion from '../components/TriviaQuestion';
+import '../css/Button.css';
 
 class Survey extends Component {
 
@@ -11,7 +12,7 @@ class Survey extends Component {
     console.log("constructor");
     super(props);
     this.state = {
-      questions: ['empty',
+      questions: ['מיקום קשור',
         'עד כמה התוכן רלוונטי למקום?',
         'עד כמה התוכן מעניין?',
         'תקציר התוכן',
@@ -34,7 +35,7 @@ class Survey extends Component {
   //Submit
   addAnswers = (e, post) => {
     const { answers } = this.state;
-    const { nextElementExistanse, showNext, toUndef, text } = this.props;
+    const { nextElementExistanse, showNext, toUndef, text, place } = this.props;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
     let temporaryList = this.state.listWithPreviosAnswers;
@@ -51,17 +52,20 @@ class Survey extends Component {
       toUndef(post, e);
     }
 
-    var size = Object.keys(answers).length;
-    if (size > 1 || answers['5'] !== text){
+    const size = Object.keys(answers).length;
+    if (size > 2 || answers['5'] !== text || answers['1'] !== place){
+      if (answers['5'] === text){
+        this.setState({ answers: {'5': ' '} });
+      }
       let copy = this.state.answers;
       copy['21'] = new Date().toLocaleString("en-US");
       fireDB.database().ref(`masterSheet/${post}`).update(copy); // <- send to db
       this.showEl('success');
     }
     
-    this.setStateofSummary(); // <- clear the state
     this.setState( {changed: true});
   }
+  
 
   //Show previous answers
   showPrev = (e) => {
@@ -97,7 +101,7 @@ class Survey extends Component {
   }
 
   setStateofSummary = () => {
-    this.setState({ answers: {'5': this.props.text} });
+    this.setState({ answers: {'5': this.props.text, '1': this.props.place} });
   }
   
   componentDidMount = () => {
@@ -107,32 +111,36 @@ class Survey extends Component {
   static getDerivedStateFromProps(props, state) {
     if (state.changed){
       console.log("changed - true");
-      return {answers: { '5': props.text }, changed: false};
+      return {answers: { '5': props.text, '1': props.place }, changed: false};
     }
     console.log("changed - false");
     return null;
   }
 
   render() {
-//     for(let i=5; i<628; i++)
+//     for(let i=11; i<628; i++)
 // fireDB.database().ref(`masterSheet/${i}`).remove(); // <- send to db
     const { questions, answers } = this.state;
     const { post, numberOfPreviousElemnts, submitted } = this.props;
 
     return submitted ?
     (<button className={numberOfPreviousElemnts > 0 ?
-      'ui left animated violet basic button' : 'ui grey basic button'}
-      style={{ margin: '30px 33%' }}
+      'ui labeled icon violet basic massive button ' : 'ui labeled icon grey basic massive button disabled'}
+      style={{ margin: '30px 35%' }}
       onClick={this.showPrev}>
-      <div className='visible content'> הקודם</div>
-      <div className='hidden content'>
-        <i aria-hidden='true'
-          className={numberOfPreviousElemnts > 0 ? 'arrow left icon' : ''} />
-      </div>
+      <i class="arrow left icon"></i>
+      הקודם
     </button>)
     :
     (<div className="Survey">
         <form id='form'>
+          <TextArea
+            question={questions[0]}
+            handleTextInput={(e) => this.handleAnswer(1, e)}
+            value={answers['1']}
+            rows= {'1'}
+          />
+
           <Radio
             question={questions[1]}
             handleOptionChange={(e) => this.handleAnswer(3, e)}
@@ -188,22 +196,17 @@ class Survey extends Component {
             marginTop: '20px'
           }}>
             <button className={numberOfPreviousElemnts > 0 ?
-              'ui left animated violet basic button' : 'ui grey basic button'}
+              'ui labeled icon violet basic button ' : 'ui labeled icon grey basic button disabled'}
               style={{ margin: '30px' }}
               onClick={this.showPrev}>
-              <div className='visible content'> הקודם</div>
-              <div className='hidden content'>
-                <i aria-hidden='true'
-                  className={numberOfPreviousElemnts > 0 ? 'arrow left icon' : ''} />
-              </div>
+              <i className="arrow left icon"></i>
+              הקודם
             </button>
-            <button className='ui animated violet basic button'
+            <button className='ui right labeled icon violet basic button'
               style={{ margin: '30px' }}
               onClick={(e) => { this.addAnswers(e, post) }}>
-              <div className='visible content'>הבא</div>
-              <div className='hidden content'>
-                <i aria-hidden='true' className='arrow right icon' />
-              </div>
+              הבא
+              <i className="arrow right icon"></i>
             </button>
           </div>
 
