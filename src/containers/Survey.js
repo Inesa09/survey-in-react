@@ -40,8 +40,6 @@ class Survey extends Component {
     let temporaryList = this.state.listWithPreviosAnswers;
     temporaryList.push(answers);
     this.setState({ listWithPreviosAnswers: temporaryList });
-    this.props.listWithPreviosAnswers = this.state.listWithPreviosAnswers;
-
     console.log("previous answers NEXT");
     console.log(this.state.listWithPreviosAnswers);
 

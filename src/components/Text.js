@@ -1,9 +1,11 @@
 import React from 'react';
 import './Text.css';
-const Text = ({text}) => {
+import LightText from './LightText';
+
+const Text = ({text,heading}) => {
     return (
         <div id= "text"> 
-            {text}
+            <LightText text={text} heading={heading}/>
         </div>
     )
 };

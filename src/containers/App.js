@@ -96,7 +96,7 @@ class App extends Component {
       return (
         <Top>
           <Heading heading={`תוכן - בהקשר ל ${text[number][1]}`} />
-          <Text text={text[number][2]} />
+          <Text text={text[number][2]} heading={text[number][1]} />
           <Heading heading={"שדות למילוי"} />
           <Survey post={number}
             showPrev={this.showPrev} showNext={this.showNext}
