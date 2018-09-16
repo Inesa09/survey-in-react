@@ -1,5 +1,5 @@
 import React from 'react';
-import './RadioBtn.css';
+import '../css/RadioBtn.css';
 
 const RadioBtn = ({value, question, onChange, answer}) => {
 

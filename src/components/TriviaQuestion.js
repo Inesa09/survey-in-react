@@ -1,6 +1,6 @@
 import React from 'react';
 import Question from './Question';
-import './Input.css';
+import '../css/Input.css';
 import Input from './Input';
 
 const TriviaQuestion = ({numbers, question, handleTextInput, value1, value2, value3, value4, value5}) => {

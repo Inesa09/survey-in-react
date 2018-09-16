@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Heading = ({heading}) => {
+const Heading = ({heading=''}) => {
     return (
         <div className="ui violet segment"
             style={{

@@ -1,6 +1,6 @@
 import React from 'react';
-import './Text.css';
-const Text = ({text}) => {
+import '../css/Text.css';
+const Text = ({text=''}) => {
     return (
         <div id= "text"> 
             {text}
