@@ -9,7 +9,6 @@ import '../css/Button.css';
 class Survey extends Component {
 
   constructor(props) {
-    console.log("constructor");
     super(props);
     this.state = {
       questions: ['מיקום קשור',
@@ -41,9 +40,6 @@ class Survey extends Component {
     let temporaryList = this.state.listWithPreviosAnswers;
     temporaryList.push(answers);
     this.setState({ listWithPreviosAnswers: temporaryList });
-    console.log("previous answers NEXT");
-    console.log(this.state.listWithPreviosAnswers);
-
 
     document.getElementById("form").reset(); // <- clear the input
     if (nextElementExistanse)
@@ -110,10 +106,8 @@ class Survey extends Component {
 
   static getDerivedStateFromProps(props, state) {
     if (state.changed){
-      console.log("changed - true");
       return {answers: { '5': props.text, '1': props.place }, changed: false};
     }
-    console.log("changed - false");
     return null;
   }
 

@@ -2,7 +2,6 @@ import React from 'react';
 
 const LightText = ({text,heading}) => {
     let updatedText = []
-    console.log(text);
     const tokens = text.split(heading);
     let keys = 0;
     updatedText.push(<span key={(keys++).toString()}>{tokens[0]}</span>);
