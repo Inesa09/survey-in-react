@@ -37,29 +37,45 @@ class Survey extends Component {
     const { nextElementExistanse, showNext, toUndef, text, place } = this.props;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
-    let temporaryList = this.state.listWithPreviosAnswers;
-    temporaryList.push(answers);
-    this.setState({ listWithPreviosAnswers: temporaryList });
-
-    document.getElementById("form").reset(); // <- clear the input
-    if (nextElementExistanse)
-      showNext(post, e);
+    if(answers['3'] == undefined)
+      this.showEl('negative', 2500);
     else {
-      toUndef(post, e);
-    }
+      let temporaryList = this.state.listWithPreviosAnswers;
+      temporaryList.push(answers);
+      this.setState({ listWithPreviosAnswers: temporaryList });
 
-    const size = Object.keys(answers).length;
-    if (size > 2 || answers['5'] !== text || answers['1'] !== place){
-      if (answers['5'] === text){
-        this.setState({ answers: {'5': ' '} });
+      document.getElementById("form").reset(); // <- clear the input
+      if (nextElementExistanse)
+        showNext(post, e);
+      else {
+        toUndef(post, e);
       }
-      let copy = this.state.answers;
-      copy['21'] = new Date().toLocaleString("en-US");
-      fireDB.database().ref(`masterSheet/${post}`).update(copy); // <- send to db
-      this.showEl('success');
+
+      const size = Object.keys(answers).length;
+      if (size > 3 || answers['5'] !== text || answers['1'] !== place){
+        let copy = this.state.answers;
+        copy['21'] = new Date().toLocaleString("en-US");
+  
+        let db = fireDB.database();
+        let textsRef = db.ref('masterSheet/');
+        let all;
+  
+        if(answers['1'] !== place){
+          textsRef.on('value', snapshot => {
+            all = snapshot.val();
+          });
+  
+          let newPost = all.length;
+          textsRef.child(newPost).set(all[post]);
+          post = newPost;
+        }
+  
+        let postRef = db.ref(`masterSheet/${post}`);
+        postRef.update(copy); // <- send to db
+        this.showEl('success', 1000);
+        this.setState( {changed: true});
+      }
     }
-    
-    this.setState( {changed: true});
   }
   
 
@@ -79,12 +95,12 @@ class Survey extends Component {
   }
 
   //CSS methods
-  showEl = (el) => {
+  showEl = (el, time) => {
       const current = document.getElementById(el);
       if(current.style.display === 'none'){
         current.style.display = 'block';
         current.scrollIntoView(true);
-        setTimeout(this.hideEl, 1000, el);
+        setTimeout(this.hideEl, time, el);
       }
 
   }
@@ -207,6 +223,8 @@ class Survey extends Component {
 
           <SmallMessage name='success' text1='הטופס הושלם'
             text2='התשובות נשמרו' />
+          <SmallMessage name='negative' text1='הטופס לא נשלח'
+            text2='שים לב - חובה למלא את דירוג הקשר למיקום' />
         </form>
       </div>)
   }

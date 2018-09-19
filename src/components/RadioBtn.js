@@ -11,7 +11,7 @@ const RadioBtn = ({value, question, onChange, answer}) => {
             onClick={onChange} 
             onChange={onChange}
             checked={String(answer) === String(value)}
-            required />
+            />
             <span className="checkmark"></span>
         </label>
     )
