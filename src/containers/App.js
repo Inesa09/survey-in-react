@@ -5,7 +5,7 @@ import Survey from './Survey';
 import fireDB from '../fireDB';
 import Heading from '../components/Heading';
 import Message from '../components/Message';
-
+import Register from '../components/Register';
 import '../css/Hidden.css';
 
 class App extends Component {
@@ -68,6 +68,7 @@ class App extends Component {
   }
 
   render() {
+    <Register/>
     const { post, text, previosIndexList } = this.state;
     let submitted = false;
     let hideMessage, hideDiv;
@@ -80,7 +81,7 @@ class App extends Component {
     if (text.length === 0)  //Loading
       return (
 
-        
+
         <Top>
           <Message color='teal' icon='circle notched loading icon'
             text1='רק שניה' text2='מביאים לכם את התוכן' />
