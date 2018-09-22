@@ -37,7 +37,7 @@ class Survey extends Component {
     const { nextElementExistanse, showNext, toUndef, text, place } = this.props;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
-    if(answers['3'] == undefined)
+    if(answers['4'] == undefined)
       this.showEl('negative', 2500);
     else {
       let temporaryList = this.state.listWithPreviosAnswers;
@@ -52,9 +52,9 @@ class Survey extends Component {
       }
 
       const size = Object.keys(answers).length;
-      if (size > 3 || answers['5'] !== text || answers['1'] !== place){
+      if (size > 3 || answers['6'] !== text || answers['1'] !== place){
         let copy = this.state.answers;
-        copy['21'] = new Date().toLocaleString("en-US");
+        copy['22'] = new Date().toLocaleString("en-US");
   
         let db = fireDB.database();
         let textsRef = db.ref('masterSheet/');
@@ -113,7 +113,7 @@ class Survey extends Component {
   }
 
   setStateofSummary = () => {
-    this.setState({ answers: {'5': this.props.text, '1': this.props.place} });
+    this.setState({ answers: {'6': this.props.text, '1': this.props.place} });
   }
   
   componentDidMount = () => {
@@ -122,7 +122,7 @@ class Survey extends Component {
 
   static getDerivedStateFromProps(props, state) {
     if (state.changed){
-      return {answers: { '5': props.text, '1': props.place }, changed: false};
+      return {answers: { '6': props.text, '1': props.place }, changed: false};
     }
     return null;
   }
@@ -153,49 +153,49 @@ class Survey extends Component {
 
           <Radio
             question={questions[1]}
-            handleOptionChange={(e) => this.handleAnswer(3, e)}
-            answer={answers['3']}
-          />
-          <Radio
-            question={questions[2]}
             handleOptionChange={(e) => this.handleAnswer(4, e)}
             answer={answers['4']}
           />
+          <Radio
+            question={questions[2]}
+            handleOptionChange={(e) => this.handleAnswer(5, e)}
+            answer={answers['5']}
+          />
           <TextArea
             question={questions[3]}
-            handleTextInput={(e) => this.handleAnswer(5, e)}
-            value={answers['5']}
+            handleTextInput={(e) => this.handleAnswer(6, e)}
+            value={answers['6']}
             rows= {'10'}
           />
 
           <TriviaQuestion
             question={questions[4]}
             tooltip={'answer is..'}
-            numbers={[6, 7, 8, 9, 10]} 
+            numbers={[7, 8, 9, 10, 11]} 
             handleTextInput={(e, number) => this.handleAnswer(number, e)}
-            value1={answers['6']}
-            value2={answers['7']}
-            value3={answers['8']}
-            value4={answers['9']}
-            value5={answers['10']}
+            value1={answers['7']}
+            value2={answers['8']}
+            value3={answers['9']}
+            value4={answers['10']}
+            value5={answers['11']}
           />
 
           <TriviaQuestion
             question={questions[5]}
             tooltip={'answer is..'}
-            numbers={[11, 12, 13, 14, 15]} 
+            numbers={[12, 13, 14, 15, 16]} 
             handleTextInput={(e, number) => this.handleAnswer(number, e)}
-            value1={answers['11']}
-            value2={answers['12']}
-            value3={answers['13']}
-            value4={answers['14']}
-            value5={answers['15']}
+            value1={answers['12']}
+            value2={answers['13']}
+            value3={answers['14']}
+            value4={answers['15']}
+            value5={answers['16']}
           />
 
           <TextArea
             question={questions[6]}
-            handleTextInput={(e) => this.handleAnswer(16, e)}
-            value={answers['16']}
+            handleTextInput={(e) => this.handleAnswer(17, e)}
+            value={answers['17']}
             rows= {'5'}
           />
 
