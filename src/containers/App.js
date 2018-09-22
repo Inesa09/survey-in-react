@@ -79,6 +79,7 @@ class App extends Component {
   
     if (text.length === 0)  //Loading
       return (
+
         
         <Top>
           <Message color='teal' icon='circle notched loading icon'
