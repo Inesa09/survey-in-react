@@ -55,7 +55,7 @@ class App extends Component {
 
   findNextUnsubmitedElement = (post) => {
     for (let i = post + 1, size = Object.values(this.state.text).length; i < size; i++) {
-      if (this.state.text[i][21].length === 0) {
+      if (this.state.text[i][22].length === 0) {
         return i;
       }
     }
