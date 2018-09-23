@@ -5,7 +5,7 @@ import Survey from './Survey';
 import fireDB from '../fireDB';
 import Heading from '../components/Heading';
 import Message from '../components/Message';
-import Register from '../components/Register';
+import Login from '../components/Login';
 import '../css/Hidden.css';
 
 class App extends Component {
@@ -16,7 +16,22 @@ class App extends Component {
       post: 0,
       text: [],
       previosIndexList: [],
+      user : {},
     }; // <- set up react state
+  }
+
+  authListener(){
+    fireDB.auth().onAuthStateChanged((user) =>{
+      console.log(user);
+      if(user){
+        this.setState({user});
+        localStorage.setItem('user',user.uid);
+      }
+      else{
+        this.setState({user : null});
+        localStorage.removeItem('user');
+      }
+    });
   }
 
   showPrev = (e) => {
@@ -66,15 +81,19 @@ class App extends Component {
     // return user.email;
     return 'inesa';
   }
+  logout() {
+    fireDB.auth().signOut();
+}
 
   componentDidMount() {
     fireDB.database().ref('masterSheet/').on('value', snapshot => {
       this.setState({ text: snapshot.val() });
     });
+    this.authListener();
   }
 
   render() {
-    // <Register/>
+    if(this.state.user){
     const { post, text, previosIndexList } = this.state;
     let submitted = false;
     let hideMessage, hideDiv;
@@ -89,6 +108,7 @@ class App extends Component {
 
 
         <Top user={this.getUserEmail()}>
+          <button onClick={this.logout}>Logout</button>
           <Message color='teal' icon='circle notched loading icon'
             text1='רק שניה' text2='מביאים לכם את התוכן' />
         </Top>
@@ -105,6 +125,7 @@ class App extends Component {
 
     return (
       <Top user={this.getUserEmail()}>
+        <button onClick={this.logout}>Logout</button>
         <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
           text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
         <div className={hideDiv ? 'hidden' : ''}>
@@ -125,6 +146,12 @@ class App extends Component {
         />
       </Top>
     )
+    }
+    else{
+      return (
+        <Login/>
+      )
+    }
   }
 }
 
