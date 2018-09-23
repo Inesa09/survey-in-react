@@ -13,8 +13,6 @@ class Login extends Component {
       password: ''
     };
     this.error = '';
-    this.redEmail = '';
-    this.redPass = '';
   }
 
   handleChange(e) {
@@ -25,16 +23,7 @@ class Login extends Component {
     e.preventDefault();
     fireDB.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
     }).catch((e) => {
-      console.log(e.message === "There is no user record corresponding to this identifier. The user may have been deleted.");
-      if(e.message === "There is no user record corresponding to this identifier. The user may have been deleted."){
-        this.setState({ error : "User with this email is not already signed up.", redEmail: 'error' });
-      } else if(e.message ===  "The password is invalid or the user does not have a password."){
-        this.setState({ error : "Incorrect password", redPass: 'error' });
-      } else if(e.message === "The email address is badly formatted."){
-        this.setState({ error : e.message, redEmail: 'error' });
-      } else
-        this.setState({ error : e.message });
-      this.props.showEl('error', 250000000, false);
+      this.showError(e);
     });
   }
 
@@ -43,9 +32,19 @@ class Login extends Component {
     fireDB.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
     }).then((u)=>{console.log(u)})
     .catch((e) => {
-      this.setState({error : e.message});
-      this.props.showEl('error', 250000000, false);
+      this.showError(e);
       })
+  }
+
+  showError = (e) => {
+    console.log(e.message === "There is no user record corresponding to this identifier. The user may have been deleted.");
+    if(e.message === "There is no user record corresponding to this identifier. The user may have been deleted."){
+      this.setState({ error : "User with this email is not already signed up." });
+    } else if(e.message ===  "The password is invalid or the user does not have a password."){
+      this.setState({ error : "Incorrect password" });
+    } else
+      this.setState({ error : e.message });
+    this.props.showEl('error', 250000000, false);
   }
   render() {
     return (
@@ -70,10 +69,10 @@ class Login extends Component {
           </div>
           
           <div style={{display: 'flex', justifyContent: 'center'}}>
-            <button onClick={this.signup} className='ui blue basic button'
-              style={{margin: '10px'}}> Sign up </button>
             <button type='submit' onClick={this.login} className='ui blue button'
               style={{margin: '10px'}}> Log in </button>
+            <button onClick={this.signup} className='ui blue basic button'
+              style={{margin: '10px'}}> Sign up </button>
           </div>
         </form>
 
