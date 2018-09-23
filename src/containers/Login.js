@@ -13,6 +13,8 @@ class Login extends Component {
       password: ''
     };
     this.error = '';
+    this.redEmail = '';
+    this.redPass = '';
   }
 
   handleChange(e) {
@@ -25,15 +27,15 @@ class Login extends Component {
     }).catch((e) => {
       console.log(e.message === "There is no user record corresponding to this identifier. The user may have been deleted.");
       if(e.message === "There is no user record corresponding to this identifier. The user may have been deleted."){
-        this.setState({error : "User with this email is not already signed up."});
-      }
-      else if(e.message ===  "The password is invalid or the user does not have a password."){
-        this.setState({error : "Incorrect password"});
-      }
-      else
-      this.setState({error : e.message});
+        this.setState({ error : "User with this email is not already signed up.", redEmail: 'error' });
+      } else if(e.message ===  "The password is invalid or the user does not have a password."){
+        this.setState({ error : "Incorrect password", redPass: 'error' });
+      } else if(e.message === "The email address is badly formatted."){
+        this.setState({ error : e.message, redEmail: 'error' });
+      } else
+        this.setState({ error : e.message });
       this.props.showEl('error', 250000000, false);
-      });
+    });
   }
 
   signup(e){
@@ -53,16 +55,16 @@ class Login extends Component {
         style={{width: '45%', boxShadow: '0px 2px 15px 5px rgba(34, 34, 34, 0.8)', padding: '20px'}}>
         <form className='ui form'>
           <div className='equal width fields'>
-            <div className='field'>
+            <div className={ `field ${this.state.redPass}` }>
               <div className='ui fluid input'>
                 <input value={this.state.password} onChange={this.handleChange} type="password" name="password"
                   style={{textAlign: 'right'}} placeholder='Password' />
               </div>
             </div>
-            <div className='field'>
+            <div className={ `field ${this.state.redEmail}` }>
               <div className='ui fluid input'>
                 <input value={this.state.email} onChange={this.handleChange} type="email" name="email" 
-                  style={{textAlign: 'right'}} placeholder='Email' maxlength='19' />
+                  style={{textAlign: 'right'}} placeholder='Email' maxLength='19' />
               </div>
             </div>
           </div>
@@ -86,7 +88,6 @@ class Login extends Component {
         <SmallMessage name='negative' id='error' text1='Invalid action!'
           text2={this.state.error} />
 
-        {/* this.props.showEl('error', 250000000, false); */}
       </div>
       </div>
     );
