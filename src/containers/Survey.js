@@ -34,57 +34,52 @@ class Survey extends Component {
   //Submit
   addAnswers = (e, post) => {
     const { answers } = this.state;
-    const { nextElementExistanse, showNext, toUndef, text, place } = this.props;
+    const { nextElementExistanse, showNext, toUndef, place, user } = this.props;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
-    if(answers['4'] == undefined)
+    if(answers['4'] == undefined) // <- mandatory question
       this.showEl('negative', 2500);
     else {
-      let temporaryList = this.state.listWithPreviosAnswers;
+      this.setState({ answers: {'3': user} }); // <- set user email
+      let temporaryList = this.state.listWithPreviosAnswers; 
       temporaryList.push(answers);
-      this.setState({ listWithPreviosAnswers: temporaryList });
+      this.setState({ listWithPreviosAnswers: temporaryList }); // <- save previous answers
 
       document.getElementById("form").reset(); // <- clear the input
-      if (nextElementExistanse)
+      if (nextElementExistanse) // <- use methods from App.js
         showNext(post, e);
       else {
         toUndef(post, e);
       }
 
-      const size = Object.keys(answers).length;
-      if (size > 3 || answers['6'] !== text || answers['1'] !== place){
-        let copy = this.state.answers;
-        copy['22'] = new Date().toLocaleString("en-US");
-  
-        let db = fireDB.database();
-        let textsRef = db.ref('masterSheet/');
+      if(answers['1'] !== place){ // <- add a new post if place has been changed
         let all;
-  
-        if(answers['1'] !== place){
-          textsRef.on('value', snapshot => {
-            all = snapshot.val();
-          });
-  
-          let newPost = all.length;
-          textsRef.child(newPost).set(all[post]);
-          post = newPost;
-        }
-  
-        let postRef = db.ref(`masterSheet/${post}`);
-        postRef.update(copy); // <- send to db
-        this.showEl('success', 1000);
-        this.setState( {changed: true});
+        textsRef.on('value', snapshot => {
+          all = snapshot.val();
+        });
+
+        let newPost = all.length;
+        textsRef.child(newPost).set(all[post]);
+        post = newPost;
       }
+
+      let copy = this.state.answers;
+      copy['22'] = new Date().toLocaleString("en-US");
+
+      let db = fireDB.database();
+      let textsRef = db.ref('masterSheet/');
+      let postRef = db.ref(`masterSheet/${post}`);
+
+      postRef.update(copy); // <- send to db
+      this.showEl('success', 1000);
+      this.setState( {changed: true});
     }
   }
   
-
   //Show previous answers
   showPrev = (e) => {
     e.preventDefault();
     this.props.showPrev(e);
-    console.log("previous answers PREV");
-    console.log(this.state.listWithPreviosAnswers);
     let temporaryList = this.state.listWithPreviosAnswers;
     if (temporaryList.length > 0) {
       let previosAnswers = temporaryList.pop();
@@ -93,6 +88,7 @@ class Survey extends Component {
       this.setState( {changed: true});
     }
   }
+
 
   //CSS methods
   showEl = (el, time) => {
@@ -111,13 +107,10 @@ class Survey extends Component {
     } catch (err) {
     }
   }
-
-  setStateofSummary = () => {
-    this.setState({ answers: {'6': this.props.text, '1': this.props.place} });
-  }
   
+  //react lifecycle methods
   componentDidMount = () => {
-    this.setStateofSummary();
+    this.setState({ answers: {'6': this.props.text, '1': this.props.place} });
   }
 
   static getDerivedStateFromProps(props, state) {

@@ -61,6 +61,12 @@ class App extends Component {
     }
   }
 
+  getUserEmail = () =>{
+    // var user = fireDB.auth().currentUser;
+    // return user.email;
+    return 'inesa';
+  }
+
   componentDidMount() {
     fireDB.database().ref('masterSheet/').on('value', snapshot => {
       this.setState({ text: snapshot.val() });
@@ -68,7 +74,7 @@ class App extends Component {
   }
 
   render() {
-    <Register/>
+    // <Register/>
     const { post, text, previosIndexList } = this.state;
     let submitted = false;
     let hideMessage, hideDiv;
@@ -82,7 +88,7 @@ class App extends Component {
       return (
 
 
-        <Top>
+        <Top user={this.getUserEmail()}>
           <Message color='teal' icon='circle notched loading icon'
             text1='רק שניה' text2='מביאים לכם את התוכן' />
         </Top>
@@ -98,7 +104,7 @@ class App extends Component {
     
 
     return (
-      <Top>
+      <Top user={this.getUserEmail()}>
         <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
           text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
         <div className={hideDiv ? 'hidden' : ''}>
@@ -114,8 +120,9 @@ class App extends Component {
           toUndef={this.toUndef}
           text={submitted ? '' : text[number][2]}
           place={submitted ? '' : text[number][1]}
+          user={submitted ? '' : this.getUserEmail()}
           submitted={submitted}
-            />
+        />
       </Top>
     )
   }
