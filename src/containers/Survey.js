@@ -34,13 +34,12 @@ class Survey extends Component {
   //Submit
   addAnswers = (e, post) => {
     const { answers } = this.state;
-    const { nextElementExistanse, showNext, toUndef, place, user } = this.props;
+    const { nextElementExistanse, showNext, toUndef, place, showEl } = this.props;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
-    if(answers['4'] == undefined) // <- mandatory question
-      this.showEl('negative', 2500);
+    if(answers['4'] === undefined) // <- mandatory question
+      showEl('negative', 250000000, false);
     else {
-      this.setState({ answers: {'3': user} }); // <- set user email
       let temporaryList = this.state.listWithPreviosAnswers; 
       temporaryList.push(answers);
       this.setState({ listWithPreviosAnswers: temporaryList }); // <- save previous answers
@@ -52,7 +51,11 @@ class Survey extends Component {
         toUndef(post, e);
       }
 
+      let db = fireDB.database();
+      let postRef = db.ref(`masterSheet/${post}`);
+
       if(answers['1'] !== place){ // <- add a new post if place has been changed
+        let textsRef = db.ref('masterSheet/');
         let all;
         textsRef.on('value', snapshot => {
           all = snapshot.val();
@@ -66,12 +69,8 @@ class Survey extends Component {
       let copy = this.state.answers;
       copy['22'] = new Date().toLocaleString("en-US");
 
-      let db = fireDB.database();
-      let textsRef = db.ref('masterSheet/');
-      let postRef = db.ref(`masterSheet/${post}`);
-
       postRef.update(copy); // <- send to db
-      this.showEl('success', 1000);
+      showEl('success', 1000, true);
       this.setState( {changed: true});
     }
   }
@@ -89,33 +88,17 @@ class Survey extends Component {
     }
   }
 
-
-  //CSS methods
-  showEl = (el, time) => {
-      const current = document.getElementById(el);
-      if(current.style.display === 'none'){
-        current.style.display = 'block';
-        current.scrollIntoView(true);
-        setTimeout(this.hideEl, time, el);
-      }
-
-  }
-  hideEl = (el) => {
-    try {
-      document.getElementById(el).style.display = 'none';
-      document.getElementById('top').scrollIntoView(true);
-    } catch (err) {
-    }
-  }
   
   //react lifecycle methods
   componentDidMount = () => {
-    this.setState({ answers: {'6': this.props.text, '1': this.props.place} });
+    const { text, place, user } = this.props;
+    this.setState({ answers: {'1': place, '3': user, '6': text} }); //<- set user email, place and text of post
   }
 
   static getDerivedStateFromProps(props, state) {
     if (state.changed){
-      return {answers: { '6': props.text, '1': props.place }, changed: false};
+      const { text, place, user } = props
+      return {answers: { '1': place, '3': user, '6': text }, changed: false};
     }
     return null;
   }

@@ -5,7 +5,7 @@ import Survey from './Survey';
 import fireDB from '../fireDB';
 import Heading from '../components/Heading';
 import Message from '../components/Message';
-import Login from '../components/Login';
+import Login from './Login';
 import '../css/Hidden.css';
 
 class App extends Component {
@@ -36,11 +36,11 @@ class App extends Component {
 
   showPrev = (e) => {
     e.preventDefault();
+    this.hideEl('negative', true);
     let temporaryList = this.state.previosIndexList;
     if (temporaryList.length > 0) {
       let previosElement = temporaryList.pop();
       this.setState({ post: previosElement, previosIndexList: temporaryList });
-      this.scrollToTop();
     }
   }
 
@@ -51,14 +51,7 @@ class App extends Component {
     if (number !== undefined) {
       temporaryList.push(post);
       this.setState({ post: number, previosIndexList: temporaryList });
-      this.scrollToTop();
     }
-  }
-
-  scrollToTop = () => {
-    try {
-      document.getElementById('top').scrollIntoView(true);
-    } catch (err) { }
   }
 
   toUndef = (post, e) => {
@@ -76,14 +69,28 @@ class App extends Component {
     }
   }
 
-  getUserEmail = () =>{
-    // var user = fireDB.auth().currentUser;
-    // return user.email;
-    return 'inesa';
-  }
-  logout() {
+  signOut() {
     fireDB.auth().signOut();
-}
+  }
+
+  //CSS methods
+  showEl = (el, time, bool) => {
+    const current = document.getElementById(el);
+    this.hideEl('negative', false);
+    if(current.style.display === 'none'){
+      current.style.display = 'block';
+      current.scrollIntoView(true);
+      setTimeout(this.hideEl, time, el, bool);
+    }
+  }
+  hideEl = (el, bool) => {
+    try {
+      document.getElementById(el).style.display = 'none';
+      if (bool)
+        document.getElementById('top').scrollIntoView(true);
+    } catch (err) {
+    }
+  }
 
   componentDidMount() {
     fireDB.database().ref('masterSheet/').on('value', snapshot => {
@@ -94,62 +101,60 @@ class App extends Component {
 
   render() {
     if(this.state.user){
-    const { post, text, previosIndexList } = this.state;
-    let submitted = false;
-    let hideMessage, hideDiv;
-    let number = this.findNextUnsubmitedElement(post);
-    if (post !== 0) {
-      number = post;
-    }
-    let isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
-  
-    if (text.length === 0)  //Loading
+      const { post, text, previosIndexList, user } = this.state;
+      let submitted = false;
+      let hideMessage, hideDiv;
+      let number = this.findNextUnsubmitedElement(post);
+      if (post !== 0) {
+        number = post;
+      }
+      let isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
+    
+      if (text.length === 0)  //Loading
+        return (
+
+
+          <Top user={user.email} signOut={this.signOut}>
+            <Message color='teal' icon='circle notched loading icon'
+              text1='רק שניה' text2='מביאים לכם את התוכן' />
+          </Top>
+        )
+      else if (post === undefined || (post === 0 && number === undefined)){ //All text submitted
+        submitted = true;
+        hideMessage = false;
+        hideDiv = true;
+      } else { //Main
+        hideMessage = true;
+        hideDiv = false;
+      }
+      
+
       return (
+        <Top user={user.email} signOut={this.signOut}>
+          <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
+            text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
+          <div className={hideDiv ? 'hidden' : ''}>
+            <Heading heading={hideDiv ? '' : `תוכן - בהקשר ל ${text[number][1]}`} />
+            <Text text={hideDiv ? '' : text[number][2]} heading={hideDiv ? '' : text[number][1]} />
+            <Heading heading={"שדות למילוי"} />
+          </div>
 
-
-        <Top user={this.getUserEmail()}>
-          <button onClick={this.logout}>Logout</button>
-          <Message color='teal' icon='circle notched loading icon'
-            text1='רק שניה' text2='מביאים לכם את התוכן' />
+          <Survey post={number}
+            showPrev={this.showPrev} showNext={this.showNext} showEl={this.showEl}
+            numberOfPreviousElemnts={previosIndexList.length}
+            nextElementExistanse={isNextElementExist}
+            toUndef={this.toUndef}
+            text={submitted ? '' : text[number][2]}
+            place={submitted ? '' : text[number][1]}
+            user={submitted ? '' : user.email}
+            submitted={submitted}
+          />
         </Top>
       )
-    else if (post === undefined || (post === 0 && number === undefined)){ //All text submitted
-      submitted = true;
-      hideMessage = false;
-      hideDiv = true;
-    } else { //Main
-      hideMessage = true;
-      hideDiv = false;
-    }
-    
-
-    return (
-      <Top user={this.getUserEmail()}>
-        <button onClick={this.logout}>Logout</button>
-        <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
-          text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
-        <div className={hideDiv ? 'hidden' : ''}>
-          <Heading heading={hideDiv ? '' : `תוכן - בהקשר ל ${text[number][1]}`} />
-          <Text text={hideDiv ? '' : text[number][2]} heading={hideDiv ? '' : text[number][1]} />
-          <Heading heading={"שדות למילוי"} />
-        </div>
-
-        <Survey post={number}
-          showPrev={this.showPrev} showNext={this.showNext}
-          numberOfPreviousElemnts={previosIndexList.length}
-          nextElementExistanse={isNextElementExist}
-          toUndef={this.toUndef}
-          text={submitted ? '' : text[number][2]}
-          place={submitted ? '' : text[number][1]}
-          user={submitted ? '' : this.getUserEmail()}
-          submitted={submitted}
-        />
-      </Top>
-    )
-    }
+      }
     else{
       return (
-        <Login/>
+        <Login showEl={this.showEl} hideEl={this.hideEl}/>
       )
     }
   }

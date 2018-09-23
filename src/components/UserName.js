@@ -1,13 +1,13 @@
 import React from 'react';
 import '../css/Hidden.css';
 
-const UserName = ({user = '', hidden=''}) => {
+const UserName = ({user = '', hidden='', signOut}) => {
     return (
         <div className={hidden}
             style={{display: 'flex', justifyContent: 'space-between'}}>
 
-            <button class='ui circular icon button' role='button' >
-                <i aria-hidden='true' class='sign-out large icon' />
+            <button className='ui circular icon button' onClick={signOut} >
+                <i aria-hidden='true' className='sign-out large icon' />
                 <div className='content'> Sign Out </div>
             </button>
             <h2 className='ui header'>

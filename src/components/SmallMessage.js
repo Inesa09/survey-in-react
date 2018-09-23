@@ -1,8 +1,8 @@
 import React from 'react';
 
-const SmallMessage = ({name, text1, text2}) => {
+const SmallMessage = ({name, id=name, text1, text2}) => {
     return (
-        <div className={`ui ${name} message`} id={name}
+        <div className={`ui ${name} message`} id={id}
         style={{
             margin: '40px',
             marginTop: '0',
