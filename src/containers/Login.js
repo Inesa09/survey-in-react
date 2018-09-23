@@ -22,8 +22,17 @@ class Login extends Component {
   login(e) {
     e.preventDefault();
     fireDB.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
-    }).catch((error) => {
-        console.log(error);
+    }).catch((e) => {
+      console.log(e.message === "There is no user record corresponding to this identifier. The user may have been deleted.");
+      if(e.message === "There is no user record corresponding to this identifier. The user may have been deleted."){
+        this.setState({error : "User with this email is not already signed up."});
+      }
+      else if(e.message ===  "The password is invalid or the user does not have a password."){
+        this.setState({error : "Incorrect password"});
+      }
+      else
+      this.setState({error : e.message});
+      this.props.showEl('error', 250000000, false);
       });
   }
 
@@ -31,8 +40,9 @@ class Login extends Component {
     e.preventDefault();
     fireDB.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
     }).then((u)=>{console.log(u)})
-    .catch((error) => {
-        console.log(error);
+    .catch((e) => {
+      this.setState({error : e.message});
+      this.props.showEl('error', 250000000, false);
       })
   }
   render() {
