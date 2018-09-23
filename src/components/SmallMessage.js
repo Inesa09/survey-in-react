@@ -7,6 +7,7 @@ const SmallMessage = ({name, id=name, text1, text2}) => {
             margin: '40px',
             marginTop: '0',
             display: 'none',
+            textAlign: 'right'
         }}>
         <div className='content'>
             <div className='header'>{text1}</div>

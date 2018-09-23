@@ -77,6 +77,7 @@ class App extends Component {
   showEl = (el, time, bool) => {
     const current = document.getElementById(el);
     this.hideEl('negative', false);
+    this.hideEl('error', false);
     if(current.style.display === 'none'){
       current.style.display = 'block';
       current.scrollIntoView(true);

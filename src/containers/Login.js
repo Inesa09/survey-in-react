@@ -44,24 +44,24 @@ class Login extends Component {
         <form className='ui form'>
           <div className='equal width fields'>
             <div className='field'>
-              {/* <label>Email</label> */}
               <div className='ui fluid input'>
-                <input value={this.state.email} onChange={this.handleChange} type="text" name="email" placeholder='Email' />
+                <input value={this.state.password} onChange={this.handleChange} type="password" name="password"
+                  style={{textAlign: 'right'}} placeholder='Password' />
               </div>
             </div>
             <div className='field'>
-              {/* <label>Password</label> */}
               <div className='ui fluid input'>
-                <input value={this.state.password} onChange={this.handleChange} type="password" name="password" placeholder='Password' />
+                <input value={this.state.email} onChange={this.handleChange} type="email" name="email" 
+                  style={{textAlign: 'right'}} placeholder='Email' maxlength='19' />
               </div>
             </div>
           </div>
           
           <div style={{display: 'flex', justifyContent: 'center'}}>
-            <button type='submit' onClick={this.login} className='ui blue button'
-              style={{margin: '10px'}}> Log in </button>
             <button onClick={this.signup} className='ui blue basic button'
               style={{margin: '10px'}}> Sign up </button>
+            <button type='submit' onClick={this.login} className='ui blue button'
+              style={{margin: '10px'}}> Log in </button>
           </div>
         </form>
 
