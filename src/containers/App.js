@@ -68,7 +68,6 @@ class App extends Component {
   }
 
   render() {
-    <Register/>
     const { post, text, previosIndexList } = this.state;
     let submitted = false;
     let hideMessage, hideDiv;
@@ -99,6 +98,7 @@ class App extends Component {
 
     return (
       <Top>
+        <Register/>
         <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
           text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
         <div className={hideDiv ? 'hidden' : ''}>
