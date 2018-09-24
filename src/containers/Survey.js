@@ -52,10 +52,10 @@ class Survey extends Component {
       }
 
       let db = fireDB.database();
-      let postRef = db.ref(`masterSheet/${post}`);
+      let copy = this.state.answers;
 
       if(answers['1'] !== place){ // <- add a new post if place has been changed
-        let textsRef = db.ref('masterSheet/');
+        let textsRef = db.ref('newData/');
         let all;
         textsRef.on('value', snapshot => {
           all = snapshot.val();
@@ -64,9 +64,10 @@ class Survey extends Component {
         let newPost = all.length;
         textsRef.child(newPost).set(all[post]);
         post = newPost;
+        copy['18'] = '';
       }
 
-      let copy = this.state.answers;
+      let postRef = db.ref(`newData/${post}`);
       copy['22'] = new Date().toLocaleString("en-US");
 
       postRef.update(copy); // <- send to db
@@ -104,8 +105,6 @@ class Survey extends Component {
   }
 
   render() {
-//     for(let i=11; i<628; i++)
-// fireDB.database().ref(`masterSheet/${i}`).remove(); // <- send to db
     const { questions, answers } = this.state;
     const { post, numberOfPreviousElemnts, submitted } = this.props;
 

@@ -94,7 +94,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    fireDB.database().ref('masterSheet/').on('value', snapshot => {
+    fireDB.database().ref('newData/').on('value', snapshot => {
       this.setState({ text: snapshot.val() });
     });
     this.authListener();
