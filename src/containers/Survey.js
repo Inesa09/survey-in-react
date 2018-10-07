@@ -21,6 +21,7 @@ class Survey extends Component {
       answers: {},
       listWithPreviosAnswers:[],
       changed: false,
+      getCurrentAnswers: this.getCurrentAnswers.bind(this),
     }; // <- set up react state
   }
 
@@ -32,9 +33,9 @@ class Survey extends Component {
   }
 
   //Submit
-  addAnswers = (e, post) => {
+  addAnswers = (e, postNum) => {
     const { answers } = this.state;
-    const { nextElementExistanse, showNext, toUndef, place, showEl } = this.props;
+    const { nextElementExistanse, showNext, toUndef, post, showEl } = this.props;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
     if(answers['4'] === undefined) // <- mandatory question
@@ -46,15 +47,15 @@ class Survey extends Component {
 
       document.getElementById("form").reset(); // <- clear the input
       if (nextElementExistanse) // <- use methods from App.js
-        showNext(post, e);
+        showNext(postNum, e);
       else {
-        toUndef(post, e);
+        toUndef(postNum, e);
       }
 
       let db = fireDB.database();
       let copy = this.state.answers;
 
-      if(answers['1'] !== place){ // <- add a new post if place has been changed
+      if(answers['1'] !== post[1]){ // <- add a new post if place has been changed
         let textsRef = db.ref('newData/');
         let all;
         textsRef.on('value', snapshot => {
@@ -62,12 +63,12 @@ class Survey extends Component {
         });
 
         let newPost = all.length;
-        textsRef.child(newPost).set(all[post]);
-        post = newPost;
+        textsRef.child(newPost).set(all[postNum]);
+        postNum = newPost;
         copy['18'] = '';
       }
 
-      let postRef = db.ref(`newData/${post}`);
+      let postRef = db.ref(`newData/${postNum}`);
       copy['22'] = new Date().toLocaleString("en-US");
 
       postRef.update(copy); // <- send to db
@@ -89,24 +90,34 @@ class Survey extends Component {
     }
   }
 
+  getCurrentAnswers (post, user, changed) {
+    var currentAnswers = {};
+    for (var x = 1; x <= 17; x++)
+      currentAnswers[x] = post[x]; //<- set previous answers
+    if (post[6] === "")
+      currentAnswers[6] = post[2];
+    currentAnswers[3] = user;
+    if(changed)
+      return { answers: currentAnswers, changed: false }
+    return { answers: currentAnswers }
+  }
   
   //react lifecycle methods
   componentDidMount = () => {
-    const { text, place, user } = this.props;
-    this.setState({ answers: {'1': place, '3': user, '6': text} }); //<- set user email, place and text of post
+    const { post, user } = this.props;
+    this.setState( this.state.getCurrentAnswers(post, user, false) );
   }
 
   static getDerivedStateFromProps(props, state) {
     if (state.changed){
-      const { text, place, user } = props
-      return {answers: { '1': place, '3': user, '6': text }, changed: false};
-    }
-    return null;
+      const { post, user } = props
+      return state.getCurrentAnswers(post, user, true);
+    } return null;
   }
 
   render() {
     const { questions, answers } = this.state;
-    const { post, numberOfPreviousElemnts, submitted } = this.props;
+    const { postNum, numberOfPreviousElemnts, submitted } = this.props;
 
     return submitted ?
     (<button className={numberOfPreviousElemnts > 0 ?
@@ -189,7 +200,7 @@ class Survey extends Component {
             </button>
             <button className='ui right labeled icon violet basic button'
               style={{ margin: '30px' }}
-              onClick={(e) => { this.addAnswers(e, post) }}>
+              onClick={(e) => { this.addAnswers(e, postNum) }}>
               הבא
               <i className="arrow right icon"></i>
             </button>

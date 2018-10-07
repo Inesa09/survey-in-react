@@ -140,13 +140,12 @@ class App extends Component {
             <Heading heading={"שדות למילוי"} />
           </div>
 
-          <Survey post={number}
+          <Survey postNum={number}
             showPrev={this.showPrev} showNext={this.showNext} showEl={this.showEl}
             numberOfPreviousElemnts={previosIndexList.length}
             nextElementExistanse={isNextElementExist}
             toUndef={this.toUndef}
-            text={submitted ? '' : text[number][2]}
-            place={submitted ? '' : text[number][1]}
+            post={submitted ? '' : text[number]}
             user={submitted ? '' : user.email}
             submitted={submitted}
           />
