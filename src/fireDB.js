@@ -17,6 +17,7 @@ var config = {
   storageBucket: "survey-in-react.appspot.com",
   messagingSenderId: "62317409113"
 };
+
 var fireDB = firebase.initializeApp(config);
 
 export default fireDB;

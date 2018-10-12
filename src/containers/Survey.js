@@ -14,14 +14,28 @@ class Survey extends Component {
       questions: ['מיקום קשור',
         'עד כמה התוכן רלוונטי למקום?',
         'עד כמה התוכן מעניין?',
+        'כמה רלוונטי לתיירים',
         'תקציר התוכן',
         '#1 שאלת טריוויה',
         '#2 שאלת טריוויה',
         'הערות'],
+      constants: {
+        FIRST: 1,
+        PLACE: 1,
+        TEXT: 2,
+        USER: 3,
+        MANDATORY: 4,
+        SUMMARY: 7,
+        LAST: 18,
+        LOCATION: 19,
+        DATE: 23,
+      },
       answers: {},
       listWithPreviosAnswers:[],
       changed: false,
       getCurrentAnswers: this.getCurrentAnswers.bind(this),
+      // table: 'newData/',
+      table: 'version3/',
     }; // <- set up react state
   }
 
@@ -36,9 +50,10 @@ class Survey extends Component {
   addAnswers = (e, postNum) => {
     const { answers } = this.state;
     const { nextElementExistanse, showNext, toUndef, post, showEl } = this.props;
+    const { PLACE, MANDATORY, LOCATION, DATE } = this.state.constants;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
-    if(answers['4'] === undefined) // <- mandatory question
+    if(answers[ MANDATORY ] === undefined) // <- mandatory question
       showEl('negative', 250000000, false);
     else {
       let temporaryList = this.state.listWithPreviosAnswers; 
@@ -55,8 +70,8 @@ class Survey extends Component {
       let db = fireDB.database();
       let copy = this.state.answers;
 
-      if(answers['1'] !== post[1]){ // <- add a new post if place has been changed
-        let textsRef = db.ref('newData/');
+      if(answers[ PLACE ] !== post[ PLACE ]){ // <- add a new post if place has been changed
+        let textsRef = db.ref(this.state.table);
         let all;
         textsRef.on('value', snapshot => {
           all = snapshot.val();
@@ -65,11 +80,11 @@ class Survey extends Component {
         let newPost = all.length;
         textsRef.child(newPost).set(all[postNum]);
         postNum = newPost;
-        copy['18'] = '';
+        copy[ LOCATION ] = '';
       }
 
-      let postRef = db.ref(`newData/${postNum}`);
-      copy['22'] = new Date().toLocaleString("en-US");
+      let postRef = db.ref(this.state.table + `${postNum}`);
+      copy[ DATE ] = new Date().toLocaleString("en-US");
 
       postRef.update(copy); // <- send to db
       showEl('success', 1000, true);
@@ -91,12 +106,13 @@ class Survey extends Component {
   }
 
   getCurrentAnswers (post, user, changed) {
+    const { FIRST, LAST, SUMMARY, TEXT, USER } = this.state.constants;
     var currentAnswers = {};
-    for (var x = 1; x <= 17; x++)
+    for (var x = FIRST; x <= LAST; x++)
       currentAnswers[x] = post[x]; //<- set previous answers
-    if (post[6] === "")
-      currentAnswers[6] = post[2];
-    currentAnswers[3] = user;
+    if (post[ SUMMARY ] === "")
+      currentAnswers[ SUMMARY ] = post[ TEXT ];
+    currentAnswers[ USER ] = user;
     if(changed)
       return { answers: currentAnswers, changed: false }
     return { answers: currentAnswers }
@@ -147,41 +163,46 @@ class Survey extends Component {
             handleOptionChange={(e) => this.handleAnswer(5, e)}
             answer={answers['5']}
           />
-          <TextArea
+          <Radio
             question={questions[3]}
-            handleTextInput={(e) => this.handleAnswer(6, e)}
-            value={answers['6']}
-            rows= {'10'}
+            handleOptionChange={(e) => this.handleAnswer(6, e)}
+            answer={answers['6']}
           />
-
-          <TriviaQuestion
+          <TextArea
             question={questions[4]}
-            tooltip={'answer is..'}
-            numbers={[7, 8, 9, 10, 11]} 
-            handleTextInput={(e, number) => this.handleAnswer(number, e)}
-            value1={answers['7']}
-            value2={answers['8']}
-            value3={answers['9']}
-            value4={answers['10']}
-            value5={answers['11']}
+            handleTextInput={(e) => this.handleAnswer(7, e)}
+            value={answers['7']}
+            rows= {'10'}
           />
 
           <TriviaQuestion
             question={questions[5]}
             tooltip={'answer is..'}
-            numbers={[12, 13, 14, 15, 16]} 
+            numbers={[8, 9, 10, 11, 12]} 
             handleTextInput={(e, number) => this.handleAnswer(number, e)}
-            value1={answers['12']}
-            value2={answers['13']}
-            value3={answers['14']}
-            value4={answers['15']}
-            value5={answers['16']}
+            value1={answers['8']}
+            value2={answers['9']}
+            value3={answers['10']}
+            value4={answers['11']}
+            value5={answers['12']}
+          />
+
+          <TriviaQuestion
+            question={questions[6]}
+            tooltip={'answer is..'}
+            numbers={[13, 14, 15, 16, 17]} 
+            handleTextInput={(e, number) => this.handleAnswer(number, e)}
+            value1={answers['13']}
+            value2={answers['14']}
+            value3={answers['15']}
+            value4={answers['16']}
+            value5={answers['17']}
           />
 
           <TextArea
-            question={questions[6]}
-            handleTextInput={(e) => this.handleAnswer(17, e)}
-            value={answers['17']}
+            question={questions[7]}
+            handleTextInput={(e) => this.handleAnswer(18, e)}
+            value={answers['18']}
             rows= {'5'}
           />
 
