@@ -34,8 +34,8 @@ class Survey extends Component {
       listWithPreviosAnswers:[],
       changed: false,
       getCurrentAnswers: this.getCurrentAnswers.bind(this),
-      // table: 'newData/',
-      table: 'version3/',
+      table: 'newData/',
+      // table: 'version3/',  --> Developer's DB <--
     }; // <- set up react state
   }
 

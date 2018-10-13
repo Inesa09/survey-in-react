@@ -17,8 +17,8 @@ class App extends Component {
       text: [],
       previosIndexList: [],
       user : {},
-      // table: 'newData/',
-      table: 'version3/',
+      table: 'newData/',
+      // table: 'version3/', --> Developer's DB <--
     }; // <- set up react state
   }
 
