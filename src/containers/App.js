@@ -148,6 +148,8 @@ class App extends Component {
             nextElementExistanse={isNextElementExist}
             toUndef={this.toUndef}
             post={submitted ? '' : text[number]}
+            text={submitted ? '' : text[number][2]}
+            place={submitted ? '' : text[number][1]}
             user={submitted ? '' : user.email}
             submitted={submitted}
           />

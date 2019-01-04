@@ -53,7 +53,7 @@ class Survey extends Component {
     const { PLACE, MANDATORY, LOCATION, DATE } = this.state.constants;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
-    if(answers[ MANDATORY ] === undefined) // <- mandatory question
+    if(answers[ MANDATORY ] === "") // <- mandatory question
       showEl('negative', 250000000, false);
     else {
       let temporaryList = this.state.listWithPreviosAnswers; 
