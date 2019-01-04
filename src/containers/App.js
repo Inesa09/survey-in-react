@@ -17,8 +17,11 @@ class App extends Component {
       text: [],
       previosIndexList: [],
       user : {},
+      constants: {
+        DATE: 27,
+      },
       // table: 'newData/',
-      table: 'version3/', //--> Developer's DB <--
+      table: 'version4/', //--> Developer's DB <--
     }; // <- set up react state
   }
 
@@ -64,8 +67,9 @@ class App extends Component {
   }
 
   findNextUnsubmitedElement = (post) => {
-    for (let i = post + 1, size = Object.values(this.state.text).length; i < size; i++) {
-      if (this.state.text[i][23].length === 0) {
+    const {text, constants} = this.state;
+    for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
+      if (text[i][constants.DATE].length === 0) {
         return i;
       }
     }

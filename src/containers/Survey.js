@@ -11,31 +11,37 @@ class Survey extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      questions: ['מיקום קשור',
-        'עד כמה התוכן רלוונטי למקום?',
-        'עד כמה התוכן מעניין?',
-        'כמה רלוונטי לתיירים',
-        'תקציר התוכן',
-        '#1 שאלת טריוויה',
-        '#2 שאלת טריוויה',
-        'הערות'],
+      questions: {
+        PLACE: 'מיקום קשור',
+        TITLE: 'QUESTION TITLE',
+        PRE_IMG: 'Pre Question Image',
+        POST_IMG: 'Post Question Image',
+        DIFFICULTY: 'Difficulty',
+        PLACE_REL: 'עד כמה התוכן רלוונטי למקום?',
+        INTERESTING: 'עד כמה התוכן מעניין?',
+        TOURIST_REL: 'כמה רלוונטי לתיירים',
+        EDIT_TEXT: 'תקציר התוכן',
+        TRIVIA1: '#1 שאלת טריוויה',
+        TRIVIA2: '#2 שאלת טריוויה',
+        NOTES: 'הערות',
+      },
       constants: {
         FIRST: 1,
         PLACE: 1,
         TEXT: 2,
         USER: 3,
-        MANDATORY: 4,
-        SUMMARY: 7,
-        LAST: 18,
-        LOCATION: 19,
-        DATE: 23,
+        MANDATORY: 8,
+        SUMMARY: 11,
+        LAST: 22,
+        LOCATION: 23,
+        DATE: 27,
       },
       answers: {},
       listWithPreviosAnswers:[],
       changed: false,
       getCurrentAnswers: this.getCurrentAnswers.bind(this),
       // table: 'newData/',
-      table: 'version3/', // --> Developer's DB <--
+      table: 'version4/', // --> Developer's DB <--
     }; // <- set up react state
   }
 
@@ -53,7 +59,7 @@ class Survey extends Component {
     const { PLACE, MANDATORY, LOCATION, DATE } = this.state.constants;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
-    if(answers[ MANDATORY ] === "") // <- mandatory question
+    if(answers[ MANDATORY ].length === 0) // <- mandatory question
       showEl('negative', 250000000, false);
     else {
       let temporaryList = this.state.listWithPreviosAnswers; 
@@ -147,62 +153,86 @@ class Survey extends Component {
     (<div className="Survey">
         <form id='form'>
           <TextArea
-            question={questions[0]}
+            question={questions.PLACE}
             handleTextInput={(e) => this.handleAnswer(1, e)}
             value={answers['1']}
             rows= {'1'}
           />
+          <TextArea
+            question={questions.TITLE}
+            handleTextInput={(e) => this.handleAnswer(4, e)}
+            value={answers['4']}
+            rows= {'1'}
+          />
 
-          <Radio
-            question={questions[1]}
-            handleOptionChange={(e) => this.handleAnswer(4, e)}
-            answer={answers['4']}
-          />
-          <Radio
-            question={questions[2]}
-            handleOptionChange={(e) => this.handleAnswer(5, e)}
-            answer={answers['5']}
-          />
-          <Radio
-            question={questions[3]}
-            handleOptionChange={(e) => this.handleAnswer(6, e)}
-            answer={answers['6']}
+          <TextArea
+            question={questions.PRE_IMG}
+            handleTextInput={(e) => this.handleAnswer(5, e)}
+            value={answers['5']}
+            rows= {'1'}
           />
           <TextArea
-            question={questions[4]}
-            handleTextInput={(e) => this.handleAnswer(7, e)}
-            value={answers['7']}
+            question={questions.POST_IMG}
+            handleTextInput={(e) => this.handleAnswer(6, e)}
+            value={answers['6']}
+            rows= {'1'}
+          />
+
+          <Radio
+            question={questions.DIFFICULTY}
+            handleOptionChange={(e) => this.handleAnswer(7, e)}
+            answer={answers['7']}
+          />
+          <Radio
+            question={questions.PLACE_REL}
+            handleOptionChange={(e) => this.handleAnswer(8, e)}
+            answer={answers['8']}
+          />
+          <Radio
+            question={questions.INTERESTING}
+            handleOptionChange={(e) => this.handleAnswer(9, e)}
+            answer={answers['9']}
+          />
+          <Radio
+            question={questions.TOURIST_REL}
+            handleOptionChange={(e) => this.handleAnswer(10, e)}
+            answer={answers['10']}
+          />
+
+          <TextArea
+            question={questions.EDIT_TEXT}
+            handleTextInput={(e) => this.handleAnswer(11, e)}
+            value={answers['11']}
             rows= {'10'}
           />
 
           <TriviaQuestion
-            question={questions[5]}
+            question={questions.TRIVIA1}
             tooltip={'answer is..'}
-            numbers={[8, 9, 10, 11, 12]} 
+            numbers={[12, 13, 14, 15, 16]} 
             handleTextInput={(e, number) => this.handleAnswer(number, e)}
-            value1={answers['8']}
-            value2={answers['9']}
-            value3={answers['10']}
-            value4={answers['11']}
-            value5={answers['12']}
+            value1={answers['12']}
+            value2={answers['13']}
+            value3={answers['14']}
+            value4={answers['15']}
+            value5={answers['16']}
           />
-
           <TriviaQuestion
-            question={questions[6]}
+            question={questions.TRIVIA2}
             tooltip={'answer is..'}
-            numbers={[13, 14, 15, 16, 17]} 
+            numbers={[17, 18, 19, 20, 21]} 
             handleTextInput={(e, number) => this.handleAnswer(number, e)}
-            value1={answers['13']}
-            value2={answers['14']}
-            value3={answers['15']}
-            value4={answers['16']}
-            value5={answers['17']}
+            value1={answers['17']}
+            value2={answers['18']}
+            value3={answers['19']}
+            value4={answers['20']}
+            value5={answers['21']}
           />
 
           <TextArea
-            question={questions[7]}
-            handleTextInput={(e) => this.handleAnswer(18, e)}
-            value={answers['18']}
+            question={questions.NOTES}
+            handleTextInput={(e) => this.handleAnswer(22, e)}
+            value={answers['22']}
             rows= {'5'}
           />
 
