@@ -4,6 +4,7 @@ import Radio from '../components/Radio';
 import TextArea from '../components/TextArea';
 import SmallMessage from '../components/SmallMessage';
 import TriviaQuestion from '../components/TriviaQuestion';
+import ImgUploader from './ImgUploader';
 import '../css/Button.css';
 
 class Survey extends Component {
@@ -49,6 +50,13 @@ class Survey extends Component {
   handleAnswer = (question, e) => {
     let copy = this.state.answers;
     copy[question] = e.target.value;
+    this.setState({ answers: copy });
+  }
+
+  //Save image in the state
+  handleImgLoad = (question, img) => {
+    let copy = this.state.answers;
+    copy[question] = img;
     this.setState({ answers: copy });
   }
 
@@ -165,17 +173,15 @@ class Survey extends Component {
             rows= {'1'}
           />
 
-          <TextArea
-            question={questions.PRE_IMG}
-            handleTextInput={(e) => this.handleAnswer(5, e)}
-            value={answers['5']}
-            rows= {'1'}
+          <ImgUploader
+            tooltip={questions.PRE_IMG}
+            handleImgLoad={(newImg) => this.handleImgLoad(5, newImg)}
+            answer={answers['5']} // to remember image 
           />
-          <TextArea
-            question={questions.POST_IMG}
-            handleTextInput={(e) => this.handleAnswer(6, e)}
-            value={answers['6']}
-            rows= {'1'}
+          <ImgUploader
+            tooltip={questions.POST_IMG}
+            handleImgLoad={(newImg) => this.handleImgLoad(6, newImg)}
+            answer={answers['6']} // to remember image 
           />
 
           <Radio

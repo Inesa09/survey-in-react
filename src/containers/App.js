@@ -107,6 +107,10 @@ class App extends Component {
   }
 
   render() {
+    // for(var i = 1; i <= 100; i++){
+    //   fireDB.database().ref(`version4/${i}`).update({ 27: ''}); // <- send to db
+    // }
+
     if(this.state.user){
       const { post, text, previosIndexList, user } = this.state;
       let submitted = false;
