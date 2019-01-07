@@ -25,13 +25,13 @@ class ImgUploader extends Component {
       this.setState({ uploading: false, notImg: true });
     else {
       this.setState({ uploading: false, notImg: false, image: newImg });
-      this.props.handleImgLoad(this.state.image);
+      this.props.handleImgLoad(newImg);
     }
   }
 
   removeImg = () => {
     this.setState({ image: '' });
-    this.props.handleImgLoad(this.state.image);
+    this.props.handleImgLoad('');
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -63,6 +63,7 @@ class ImgUploader extends Component {
         case image !== '' && image !== undefined:
           return <Image img={image} removeImg={this.removeImg} />
         default:
+        // alert(image)
           return <ImgUpload tooltip={tooltip} uploadImg={this.uploadImg} />
       }
     }
