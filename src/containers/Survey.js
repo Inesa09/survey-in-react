@@ -60,6 +60,7 @@ class Survey extends Component {
     this.setState({ answers: copy });
   }
 
+    // ---> 1. NEW DB <---
   //Submit
   addAnswers = (e, postNum) => {
     const { answers } = this.state;

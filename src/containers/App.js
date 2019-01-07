@@ -25,6 +25,7 @@ class App extends Component {
     }; // <- set up react state
   }
 
+  // ---> 1. NEW DB <---
   authListener(){
     fireDB.auth().onAuthStateChanged((user) =>{
       console.log(user);
@@ -75,6 +76,7 @@ class App extends Component {
     }
   }
 
+    // ---> 2. NEW DB <---
   signOut() {
     fireDB.auth().signOut();
   }
@@ -99,6 +101,7 @@ class App extends Component {
     }
   }
 
+    // ---> 3. NEW DB <---
   componentDidMount() {
     fireDB.database().ref(this.state.table).on('value', snapshot => {
       this.setState({ text: snapshot.val() });

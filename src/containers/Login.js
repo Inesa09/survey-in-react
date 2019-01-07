@@ -19,6 +19,7 @@ class Login extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
+    // ---> 1. NEW DB <---
   login(e) {
     e.preventDefault();
     fireDB.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
@@ -27,6 +28,7 @@ class Login extends Component {
     });
   }
 
+    // ---> 2. NEW DB <---
   signup(e){
     e.preventDefault();
     fireDB.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
