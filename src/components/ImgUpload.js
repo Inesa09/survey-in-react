@@ -7,7 +7,7 @@ const ImgUpload = ({tooltip, uploadImg}) => {
         <div style={{
             display: 'flex',
             flexDirection: 'column',
-            margin: '30px',
+            margin: '10px',
         }}>
             <div className="ui icon header">
                 <i className="file image outline icon"></i>

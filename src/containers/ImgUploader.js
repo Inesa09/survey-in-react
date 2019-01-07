@@ -47,8 +47,8 @@ class ImgUploader extends Component {
     const content = () => {
       switch(true) {
         case uploading:
-          return <div className="ui active inverted dimmer">
-            <div className="ui indeterminate text loader">Preparing Image</div>
+          return <div class="ui active inverted dimmer">
+            <div class="ui indeterminate text loader">Preparing Image</div>
           </div>
         case notImg:
           return <div>
@@ -63,13 +63,12 @@ class ImgUploader extends Component {
         case image !== '' && image !== undefined:
           return <Image img={image} removeImg={this.removeImg} />
         default:
-        // alert(image)
           return <ImgUpload tooltip={tooltip} uploadImg={this.uploadImg} />
       }
     }
 
     return (
-      <div class="ui placeholder segment" style={{ margin:"30px" }}> 
+      <div class="ui placeholder segment" style={{ margin:"30px", minHeight:'100px' }}> 
         {content()} 
       </div>
     )
