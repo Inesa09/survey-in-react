@@ -103,17 +103,33 @@ class App extends Component {
 
     // ---> 3. NEW DB <---
   componentDidMount() {
-    fireDB.database().ref(this.state.table).on('value', snapshot => {
-      this.setState({ text: snapshot.val() });
-    });
-    this.authListener();
+
+    // fireDB.database().ref(this.state.table).on('value', snapshot => {
+    //   this.setState({ text: snapshot.val() });
+    // });
+    // this.authListener();
+    // console.log("12313");
+    // console.log(this.state.text);
+    let base64 = require('base-64');
+
+    let username = 'shinom';
+    let password = 'iloveToRide';
+
+    let headers = new Headers();
+    headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
+
+    fetch('https://roadio-master.appspot.com/v1/get_user_items?user_id=management_user&limit=-1', {method:'GET',headers: headers,})
+     .then(response =>response.json())
+     .then(data => this.setState({ text: data}));
+     console.log(this.state.text);
+
   }
 
   render() {
     // for(var i = 1; i <= 100; i++){
     //   fireDB.database().ref(`version4/${i}`).update({ 27: ''}); // <- send to db
     // }
-
+    console.log(this.state.text);
     if(this.state.user){
       const { post, text, previosIndexList, user } = this.state;
       let submitted = false;
