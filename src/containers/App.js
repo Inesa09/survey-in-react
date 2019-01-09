@@ -70,7 +70,9 @@ class App extends Component {
   findNextUnsubmitedElement = (post) => {
     const {text, constants} = this.state;
     for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
-      if (text[i].submission_time === undefined) {
+      console.log(text[i].submission_time);
+      if (text[i].submission_time === null) {
+        console.log(1640970940540570457547809);
         return i;
       }
     }
@@ -142,7 +144,7 @@ class App extends Component {
         number = post;
       }
       let isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
-    
+      console.log(number);
       if (text.length === 0)  //Loading
         return (
 
@@ -161,7 +163,8 @@ class App extends Component {
         hideDiv = false;
       }
       
-
+      console.log(text[number].raw_text);
+      console.log(text[number].place);
       return (
         <Top user={user.email} signOut={this.signOut}>
           <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'

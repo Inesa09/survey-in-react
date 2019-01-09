@@ -5,7 +5,7 @@ import LightText from './LightText';
 const Text = ({text,heading}) => {
     return (
         <div id= "text"> 
-            <LightText text={text} heading={heading}/>
+            <LightText text={text === null ? '' : text} heading={heading}/>
         </div>
     )
 };
