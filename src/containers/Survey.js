@@ -60,7 +60,7 @@ class Survey extends Component {
     this.setState({ answers: copy });
   }
 
-    // ---> 1. NEW DB <---
+    // ---> 1. GCP <---
   //Submit
   addAnswers = (e, postNum) => {
     const { answers } = this.state;
@@ -68,7 +68,7 @@ class Survey extends Component {
     const { PLACE, MANDATORY, LOCATION, DATE } = this.state.constants;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
-    if(answers[ MANDATORY ].length === 0) // <- mandatory question
+    if(answers.place_relevancy.length === 0) // <- mandatory question
       showEl('negative', 250000000, false);
     else {
       let temporaryList = this.state.listWithPreviosAnswers; 

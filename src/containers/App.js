@@ -25,7 +25,7 @@ class App extends Component {
     }; // <- set up react state
   }
 
-  // ---> 1. NEW DB <---
+  // ---> 1. FIREBASE DB <---
   authListener(){
     fireDB.auth().onAuthStateChanged((user) =>{
       console.log(user);
@@ -76,7 +76,7 @@ class App extends Component {
     }
   }
 
-    // ---> 2. NEW DB <---
+    // ---> 2. FIREBASE DB <---
   signOut() {
     fireDB.auth().signOut();
   }
@@ -101,7 +101,7 @@ class App extends Component {
     }
   }
 
-    // ---> 3. NEW DB <---
+    // ---> 3. GCP <---
   componentDidMount() {
 
     // fireDB.database().ref(this.state.table).on('value', snapshot => {
@@ -129,6 +129,45 @@ class App extends Component {
     // for(var i = 1; i <= 100; i++){
     //   fireDB.database().ref(`version4/${i}`).update({ 27: ''}); // <- send to db
     // }
+
+    let username = 'shinom';
+    let password = 'iloveToRide';
+
+    let headers = new Headers();
+    headers.set('Authorization', 'Basic ' + btoa(username + ":" + password));
+   headers.set('Accept', 'application/json');
+   headers.set('Content-Type', 'application/json');
+
+
+   for (let i = 0; i < Object.values(this.state.text).length - 390; i++) {
+     let current = this.state.text[i];
+     current.lon = current.lon.toString();
+     current.lat = current.lat.toString();
+     delete current.datastore_id;
+     current.story = "aaabbbccc";
+
+    //  if(current.story  === "aaabbbccc"){
+    //    console.log("test" + current);
+    //  }
+
+
+
+    //  console.log(JSON.stringify(current));
+
+    //  fetch('https://roadio-master.appspot.com/v1/edit_item', {
+    //    method: 'POST',
+    //    headers: headers,
+    //    body: JSON.stringify(current)
+    //  }).then(res => console.log(res.status))
+    //    // .then(response => console.log('Success:', JSON.stringify(response)))
+    //    .catch(error => console.error('Error:', error));
+   }
+
+
+
+
+
+
     console.log(this.state.text);
     if(this.state.user){
       const { post, text, previosIndexList, user } = this.state;
