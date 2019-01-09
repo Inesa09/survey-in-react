@@ -18,7 +18,7 @@ class App extends Component {
       previosIndexList: [],
       user : {},
       constants: {
-        DATE: 27,
+        DATE: 29,
       },
       // table: 'newData/',
       table: 'version4/', //--> Developer's DB <--
@@ -70,7 +70,7 @@ class App extends Component {
   findNextUnsubmitedElement = (post) => {
     const {text, constants} = this.state;
     for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
-      if (text[i][constants.DATE].length === 0) {
+      if (text[i].submission_time === undefined) {
         return i;
       }
     }
@@ -120,7 +120,7 @@ class App extends Component {
 
     fetch('https://roadio-master.appspot.com/v1/get_user_items?user_id=management_user&limit=-1', {method:'GET',headers: headers,})
      .then(response =>response.json())
-     .then(data => this.setState({ text: data}));
+     .then(data => this.setState({ text: data.items}));
      console.log(this.state.text);
 
   }
@@ -130,6 +130,9 @@ class App extends Component {
     //   fireDB.database().ref(`version4/${i}`).update({ 27: ''}); // <- send to db
     // }
     console.log(this.state.text);
+    console.log(this.state.text.items);
+    if(this.state.text.items != undefined)
+    console.log(this.state.text.items[2][29]);
     if(this.state.user){
       const { post, text, previosIndexList, user } = this.state;
       let submitted = false;
@@ -164,8 +167,8 @@ class App extends Component {
           <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
             text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
           <div className={hideDiv ? 'hidden' : ''}>
-            <Heading heading={hideDiv ? '' : `תוכן - בהקשר ל ${text[number][1]}`} />
-            <Text text={hideDiv ? '' : text[number][2]} heading={hideDiv ? '' : text[number][1]} />
+            <Heading heading={hideDiv ? '' : `תוכן - בהקשר ל ${text[number].place}`} />
+            <Text text={hideDiv ? '' : text[number].raw_text} heading={hideDiv ? '' : text[number].place} />
             <Heading heading={"שדות למילוי"} />
           </div>
 
