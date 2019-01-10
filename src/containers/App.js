@@ -70,9 +70,9 @@ class App extends Component {
   findNextUnsubmitedElement = (post) => {
     const {text, constants} = this.state;
     for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
-      console.log(text[i].submission_time);
+      // console.log(text[i].submission_time);
       if (text[i].submission_time === null) {
-        console.log(1640970940540570457547809);
+        // console.log(1640970940540570457547809);
         return i;
       }
     }
@@ -132,21 +132,21 @@ class App extends Component {
     //   fireDB.database().ref(`version4/${i}`).update({ 27: ''}); // <- send to db
     // }
 
-    let username = 'shinom';
-    let password = 'iloveToRide';
+  //   let username = 'shinom';
+  //   let password = 'iloveToRide';
 
-    let headers = new Headers();
-    headers.set('Authorization', 'Basic ' + btoa(username + ":" + password));
-   headers.set('Accept', 'application/json');
-   headers.set('Content-Type', 'application/json');
+  //   let headers = new Headers();
+  //   headers.set('Authorization', 'Basic ' + btoa(username + ":" + password));
+  //  headers.set('Accept', 'application/json');
+  //  headers.set('Content-Type', 'application/json');
 
 
-   for (let i = 0; i < Object.values(this.state.text).length - 390; i++) {
-     let current = this.state.text[i];
-     current.lon = current.lon.toString();
-     current.lat = current.lat.toString();
-     delete current.datastore_id;
-     current.story = "aaabbbccc";
+  //  for (let i = 0; i < Object.values(this.state.text).length - 390; i++) {
+  //    let current = this.state.text[i];
+  //    current.lon = current.lon.toString();
+  //    current.lat = current.lat.toString();
+  //    delete current.datastore_id;
+  //    current.story = "aaabbbccc";
 
     //  if(current.story  === "aaabbbccc"){
     //    console.log("test" + current);
@@ -163,17 +163,17 @@ class App extends Component {
     //  }).then(res => console.log(res.status))
     //    // .then(response => console.log('Success:', JSON.stringify(response)))
     //    .catch(error => console.error('Error:', error));
-   }
+  //  }
 
 
 
 
 
 
-    console.log(this.state.text);
-    console.log(this.state.text.items);
-    if(this.state.text.items != undefined)
-    console.log(this.state.text.items[2][29]);
+    // console.log(this.state.text);
+    // console.log(this.state.text.items);
+    // if(this.state.text.items !== undefined)
+    // console.log(this.state.text.items[2][29]);
     if(this.state.user){
       const { post, text, previosIndexList, user } = this.state;
       let submitted = false;
@@ -183,7 +183,7 @@ class App extends Component {
         number = post;
       }
       let isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
-      console.log(number);
+      // console.log(number);
       if (text.length === 0)  //Loading
         return (
 
@@ -202,8 +202,8 @@ class App extends Component {
         hideDiv = false;
       }
       
-      console.log(text[number].raw_text);
-      console.log(text[number].place);
+      // console.log(text[number].raw_text);
+      // console.log(text[number].place);
       return (
         <Top user={user.email} signOut={this.signOut}>
           <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
@@ -220,14 +220,12 @@ class App extends Component {
             nextElementExistanse={isNextElementExist}
             toUndef={this.toUndef}
             post={submitted ? '' : text[number]}
-            text={submitted ? '' : text[number][2]}
-            place={submitted ? '' : text[number][1]}
             user={submitted ? '' : user.email}
             submitted={submitted}
           />
         </Top>
       )
-      }
+    }
     else{
       return (
         <Login showEl={this.showEl} hideEl={this.hideEl}/>

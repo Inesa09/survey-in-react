@@ -36,8 +36,15 @@ class Survey extends Component {
         LAST: 22,
         LOCATION: 23,
         DATE: 27,
+
+        QUESTION: 0, 
+        RIGHT_ANS: 1, 
+        WRONG_ANS1: 2, 
+        WRONG_ANS2: 3, 
+        WRONG_ANS3: 4,
       },
-      answers: {},
+      answers: this.props.post,
+      trivias: [ [null, null, null, null, null], [null, null, null, null, null] ],
       listWithPreviosAnswers:[],
       changed: false,
       getCurrentAnswers: this.getCurrentAnswers.bind(this),
@@ -53,10 +60,16 @@ class Survey extends Component {
     this.setState({ answers: copy });
   }
 
+  handleAnswerArray = (question, e) => {
+    let copy = this.state.answers;
+    copy[question].push(e.target.value);
+    this.setState({ answers: copy });
+  }
+
   //Save image in the state
   handleImgLoad = (question, img) => {
     let copy = this.state.answers;
-    copy[question] = img;
+    copy[question].push(img);
     this.setState({ answers: copy });
   }
 
@@ -82,29 +95,79 @@ class Survey extends Component {
         toUndef(postNum, e);
       }
 
-      let db = fireDB.database();
+      // let db = fireDB.database();
       let copy = this.state.answers;
 
-      if(answers[ PLACE ] !== post[ PLACE ]){ // <- add a new post if place has been changed
-        let textsRef = db.ref(this.state.table);
-        let all;
-        textsRef.on('value', snapshot => {
-          all = snapshot.val();
-        });
+      //TODO ---> WAIT FOR DIMA ---> lat & lon - STRINGS!
 
-        let newPost = all.length;
-        textsRef.child(newPost).set(all[postNum]);
-        postNum = newPost;
-        copy[ LOCATION ] = '';
-      }
+      // if(answers[ PLACE ] !== post[ PLACE ]){ // <- add a new post if place has been changed
+      //   let textsRef = db.ref(this.state.table);
+      //   let all;
+      //   textsRef.on('value', snapshot => {
+      //     all = snapshot.val();
+      //   });
 
-      let postRef = db.ref(this.state.table + `${postNum}`);
-      copy[ DATE ] = new Date().toLocaleString("en-US");
+      //   let newPost = all.length;
+      //   textsRef.child(newPost).set(all[postNum]);
+      //   postNum = newPost;
+      //   copy[ LOCATION ] = '';
+      // }
 
-      postRef.update(copy); // <- send to db
+      // let postRef = db.ref(this.state.table + `${postNum}`);
+      copy.submission_time = new Date().toLocaleString("en-US");
+
+      // postRef.update(copy); // <- send to db
+      this.processTrivias(copy);  // <- process trivias and send to db
+
       showEl('success', 1000, true);
       this.setState( {changed: true});
     }
+  }
+
+  processTrivias = (data) => {
+    const trivias = this.state.trivias;
+    const { QUESTION, RIGHT_ANS, WRONG_ANS1, WRONG_ANS2, WRONG_ANS3 } = this.state.constants;
+    let sent = 0;
+
+    for(let i=0; i < trivias.length; i++){
+      for(let j=0; j < trivias[i].length; i++){
+        if (trivias[i][j] !== null){
+          let copy = data;
+          sent++;
+          if(sent === 1){
+            delete copy.datastore_id;     // ---> new post
+          }
+
+          copy.question = trivias[i][QUESTION];
+          copy.right_answer = trivias[i][RIGHT_ANS];
+          copy.answers = [ trivias[i][RIGHT_ANS], trivias[i][WRONG_ANS1], trivias[i][WRONG_ANS2], trivias[i][WRONG_ANS3] ];
+
+          this.updatePostInDB(copy);
+          break;
+        }
+      }
+    }
+
+    if(sent === 0){
+      this.updatePostInDB(data);
+    }
+  }
+
+  updatePostInDB = (data) => {
+    let username = 'shinom';
+    let password = 'iloveToRide';
+
+    let headers = new Headers();
+    headers.set('Authorization', 'Basic ' + btoa(username + ":" + password));
+    headers.set('Accept', 'application/json');
+    headers.set('Content-Type', 'application/json');
+
+     fetch('https://roadio-master.appspot.com/v1/edit_item', {
+       method: 'POST',
+       headers: headers,
+       body: JSON.stringify(data)
+     }).then(res => console.log('Status: ', res.status))
+       .catch(error => console.error('Error: ', error));
   }
   
   //Show previous answers
@@ -136,19 +199,20 @@ class Survey extends Component {
   //react lifecycle methods
   componentDidMount = () => {
     const { post, user } = this.props;
-    this.setState( this.state.getCurrentAnswers(post, user, false) );
+    // this.setState( this.state.getCurrentAnswers(post, user, false) ); ---> do we need?
   }
 
   static getDerivedStateFromProps(props, state) {
     if (state.changed){
       const { post, user } = props
-      return state.getCurrentAnswers(post, user, true);
+      // return state.getCurrentAnswers(post, user, true); ---> do we need?
     } return null;
   }
 
   render() {
-    const { questions, answers } = this.state;
+    const { questions, answers, trivias } = this.state;
     const { postNum, numberOfPreviousElemnts, submitted } = this.props;
+    const { QUESTION, RIGHT_ANS, WRONG_ANS1, WRONG_ANS2, WRONG_ANS3 } = this.state.constants;
 
     return submitted ?
     (<button className={numberOfPreviousElemnts > 0 ?
@@ -163,83 +227,83 @@ class Survey extends Component {
         <form id='form'>
           <TextArea
             question={questions.PLACE}
-            handleTextInput={(e) => this.handleAnswer(1, e)}
-            value={answers['1']}
+            handleTextInput={(e) => this.handleAnswer("place", e)} // ---> handleAnswerPlace ???
+            value={answers["place"]}
             rows= {'1'}
           />
           <TextArea
             question={questions.TITLE}
-            handleTextInput={(e) => this.handleAnswer(4, e)}
-            value={answers['4']}
+            handleTextInput={(e) => this.handleAnswerArray('labels', e)}
+            value={answers['labels']}
             rows= {'1'}
           />
 
           <ImgUploader
             tooltip={questions.PRE_IMG}
-            handleImgLoad={(newImg) => this.handleImgLoad(5, newImg)}
-            answer={answers['5']} // to remember image 
+            handleImgLoad={(newImg) => this.handleImgLoad('question_images', newImg)}
+            answer={answers['question_images']} // to remember image 
           />
           <ImgUploader
             tooltip={questions.POST_IMG}
-            handleImgLoad={(newImg) => this.handleImgLoad(6, newImg)}
-            answer={answers['6']} // to remember image 
+            handleImgLoad={(newImg) => this.handleImgLoad('story_images', newImg)}
+            answer={answers['story_images']} // to remember image 
           />
 
           <Radio
             question={questions.DIFFICULTY}
-            handleOptionChange={(e) => this.handleAnswer(7, e)}
-            answer={answers['7']}
+            handleOptionChange={(e) => this.handleAnswer('difficulty', e)}
+            answer={answers['difficulty']}
           />
           <Radio
             question={questions.PLACE_REL}
-            handleOptionChange={(e) => this.handleAnswer(8, e)}
-            answer={answers['8']}
+            handleOptionChange={(e) => this.handleAnswer('place_relevancy', e)}
+            answer={answers['place_relevancy']}
           />
           <Radio
             question={questions.INTERESTING}
-            handleOptionChange={(e) => this.handleAnswer(9, e)}
-            answer={answers['9']}
+            handleOptionChange={(e) => this.handleAnswer('score', e)}
+            answer={answers['score']}
           />
           <Radio
             question={questions.TOURIST_REL}
-            handleOptionChange={(e) => this.handleAnswer(10, e)}
-            answer={answers['10']}
+            handleOptionChange={(e) => this.handleAnswer('tourist_relevancy', e)}
+            answer={answers['tourist_relevancy']}
           />
 
           <TextArea
             question={questions.EDIT_TEXT}
-            handleTextInput={(e) => this.handleAnswer(11, e)}
-            value={answers['11']}
+            handleTextInput={(e) => this.handleAnswer('story', e)}
+            value={answers['story']}
             rows= {'10'}
           />
 
           <TriviaQuestion
             question={questions.TRIVIA1}
             tooltip={'answer is..'}
-            numbers={[12, 13, 14, 15, 16]} 
+            numbers={[QUESTION, RIGHT_ANS, WRONG_ANS1, WRONG_ANS2, WRONG_ANS3]} 
             handleTextInput={(e, number) => this.handleAnswer(number, e)}
-            value1={answers['12']}
-            value2={answers['13']}
-            value3={answers['14']}
-            value4={answers['15']}
-            value5={answers['16']}
+            value1={trivias[0][QUESTION]}
+            value2={trivias[0][RIGHT_ANS]}
+            value3={trivias[0][WRONG_ANS1]}
+            value4={trivias[0][WRONG_ANS2]}
+            value5={trivias[0][WRONG_ANS3]}
           />
           <TriviaQuestion
             question={questions.TRIVIA2}
             tooltip={'answer is..'}
-            numbers={[17, 18, 19, 20, 21]} 
+            numbers={[QUESTION, RIGHT_ANS, WRONG_ANS1, WRONG_ANS2, WRONG_ANS3]} 
             handleTextInput={(e, number) => this.handleAnswer(number, e)}
-            value1={answers['17']}
-            value2={answers['18']}
-            value3={answers['19']}
-            value4={answers['20']}
-            value5={answers['21']}
+            value1={trivias[1][QUESTION]}
+            value2={trivias[1][RIGHT_ANS]}
+            value3={trivias[1][WRONG_ANS1]}
+            value4={trivias[1][WRONG_ANS2]}
+            value5={trivias[1][WRONG_ANS3]}
           />
 
           <TextArea
             question={questions.NOTES}
-            handleTextInput={(e) => this.handleAnswer(22, e)}
-            value={answers['22']}
+            handleTextInput={(e) => this.handleAnswer('notes', e)}
+            value={answers['notes']}
             rows= {'5'}
           />
 
