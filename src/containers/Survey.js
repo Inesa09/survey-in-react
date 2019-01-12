@@ -52,7 +52,7 @@ class Survey extends Component {
       table: 'version4/', // --> Developer's DB <--
     }; // <- set up react state
 
-    alert("CONSTRUCTOR");
+    // alert("CONSTRUCTOR");
   }
 
   setTrivias = (change) => {
@@ -64,11 +64,11 @@ class Survey extends Component {
   setTrivia = (triviaNum, change) => {
     let trivia = this.getTriviaByNum(triviaNum);
     change[trivia] =  {
-      question: null,
-      right_answer: null,
-      wrong_answer1: null,
-      wrong_answer2: null,
-      wrong_answer3: null,
+      question: undefined,
+      right_answer: undefined,
+      wrong_answer1: undefined,
+      wrong_answer2: undefined,
+      wrong_answer3: undefined,
     };
     return change;
     // console.log("SETTING")
@@ -144,7 +144,7 @@ class Survey extends Component {
       }
 
       // let db = fireDB.database();
-      let copy = this.state.answers;
+      let copy = Object.assign({}, this.state.answers);
 
       //TODO ---> WAIT FOR DIMA ---> lat & lon - STRINGS!
       copy = this.processLocation(copy);
@@ -186,36 +186,70 @@ class Survey extends Component {
   }
 
   processTrivias = (answers) => {
-    let answToDB = Object.assign({}, answers);
-    delete answToDB.trivia1;
-    delete answToDB.trivia2;
+    let trivias = [answers.trivia1, answers.trivia2];
+
+    delete answers.trivia1;
+    delete answers.trivia2;
 
     let sent = false;
-    let trivias = ['trivia1', 'trivia2'];
 
-    for(var trivia in trivias){
-      let index = trivias[trivia];
-      let tr = answers[index];
-
+    trivias.forEach(function func(tr){
       for(var prop in tr){
-        if(tr[prop] != null){
-          answToDB.question = tr['question'];
-          answToDB.right_answer = tr['right_answer'];
-          answToDB.answers = [ tr['right_answer'], tr['wrong_answer1'], tr['wrong_answer2'], tr['wrong_answer3'] ];
-
+        if(tr[prop] !== undefined){
+          answers.question = tr['question'];
+          console.log(tr, answers.question);
+          console.log(tr, answers);
+          answers.right_answer = tr['right_answer'];
+          answers.answers = [ tr['right_answer'], tr['wrong_answer1'], tr['wrong_answer2'], tr['wrong_answer3'] ];
           if(sent){
-            delete answToDB.datastore_id;
+            delete answers.datastore_id;
           }
 
-          this.updatePostInDB(answToDB);
+          // console.log(tr);
+          // console.log(trivia, answToDB);
+          // this.updatePostInDB(answToDB);
           sent = true;
           break;
         }
       }
-    }
+    });
+
+
+
+
+    // let answToDB = Object.assign({}, answers);
+    // delete answToDB.trivia1;
+    // delete answToDB.trivia2;
+
+    // let sent = false;
+    // let trivias = ['trivia1', 'trivia2'];
+
+    // trivias.forEach(function func(trivia){
+    //   // let index = trivias[trivia];
+    //   let tr = answers[trivia];
+
+    //   for(var prop in tr){
+    //     if(tr[prop] !== null){
+    //       answToDB.question = tr['question'];
+    //       console.log(trivia, answToDB.question);
+    //       console.log(trivia, answToDB);
+    //       answToDB.right_answer = tr['right_answer'];
+    //       answToDB.answers = [ tr['right_answer'], tr['wrong_answer1'], tr['wrong_answer2'], tr['wrong_answer3'] ];
+    //       if(sent){
+    //         delete answToDB.datastore_id;
+    //       }
+
+    //       // console.log(tr);
+    //       // console.log(trivia, answToDB);
+    //       // this.updatePostInDB(answToDB);
+    //       sent = true;
+    //       break;
+    //     }
+    //   }
+    // });
 
     if(!sent){
-      this.updatePostInDB(answToDB);
+      this.updatePostInDB(answers);
     }
   }
 
