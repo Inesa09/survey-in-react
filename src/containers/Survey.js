@@ -43,7 +43,7 @@ class Survey extends Component {
         // WRONG_ANS2: 3, 
         // WRONG_ANS3: 4,
       },
-      answers: this.props.post,
+      answers: this.setTrivias(this.props.post),
       // trivias: [ [], [] ],
       listWithPreviosAnswers:[],
       changed: false,
@@ -52,8 +52,26 @@ class Survey extends Component {
       table: 'version4/', // --> Developer's DB <--
     }; // <- set up react state
 
-    this.setTrivia(1);
-    this.setTrivia(2);
+    alert("CONSTRUCTOR");
+  }
+
+  setTrivias = (change) => {
+    for (let i = 1; i < 3; i++){
+      change = this.setTrivia(i, change);
+    } return change;
+  }
+
+  setTrivia = (triviaNum, change) => {
+    let trivia = this.getTriviaByNum(triviaNum);
+    change[trivia] =  {
+      question: null,
+      right_answer: null,
+      wrong_answer1: null,
+      wrong_answer2: null,
+      wrong_answer3: null,
+    };
+    return change;
+    // console.log("SETTING")
   }
 
   getTriviaByNum = (num) => {
@@ -68,24 +86,18 @@ class Survey extends Component {
     return trivia;
   }
 
-  setTrivia = (triviaNum) => {
-    let trivia = this.getTriviaByNum(triviaNum);
-    let copy = this.state.answers;
-    copy[trivia] =  {
-      question: null,
-      right_answer: null,
-      wrong_answer1: null,
-      wrong_answer2: null,
-      wrong_answer3: null,
-    };
-    this.setState({ answers: copy });
-    // console.log("SETTING")
-  }
+
 
   //Save answer in the state
   handleAnswer = (question, e) => {
     let copy = this.state.answers;
-    copy[question] = e.target.value;
+    let result = e.target.value;
+
+    if(!isNaN(result)){
+      result = parseInt(result);
+    }
+
+    copy[question] = result;
     this.setState({ answers: copy });
   }
 
@@ -101,7 +113,7 @@ class Survey extends Component {
     copy[trivia][question] = e.target.value;
     this.setState({ answers: copy });
 
-    console.log("TRIVIA: " + this.state.answers);
+    // console.log("TRIVIA: ", this.state.answers);
   }
 
   //Save image in the state
@@ -135,7 +147,7 @@ class Survey extends Component {
       let copy = this.state.answers;
 
       //TODO ---> WAIT FOR DIMA ---> lat & lon - STRINGS!
-      this.processLocation();
+      copy = this.processLocation(copy);
       
       // let postRef = db.ref(this.state.table + `${postNum}`);
       copy.submission_time = new Date().toLocaleString("en-US");
@@ -154,7 +166,7 @@ class Survey extends Component {
     this.setState({ listWithPreviosAnswers: temporaryList });
   }
 
-  processLocation = () => {
+  processLocation = (answers) => {
     // if(answers[ PLACE ] !== post[ PLACE ]){ // <- add a new post if place has been changed
       //   let textsRef = db.ref(this.state.table);
       //   let all;
@@ -167,36 +179,43 @@ class Survey extends Component {
       //   postNum = newPost;
       //   copy[ LOCATION ] = '';
       // }
+
+    answers.lon = answers.lon.toString();
+    answers.lat = answers.lat.toString();
+    return answers;
   }
 
-  processTrivias = (data) => {
-    const trivias = this.state.trivias;
-    const { QUESTION, RIGHT_ANS, WRONG_ANS1, WRONG_ANS2, WRONG_ANS3 } = this.state.constants;
-    let sent = 0;
+  processTrivias = (answers) => {
+    let answToDB = Object.assign({}, answers);
+    delete answToDB.trivia1;
+    delete answToDB.trivia2;
 
-    if (trivias === undefined){
-      console.log("hhhhh")
-      this.updatePostInDB(data);
-      console.log("hhhhh")
-    } else {
-      for(let i=0; i < trivias.length; i++){
-        for(let j=0; j < trivias[i].length; i++){
-          if (trivias[i][j] !== null){
-            let copy = data;
-            sent++;
-            if(sent === 1){
-              delete copy.datastore_id;     // ---> new post
-            }
+    let sent = false;
+    let trivias = ['trivia1', 'trivia2'];
 
-            copy.question = trivias[i][QUESTION];
-            copy.right_answer = trivias[i][RIGHT_ANS];
-            copy.answers = [ trivias[i][RIGHT_ANS], trivias[i][WRONG_ANS1], trivias[i][WRONG_ANS2], trivias[i][WRONG_ANS3] ];
+    for(var trivia in trivias){
+      let index = trivias[trivia];
+      let tr = answers[index];
 
-            this.updatePostInDB(copy);
-            break;
+      for(var prop in tr){
+        if(tr[prop] != null){
+          answToDB.question = tr['question'];
+          answToDB.right_answer = tr['right_answer'];
+          answToDB.answers = [ tr['right_answer'], tr['wrong_answer1'], tr['wrong_answer2'], tr['wrong_answer3'] ];
+
+          if(sent){
+            delete answToDB.datastore_id;
           }
+
+          this.updatePostInDB(answToDB);
+          sent = true;
+          break;
         }
       }
+    }
+
+    if(!sent){
+      this.updatePostInDB(answToDB);
     }
   }
 
@@ -210,12 +229,15 @@ class Survey extends Component {
     headers.set('Content-Type', 'application/json');
 
     console.log("UPDATE: ", data);
+    const toDB = JSON.stringify(data);
+    // const toDB = JSON.stringify({ item: data });
 
      fetch('https://roadio-master.appspot.com/v1/edit_item', {
        method: 'POST',
        headers: headers,
-       body: JSON.stringify({ item: data })
-     }).then(res => console.log('Status: ', res.status))
+       body: toDB
+    //  }).then(res => console.log('Status: ', res.status))
+     }).then(res => console.log(res))
        .catch(error => console.error('Error: ', error));
   }
   

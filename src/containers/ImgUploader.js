@@ -72,7 +72,7 @@ class ImgUploader extends Component {
     }
 
     return (
-      <div class="ui placeholder segment" style={{ margin:"30px", minHeight:'100px' }}> 
+      <div className="ui placeholder segment" style={{ margin:"30px", minHeight:'100px' }}> 
         {content()} 
       </div>
     )
