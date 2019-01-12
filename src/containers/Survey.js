@@ -26,33 +26,13 @@ class Survey extends Component {
         TRIVIA2: '#2 שאלת טריוויה',
         NOTES: 'הערות',
       },
-      constants: {
-        FIRST: 1,
-        PLACE: 1,
-        TEXT: 2,
-        USER: 3,
-        MANDATORY: 8,
-        SUMMARY: 11,
-        LAST: 22,
-        LOCATION: 23,
-        DATE: 27,
-
-        // QUESTION: 0, 
-        // RIGHT_ANS: 1, 
-        // WRONG_ANS1: 2, 
-        // WRONG_ANS2: 3, 
-        // WRONG_ANS3: 4,
-      },
       answers: this.setTrivias(this.props.post),
-      // trivias: [ [], [] ],
       listWithPreviosAnswers:[],
       changed: false,
       getCurrentAnswers: this.getCurrentAnswers.bind(this),
       // table: 'newData/',
       table: 'version4/', // --> Developer's DB <--
     }; // <- set up react state
-
-    // alert("CONSTRUCTOR");
   }
 
   setTrivias = (change) => {
@@ -71,7 +51,6 @@ class Survey extends Component {
       wrong_answer3: undefined,
     };
     return change;
-    // console.log("SETTING")
   }
 
   getTriviaByNum = (num) => {
@@ -112,8 +91,6 @@ class Survey extends Component {
     let trivia = this.getTriviaByNum(triviaNum);
     copy[trivia][question] = e.target.value;
     this.setState({ answers: copy });
-
-    // console.log("TRIVIA: ", this.state.answers);
   }
 
   //Save image in the state
@@ -128,7 +105,6 @@ class Survey extends Component {
   addAnswers = (e, postNum) => {
     const { answers } = this.state;
     const { nextElementExistanse, showNext, toUndef, post, showEl } = this.props;
-    // const { PLACE, MANDATORY, LOCATION, DATE } = this.state.constants;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
     if(answers.place_relevancy === null) // <- mandatory question
@@ -193,64 +169,52 @@ class Survey extends Component {
 
     let sent = false;
 
-    trivias.forEach(function func(tr){
+    let toDB = [];
+    for(var i in trivias){
+      
+      let tr = trivias[i];
       for(var prop in tr){
-        if(tr[prop] !== undefined){
-          answers.question = tr['question'];
-          console.log(tr, answers.question);
-          console.log(tr, answers);
-          answers.right_answer = tr['right_answer'];
-          answers.answers = [ tr['right_answer'], tr['wrong_answer1'], tr['wrong_answer2'], tr['wrong_answer3'] ];
-          if(sent){
-            delete answers.datastore_id;
-          }
 
-          // console.log(tr);
-          // console.log(trivia, answToDB);
-          // this.updatePostInDB(answToDB);
+        if(tr[prop] !== undefined){
+          let newAn = Object.assign({}, answers);
+          const pushIfExist = this.pushIfExist;
+
+          newAn.question = pushIfExist(newAn.question, tr['question']);
+          newAn.right_answer = pushIfExist(newAn.right_answer, tr['right_answer']);
+          newAn.answers = [];
+          newAn.answers = pushIfExist(newAn.answers, tr['right_answer'], true);
+          newAn.answers = pushIfExist(newAn.answers, tr['wrong_answer1'], true);
+          newAn.answers = pushIfExist(newAn.answers, tr['wrong_answer2'], true);
+          newAn.answers = pushIfExist(newAn.answers, tr['wrong_answer3'], true);
+          
+          if(sent){
+            delete newAn.datastore_id;
+          }
+          toDB.push(newAn);
+
           sent = true;
           break;
         }
       }
-    });
-
-
-
-
-    // let answToDB = Object.assign({}, answers);
-    // delete answToDB.trivia1;
-    // delete answToDB.trivia2;
-
-    // let sent = false;
-    // let trivias = ['trivia1', 'trivia2'];
-
-    // trivias.forEach(function func(trivia){
-    //   // let index = trivias[trivia];
-    //   let tr = answers[trivia];
-
-    //   for(var prop in tr){
-    //     if(tr[prop] !== null){
-    //       answToDB.question = tr['question'];
-    //       console.log(trivia, answToDB.question);
-    //       console.log(trivia, answToDB);
-    //       answToDB.right_answer = tr['right_answer'];
-    //       answToDB.answers = [ tr['right_answer'], tr['wrong_answer1'], tr['wrong_answer2'], tr['wrong_answer3'] ];
-    //       if(sent){
-    //         delete answToDB.datastore_id;
-    //       }
-
-    //       // console.log(tr);
-    //       // console.log(trivia, answToDB);
-    //       // this.updatePostInDB(answToDB);
-    //       sent = true;
-    //       break;
-    //     }
-    //   }
-    // });
-
-    if(!sent){
-      this.updatePostInDB(answers);
     }
+
+    if(toDB.length === 0){
+      this.updatePostInDB(answers);
+    } else {
+      for(var i in toDB){
+        this.updatePostInDB(toDB[i]);
+      }
+    }
+  }
+
+  pushIfExist = (pushThere, pushThat, isArr=false) => {
+    if(pushThat !== undefined){
+      if(isArr){
+        pushThere.push(pushThat);
+      } else {
+        pushThere = pushThat;
+      }
+    } return pushThere;
   }
 
   updatePostInDB = (data) => {
@@ -317,7 +281,6 @@ class Survey extends Component {
   render() {
     const { questions, answers, trivias } = this.state;
     const { postNum, numberOfPreviousElemnts, submitted } = this.props;
-    // const { QUESTION, RIGHT_ANS, WRONG_ANS1, WRONG_ANS2, WRONG_ANS3 } = this.state.constants;
 
     return submitted ?
     (<button className={numberOfPreviousElemnts > 0 ?
