@@ -71,7 +71,7 @@ class App extends Component {
     const {text, constants} = this.state;
     for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
       // console.log(text[i].submission_time);
-      if (text[i].submission_time === null) {
+      if (text[i].submission_time === null && text[i].story === "test") {   //TODO delete "test"
         // console.log(1640970940540570457547809);
         return i;
       }
@@ -109,9 +109,8 @@ class App extends Component {
     // fireDB.database().ref(this.state.table).on('value', snapshot => {
     //   this.setState({ text: snapshot.val() });
     // });
-    // this.authListener();
-    // console.log("12313");
-    // console.log(this.state.text);
+    this.authListener(); // <--- FIREBASE DB
+
     let base64 = require('base-64');
 
     let username = 'shinom';
@@ -123,7 +122,9 @@ class App extends Component {
     fetch('https://roadio-master.appspot.com/v1/get_user_items?user_id=management_user&limit=-1', {method:'GET',headers: headers,})
      .then(response =>response.json())
      .then(data => this.setState({ text: data.items}));
-     console.log(this.state.text);
+     console.log("a");
+    console.log(this.state.text);
+    console.log("a");
 
   }
 
@@ -131,18 +132,62 @@ class App extends Component {
     // for(var i = 1; i <= 100; i++){
     //   fireDB.database().ref(`version4/${i}`).update({ 27: ''}); // <- send to db
     // }
+    console.log("RENDER: ", this.state.text);
 
-  //   let username = 'shinom';
-  //   let password = 'iloveToRide';
+    let username = 'shinom';
+    let password = 'iloveToRide';
 
-  //   let headers = new Headers();
-  //   headers.set('Authorization', 'Basic ' + btoa(username + ":" + password));
-  //  headers.set('Accept', 'application/json');
-  //  headers.set('Content-Type', 'application/json');
+    let headers = new Headers();
+    headers.set('Authorization', 'Basic ' + btoa(username + ":" + password));
+   headers.set('Accept', 'application/json');
+   headers.set('Content-Type', 'application/json');
 
 
-  //  for (let i = 0; i < Object.values(this.state.text).length - 390; i++) {
-  //    let current = this.state.text[i];
+   let c = 0;
+
+  for (let i = 0; i < Object.values(this.state.text).length; i++) {
+    let current = this.state.text[i];
+
+    if(current.story  === "test"  && current.submission_time === null){
+      // console.log(current);
+      c++;
+    }
+  }
+  console.log("test:" + c)
+  
+     let current = {
+        answers:["כור גרעיני"],
+        categories:["נמל תעופה"],
+        editor_username:null,
+        extended_story:null,
+        extended_story_voices:[],
+        is_ready:true,
+        is_test:false,
+        item_id:"",
+        lables:[],
+        last_modified:null,
+        lat:"09",
+        lon:"08",
+        notes:null,
+        place:"town",
+        place_relevancy:null,
+        question:"what?",
+        question_images:[],
+        question_videos:[],
+        qustion_voice:null,
+        raw_text:null,
+        right_answer:"כור גרעיני",
+        score:1,
+        source:"",
+        story:"test",
+        story_images:[],
+        story_ref:null,
+        story_videos:[],
+        story_voices:[],
+        submission_time:null,
+        tourists_relevancy:null,
+        type:"question"
+     }
   //    current.lon = current.lon.toString();
   //    current.lat = current.lat.toString();
   //    delete current.datastore_id;
@@ -154,16 +199,17 @@ class App extends Component {
 
 
 
-    //  console.log(JSON.stringify(current));
+    const data = JSON.stringify({ item: current });
+    //  console.log(data);
 
     //  fetch('https://roadio-master.appspot.com/v1/edit_item', {
     //    method: 'POST',
     //    headers: headers,
-    //    body: JSON.stringify(current)
-    //  }).then(res => console.log(res.status))
+    //    body: data
+    //  }).then(res => console.log(res))
     //    // .then(response => console.log('Success:', JSON.stringify(response)))
     //    .catch(error => console.error('Error:', error));
-  //  }
+   
 
 
 

@@ -8,7 +8,7 @@ const Image = ({img, removeImg}) => {
             alignItems: 'center',
             margin: '5px',
         }}>
-            <img className="ui medium rounded image" src={img} alt='' />
+            <img className="ui medium rounded image" src={img[0]} alt='' />
             <div className="ui left labeled icon violet basic button"
                 onClick={ removeImg }
                 style={{ marginTop: "20px" }}> Remove

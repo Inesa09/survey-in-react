@@ -37,20 +37,49 @@ class Survey extends Component {
         LOCATION: 23,
         DATE: 27,
 
-        QUESTION: 0, 
-        RIGHT_ANS: 1, 
-        WRONG_ANS1: 2, 
-        WRONG_ANS2: 3, 
-        WRONG_ANS3: 4,
+        // QUESTION: 0, 
+        // RIGHT_ANS: 1, 
+        // WRONG_ANS1: 2, 
+        // WRONG_ANS2: 3, 
+        // WRONG_ANS3: 4,
       },
       answers: this.props.post,
-      trivias: [ [null, null, null, null, null], [null, null, null, null, null] ],
+      // trivias: [ [], [] ],
       listWithPreviosAnswers:[],
       changed: false,
       getCurrentAnswers: this.getCurrentAnswers.bind(this),
       // table: 'newData/',
       table: 'version4/', // --> Developer's DB <--
     }; // <- set up react state
+
+    this.setTrivia(1);
+    this.setTrivia(2);
+  }
+
+  getTriviaByNum = (num) => {
+    let trivia;
+    switch(num){
+      case 1:
+        trivia = 'trivia1';
+        break;
+      default:
+        trivia = 'trivia2';
+    }
+    return trivia;
+  }
+
+  setTrivia = (triviaNum) => {
+    let trivia = this.getTriviaByNum(triviaNum);
+    let copy = this.state.answers;
+    copy[trivia] =  {
+      question: null,
+      right_answer: null,
+      wrong_answer1: null,
+      wrong_answer2: null,
+      wrong_answer3: null,
+    };
+    this.setState({ answers: copy });
+    // console.log("SETTING")
   }
 
   //Save answer in the state
@@ -66,6 +95,15 @@ class Survey extends Component {
     this.setState({ answers: copy });
   }
 
+  handleAnswerTrivia = (triviaNum, question, e) => {
+    let copy = this.state.answers;
+    let trivia = this.getTriviaByNum(triviaNum);
+    copy[trivia][question] = e.target.value;
+    this.setState({ answers: copy });
+
+    console.log("TRIVIA: " + this.state.answers);
+  }
+
   //Save image in the state
   handleImgLoad = (question, img) => {
     let copy = this.state.answers;
@@ -78,15 +116,13 @@ class Survey extends Component {
   addAnswers = (e, postNum) => {
     const { answers } = this.state;
     const { nextElementExistanse, showNext, toUndef, post, showEl } = this.props;
-    const { PLACE, MANDATORY, LOCATION, DATE } = this.state.constants;
+    // const { PLACE, MANDATORY, LOCATION, DATE } = this.state.constants;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
-    if(answers.place_relevancy.length === 0) // <- mandatory question
+    if(answers.place_relevancy === null) // <- mandatory question
       showEl('negative', 250000000, false);
     else {
-      let temporaryList = this.state.listWithPreviosAnswers; 
-      temporaryList.push(answers);
-      this.setState({ listWithPreviosAnswers: temporaryList }); // <- save previous answers
+      this.addToPreviousAnswers(answers);
 
       document.getElementById("form").reset(); // <- clear the input
       if (nextElementExistanse) // <- use methods from App.js
@@ -99,20 +135,8 @@ class Survey extends Component {
       let copy = this.state.answers;
 
       //TODO ---> WAIT FOR DIMA ---> lat & lon - STRINGS!
-
-      // if(answers[ PLACE ] !== post[ PLACE ]){ // <- add a new post if place has been changed
-      //   let textsRef = db.ref(this.state.table);
-      //   let all;
-      //   textsRef.on('value', snapshot => {
-      //     all = snapshot.val();
-      //   });
-
-      //   let newPost = all.length;
-      //   textsRef.child(newPost).set(all[postNum]);
-      //   postNum = newPost;
-      //   copy[ LOCATION ] = '';
-      // }
-
+      this.processLocation();
+      
       // let postRef = db.ref(this.state.table + `${postNum}`);
       copy.submission_time = new Date().toLocaleString("en-US");
 
@@ -124,32 +148,55 @@ class Survey extends Component {
     }
   }
 
+  addToPreviousAnswers = (answers) => {
+    let temporaryList = this.state.listWithPreviosAnswers; 
+    temporaryList.push(answers);
+    this.setState({ listWithPreviosAnswers: temporaryList });
+  }
+
+  processLocation = () => {
+    // if(answers[ PLACE ] !== post[ PLACE ]){ // <- add a new post if place has been changed
+      //   let textsRef = db.ref(this.state.table);
+      //   let all;
+      //   textsRef.on('value', snapshot => {
+      //     all = snapshot.val();
+      //   });
+
+      //   let newPost = all.length;
+      //   textsRef.child(newPost).set(all[postNum]);
+      //   postNum = newPost;
+      //   copy[ LOCATION ] = '';
+      // }
+  }
+
   processTrivias = (data) => {
     const trivias = this.state.trivias;
     const { QUESTION, RIGHT_ANS, WRONG_ANS1, WRONG_ANS2, WRONG_ANS3 } = this.state.constants;
     let sent = 0;
 
-    for(let i=0; i < trivias.length; i++){
-      for(let j=0; j < trivias[i].length; i++){
-        if (trivias[i][j] !== null){
-          let copy = data;
-          sent++;
-          if(sent === 1){
-            delete copy.datastore_id;     // ---> new post
+    if (trivias === undefined){
+      console.log("hhhhh")
+      this.updatePostInDB(data);
+      console.log("hhhhh")
+    } else {
+      for(let i=0; i < trivias.length; i++){
+        for(let j=0; j < trivias[i].length; i++){
+          if (trivias[i][j] !== null){
+            let copy = data;
+            sent++;
+            if(sent === 1){
+              delete copy.datastore_id;     // ---> new post
+            }
+
+            copy.question = trivias[i][QUESTION];
+            copy.right_answer = trivias[i][RIGHT_ANS];
+            copy.answers = [ trivias[i][RIGHT_ANS], trivias[i][WRONG_ANS1], trivias[i][WRONG_ANS2], trivias[i][WRONG_ANS3] ];
+
+            this.updatePostInDB(copy);
+            break;
           }
-
-          copy.question = trivias[i][QUESTION];
-          copy.right_answer = trivias[i][RIGHT_ANS];
-          copy.answers = [ trivias[i][RIGHT_ANS], trivias[i][WRONG_ANS1], trivias[i][WRONG_ANS2], trivias[i][WRONG_ANS3] ];
-
-          this.updatePostInDB(copy);
-          break;
         }
       }
-    }
-
-    if(sent === 0){
-      this.updatePostInDB(data);
     }
   }
 
@@ -162,10 +209,12 @@ class Survey extends Component {
     headers.set('Accept', 'application/json');
     headers.set('Content-Type', 'application/json');
 
+    console.log("UPDATE: ", data);
+
      fetch('https://roadio-master.appspot.com/v1/edit_item', {
        method: 'POST',
        headers: headers,
-       body: JSON.stringify(data)
+       body: JSON.stringify({ item: data })
      }).then(res => console.log('Status: ', res.status))
        .catch(error => console.error('Error: ', error));
   }
@@ -212,7 +261,7 @@ class Survey extends Component {
   render() {
     const { questions, answers, trivias } = this.state;
     const { postNum, numberOfPreviousElemnts, submitted } = this.props;
-    const { QUESTION, RIGHT_ANS, WRONG_ANS1, WRONG_ANS2, WRONG_ANS3 } = this.state.constants;
+    // const { QUESTION, RIGHT_ANS, WRONG_ANS1, WRONG_ANS2, WRONG_ANS3 } = this.state.constants;
 
     return submitted ?
     (<button className={numberOfPreviousElemnts > 0 ?
@@ -280,24 +329,24 @@ class Survey extends Component {
           <TriviaQuestion
             question={questions.TRIVIA1}
             tooltip={'answer is..'}
-            numbers={[QUESTION, RIGHT_ANS, WRONG_ANS1, WRONG_ANS2, WRONG_ANS3]} 
-            handleTextInput={(e, number) => this.handleAnswer(number, e)}
-            value1={trivias[0][QUESTION]}
-            value2={trivias[0][RIGHT_ANS]}
-            value3={trivias[0][WRONG_ANS1]}
-            value4={trivias[0][WRONG_ANS2]}
-            value5={trivias[0][WRONG_ANS3]}
+            numbers={['question', 'right_answer', 'wrong_answer1', 'wrong_answer2', 'wrong_answer3']} 
+            handleTextInput={(e, number) => this.handleAnswerTrivia(1, number, e)}
+            value1={answers.trivia1.question}
+            value2={answers.trivia1.right_answer}
+            value3={answers.trivia1.wrong_answer1}
+            value4={answers.trivia1.wrong_answer2}
+            value5={answers.trivia1.wrong_answer3}
           />
           <TriviaQuestion
             question={questions.TRIVIA2}
             tooltip={'answer is..'}
-            numbers={[QUESTION, RIGHT_ANS, WRONG_ANS1, WRONG_ANS2, WRONG_ANS3]} 
-            handleTextInput={(e, number) => this.handleAnswer(number, e)}
-            value1={trivias[1][QUESTION]}
-            value2={trivias[1][RIGHT_ANS]}
-            value3={trivias[1][WRONG_ANS1]}
-            value4={trivias[1][WRONG_ANS2]}
-            value5={trivias[1][WRONG_ANS3]}
+            numbers={['question', 'right_answer', 'wrong_answer1', 'wrong_answer2', 'wrong_answer3']} 
+            handleTextInput={(e, number) => this.handleAnswerTrivia(2, number, e)}
+            value1={answers.trivia2.question}
+            value2={answers.trivia2.right_answer}
+            value3={answers.trivia2.wrong_answer1}
+            value4={answers.trivia2.wrong_answer2}
+            value5={answers.trivia2.wrong_answer3}
           />
 
           <TextArea

@@ -20,18 +20,22 @@ class ImgUploader extends Component {
     const img = e.target.files[0];
     const newImg = URL.createObjectURL(img);
     const type = img.type;
+    const copyImg = this.state.image;
 
     if (!type.includes("image"))
       this.setState({ uploading: false, notImg: true });
     else {
-      this.setState({ uploading: false, notImg: false, image: newImg });
+      this.setState({ uploading: false, notImg: false, image: copyImg.push(newImg) });
       this.props.handleImgLoad(newImg);
+
+      console.log(img);
     }
   }
 
   removeImg = () => {
-    this.setState({ image: '' });
-    this.props.handleImgLoad('');
+    const copyImg = this.state.image;
+    this.setState({ image: copyImg.pop() });
+    this.props.handleImgLoad(copyImg.pop());
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -60,7 +64,7 @@ class ImgUploader extends Component {
               </div>
             </div>
           </div>
-        case image !== '' && image !== undefined:
+        case image.length !== 0:
           return <Image img={image} removeImg={this.removeImg} />
         default:
           return <ImgUpload tooltip={tooltip} uploadImg={this.uploadImg} />
