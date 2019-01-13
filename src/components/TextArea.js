@@ -2,7 +2,7 @@ import React from 'react';
 import Question from './Question';
 import '../css/TextArea.css';
 
-const TextArea = ({question, handleTextInput, value='', rows='1'}) => {
+const TextArea = ({question = '', handleTextInput, value='', rows='1'}) => {
 
     return (
         <div> 

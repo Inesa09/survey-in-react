@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import Image from '../components/Image';
-import ImgUpload from '../components/ImgUpload';
+import ImgSetter from '../components/ImgSetter';
 
 class ImgUploader extends Component {
 
@@ -37,8 +37,6 @@ class ImgUploader extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    // if (state.deleted)
-    //   return { image: '' }
     return { image: props.answer }
   }
 
@@ -54,7 +52,8 @@ class ImgUploader extends Component {
           </div>
         case notImg:
           return <div>
-            <ImgUpload tooltip={tooltip} uploadImg={this.uploadImg} />
+            <ImgSetter tooltip={tooltip} uploadImg={this.uploadImg} 
+              handleImgLoad={(img) => this.props.handleImgLoad(img)} value={image} />
             <div className={`ui negative message`}>
               <div className='content'>
                 <div className='header'>Wrong Format</div>
@@ -65,7 +64,8 @@ class ImgUploader extends Component {
         case image !== undefined && image !== '':
           return <Image img={image} removeImg={this.removeImg} />
         default:
-          return <ImgUpload tooltip={tooltip} uploadImg={this.uploadImg} />
+          return <ImgSetter tooltip={tooltip} uploadImg={this.uploadImg}
+            handleImgLoad={(img) => this.props.handleImgLoad(img)} value={image}/>
       }
     }
 
