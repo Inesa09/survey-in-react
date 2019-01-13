@@ -52,7 +52,7 @@ class Survey extends Component {
       table: 'version4/', // --> Developer's DB <--
     }; // <- set up react state
 
-    alert("CONSTRUCTOR");
+    
   }
 
   setTrivias = (change) => {
@@ -206,7 +206,7 @@ class Survey extends Component {
           if(sent){
             delete answToDB.datastore_id;
           }
-
+          console.log(answToDB);
           this.updatePostInDB(answToDB);
           sent = true;
           break;
