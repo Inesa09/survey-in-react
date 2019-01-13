@@ -261,7 +261,7 @@ class App extends Component {
             <Text text={hideDiv ? '' : text[number].raw_text} heading={hideDiv ? '' : text[number].place} />
             <Heading heading={"שדות למילוי"} />
           </div>
-
+          
           <Survey postNum={number}
             showPrev={this.showPrev} showNext={this.showNext} showEl={this.showEl}
             numberOfPreviousElemnts={previosIndexList.length}
