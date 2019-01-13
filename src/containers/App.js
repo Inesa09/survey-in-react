@@ -72,6 +72,7 @@ class App extends Component {
     for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
       // console.log(text[i].submission_time);
       if (text[i].submission_time === null && text[i].story === "test") {   //TODO delete "test"
+        console.log("Item ID: ", text[i].datastore_id);
         // console.log(1640970940540570457547809);
         return i;
       }

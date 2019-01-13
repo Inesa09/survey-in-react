@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import fireDB from '../fireDB';
 import Radio from '../components/Radio';
 import TextArea from '../components/TextArea';
 import SmallMessage from '../components/SmallMessage';
@@ -12,6 +11,7 @@ class Survey extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      setNewFields: this.setNewFields.bind(this),
       questions: {
         PLACE: 'מיקום קשור',
         TITLE: 'QUESTION TITLE',
@@ -26,31 +26,57 @@ class Survey extends Component {
         TRIVIA2: '#2 שאלת טריוויה',
         NOTES: 'הערות',
       },
-      answers: this.setTrivias(this.props.post),
+      answers: this.setNewFields(this.props.post),
       listWithPreviosAnswers:[],
       changed: false,
-      getCurrentAnswers: this.getCurrentAnswers.bind(this),
       // table: 'newData/',
       table: 'version4/', // --> Developer's DB <--
     }; // <- set up react state
   }
 
-  setTrivias = (change) => {
+  setNewFields(change) {
     for (let i = 1; i < 3; i++){
       change = this.setTrivia(i, change);
-    } return change;
+    } 
+
+    for(let prop in change){
+      if(change[prop] === null)
+        change[prop] = "";
+    }
+    
+    change.editor_username = this.props.user;
+    change.labels.push("");
+    return change;
   }
 
   setTrivia = (triviaNum, change) => {
+    const getIfNotNull = this.getIfNotNull;
     let trivia = this.getTriviaByNum(triviaNum);
-    change[trivia] =  {
+
+    change[trivia] =  (triviaNum === 1) ? {
+      question: getIfNotNull(change, 'question'),
+      right_answer: getIfNotNull(change, 'right_answer'),
+      wrong_answer1: getIfNotNull(change, 'answers', 1),
+      wrong_answer2: getIfNotNull(change, 'answers', 2),
+      wrong_answer3: getIfNotNull(change, 'answers', 3),
+    } : {
       question: undefined,
       right_answer: undefined,
       wrong_answer1: undefined,
       wrong_answer2: undefined,
       wrong_answer3: undefined,
-    };
+    }
     return change;
+  }
+
+  getIfNotNull = (getFromThere, getThis, index=0) => {
+    if(index === 0){
+      if(getFromThere[getThis] !== null | undefined)
+        return getFromThere[getThis];
+    } else {
+      if(getFromThere[getThis][index] !== null | undefined)
+        return getFromThere[getThis][index]; 
+    } return undefined;
   }
 
   getTriviaByNum = (num) => {
@@ -80,9 +106,9 @@ class Survey extends Component {
     this.setState({ answers: copy });
   }
 
-  handleAnswerArray = (question, e) => {
+  handleAnswerArray = (question, index, e) => {
     let copy = this.state.answers;
-    copy[question].push(e.target.value);
+    copy[question][index] = e.target.value;
     this.setState({ answers: copy });
   }
 
@@ -104,7 +130,7 @@ class Survey extends Component {
   //Submit
   addAnswers = (e, postNum) => {
     const { answers } = this.state;
-    const { nextElementExistanse, showNext, toUndef, post, showEl } = this.props;
+    const { nextElementExistanse, showNext, toUndef, showEl } = this.props;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
     if(answers.place_relevancy === null) // <- mandatory question
@@ -119,16 +145,14 @@ class Survey extends Component {
         toUndef(postNum, e);
       }
 
-      // let db = fireDB.database();
-      let copy = Object.assign({}, this.state.answers);
+      let copy = Object.assign({}, answers);
+      copy.submission_time = new Date().toLocaleString("en-US");
+
+      if(copy.labels[copy.labels.length - 1] === "")
+        copy.labels.pop();
 
       //TODO ---> WAIT FOR DIMA ---> lat & lon - STRINGS!
       copy = this.processLocation(copy);
-      
-      // let postRef = db.ref(this.state.table + `${postNum}`);
-      copy.submission_time = new Date().toLocaleString("en-US");
-
-      // postRef.update(copy); // <- send to db
       this.processTrivias(copy);  // <- process trivias and send to db
 
       showEl('success', 1000, true);
@@ -253,33 +277,33 @@ class Survey extends Component {
   }
 
   getCurrentAnswers (post, user, changed) {
-    const { FIRST, LAST, SUMMARY, TEXT, USER } = this.state.constants;
-    var currentAnswers = {};
-    for (var x = FIRST; x <= LAST; x++)
-      currentAnswers[x] = post[x]; //<- set previous answers
-    if (post[ SUMMARY ] === "")
-      currentAnswers[ SUMMARY ] = post[ TEXT ];
-    currentAnswers[ USER ] = user;
+    // const { FIRST, LAST, SUMMARY, TEXT, USER } = this.state.constants;
+    // var currentAnswers = {};
+    // for (var x = FIRST; x <= LAST; x++)
+    //   currentAnswers[x] = post[x]; //<- set previous answers
+    // if (post[ SUMMARY ] === "")
+    //   currentAnswers[ SUMMARY ] = post[ TEXT ];
+    // currentAnswers[ USER ] = user;
+    // if(changed)
+    //   return { answers: currentAnswers, changed: false }
+    // return { answers: currentAnswers }
+
+    post.editor_username = user;
+    post = this.setNewFields(post);
     if(changed)
-      return { answers: currentAnswers, changed: false }
-    return { answers: currentAnswers }
+      return { answer: post, changed: false };
+    return { answer: post };
   }
   
   //react lifecycle methods
-  componentDidMount = () => {
-    const { post, user } = this.props;
-    // this.setState( this.state.getCurrentAnswers(post, user, false) ); ---> do we need?
-  }
-
   static getDerivedStateFromProps(props, state) {
     if (state.changed){
-      const { post, user } = props
-      // return state.getCurrentAnswers(post, user, true); ---> do we need?
+      return { answers: state.setNewFields(props.post), changed:false }
     } return null;
   }
 
   render() {
-    const { questions, answers, trivias } = this.state;
+    const { questions, answers } = this.state;
     const { postNum, numberOfPreviousElemnts, submitted } = this.props;
 
     return submitted ?
@@ -296,52 +320,52 @@ class Survey extends Component {
           <TextArea
             question={questions.PLACE}
             handleTextInput={(e) => this.handleAnswer("place", e)} // ---> handleAnswerPlace ???
-            value={answers["place"]}
+            value={answers.place}
             rows= {'1'}
           />
           <TextArea
             question={questions.TITLE}
-            handleTextInput={(e) => this.handleAnswerArray('labels', e)}
-            value={answers['labels']}
+            handleTextInput={(e) => this.handleAnswerArray('labels', answers.labels.length - 1, e)}
+            value={answers.labels[answers.labels.length - 1]}
             rows= {'1'}
           />
 
           <ImgUploader
             tooltip={questions.PRE_IMG}
             handleImgLoad={(newImg) => this.handleImgLoad('question_images', newImg)}
-            answer={answers['question_images']} // to remember image 
+            answer={answers.question_images} // to remember image 
           />
           <ImgUploader
             tooltip={questions.POST_IMG}
             handleImgLoad={(newImg) => this.handleImgLoad('story_images', newImg)}
-            answer={answers['story_images']} // to remember image 
+            answer={answers.story_images} // to remember image 
           />
 
           <Radio
             question={questions.DIFFICULTY}
             handleOptionChange={(e) => this.handleAnswer('difficulty', e)}
-            answer={answers['difficulty']}
+            answer={answers.difficulty}
           />
           <Radio
             question={questions.PLACE_REL}
             handleOptionChange={(e) => this.handleAnswer('place_relevancy', e)}
-            answer={answers['place_relevancy']}
+            answer={answers.place_relevancy}
           />
           <Radio
             question={questions.INTERESTING}
             handleOptionChange={(e) => this.handleAnswer('score', e)}
-            answer={answers['score']}
+            answer={answers.score}
           />
           <Radio
             question={questions.TOURIST_REL}
             handleOptionChange={(e) => this.handleAnswer('tourist_relevancy', e)}
-            answer={answers['tourist_relevancy']}
+            answer={answers.tourist_relevancy}
           />
 
           <TextArea
             question={questions.EDIT_TEXT}
             handleTextInput={(e) => this.handleAnswer('story', e)}
-            value={answers['story']}
+            value={answers.story}
             rows= {'10'}
           />
 
@@ -371,7 +395,7 @@ class Survey extends Component {
           <TextArea
             question={questions.NOTES}
             handleTextInput={(e) => this.handleAnswer('notes', e)}
-            value={answers['notes']}
+            value={answers.notes}
             rows= {'5'}
           />
 
