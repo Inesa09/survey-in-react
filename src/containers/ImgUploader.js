@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Image from '../components/Image';
 import ImgSetter from '../components/ImgSetter';
+import Question from '../components/Question';
 
 class ImgUploader extends Component {
 
@@ -41,8 +42,8 @@ class ImgUploader extends Component {
   }
 
   render() {
-    const { uploading, notImg, image } = this.state
-    const { tooltip } = this.props
+    const { uploading, notImg, image, } = this.state
+    const { question, handleImgLoad } = this.props
 
     const content = () => {
       switch(true) {
@@ -52,8 +53,8 @@ class ImgUploader extends Component {
           </div>
         case notImg:
           return <div>
-            <ImgSetter tooltip={tooltip} uploadImg={this.uploadImg} 
-              handleImgLoad={(img) => this.props.handleImgLoad(img)} value={image} />
+            <ImgSetter uploadImg={this.uploadImg} 
+              handleImgLoad={handleImgLoad} value={image} />
             <div className={`ui negative message`}>
               <div className='content'>
                 <div className='header'>Wrong Format</div>
@@ -61,17 +62,20 @@ class ImgUploader extends Component {
               </div>
             </div>
           </div>
-        case image !== undefined && image !== '':
+        case image !== undefined && image !== '' && image.includes("blob"):
           return <Image img={image} removeImg={this.removeImg} />
         default:
-          return <ImgSetter tooltip={tooltip} uploadImg={this.uploadImg}
-            handleImgLoad={(img) => this.props.handleImgLoad(img)} value={image}/>
+          return <ImgSetter uploadImg={this.uploadImg}
+            handleImgLoad={handleImgLoad} value={image}/>
       }
     }
 
     return (
-      <div className="ui placeholder segment" style={{ margin:"30px", minHeight:'100px' }}> 
-        {content()} 
+      <div>
+        <Question question={question}/>
+        <div className="ui placeholder segment" style={{ margin:"30px", marginTop: '10px', minHeight:'100px' }}> 
+          {content()} 
+        </div>
       </div>
     )
   }
