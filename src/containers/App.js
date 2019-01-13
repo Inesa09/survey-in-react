@@ -6,6 +6,7 @@ import fireDB from '../fireDB';
 import Heading from '../components/Heading';
 import Message from '../components/Message';
 import Login from './Login';
+import MapContainer from '../components/MapContainer';
 import '../css/Hidden.css';
 
 class App extends Component {
@@ -270,6 +271,7 @@ class App extends Component {
             user={submitted ? '' : user.email}
             submitted={submitted}
           />
+          <MapContainer/>
         </Top>
       )
     }
