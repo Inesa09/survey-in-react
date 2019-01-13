@@ -46,6 +46,8 @@ class Survey extends Component {
     
     change.editor_username = this.props.user;
     change.labels.push("");
+    change.question_images.push("");
+    change.story_images.push("");
     return change;
   }
 
@@ -85,8 +87,11 @@ class Survey extends Component {
       case 1:
         trivia = 'trivia1';
         break;
-      default:
+      case 2:
         trivia = 'trivia2';
+        break;
+      default:
+        return null;
     }
     return trivia;
   }
@@ -106,9 +111,10 @@ class Survey extends Component {
     this.setState({ answers: copy });
   }
 
-  handleAnswerArray = (question, index, e) => {
+  handleAnswerArray = (question, element) => {
     let copy = this.state.answers;
-    copy[question][index] = e.target.value;
+    let size = copy[question].length;
+    copy[question][size-1] = element;
     this.setState({ answers: copy });
   }
 
@@ -119,13 +125,6 @@ class Survey extends Component {
     this.setState({ answers: copy });
   }
 
-  //Save image in the state
-  handleImgLoad = (question, img) => {
-    let copy = this.state.answers;
-    copy[question].push(img);
-    this.setState({ answers: copy });
-  }
-
     // ---> 1. GCP <---
   //Submit
   addAnswers = (e, postNum) => {
@@ -133,7 +132,7 @@ class Survey extends Component {
     const { nextElementExistanse, showNext, toUndef, showEl } = this.props;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
-    if(answers.place_relevancy === null) // <- mandatory question
+    if(answers.place_relevancy === "") // <- mandatory question
       showEl('negative', 250000000, false);
     else {
       this.addToPreviousAnswers(answers);
@@ -187,12 +186,10 @@ class Survey extends Component {
 
   processTrivias = (answers) => {
     let trivias = [answers.trivia1, answers.trivia2];
-
     delete answers.trivia1;
     delete answers.trivia2;
 
     let sent = false;
-
     let toDB = [];
     for(var i in trivias){
       
@@ -211,9 +208,8 @@ class Survey extends Component {
           newAn.answers = pushIfExist(newAn.answers, tr['wrong_answer2'], true);
           newAn.answers = pushIfExist(newAn.answers, tr['wrong_answer3'], true);
           
-          if(sent){
+          if(sent)
             delete newAn.datastore_id;
-          }
           toDB.push(newAn);
 
           sent = true;
@@ -276,24 +272,24 @@ class Survey extends Component {
     }
   }
 
-  getCurrentAnswers (post, user, changed) {
-    // const { FIRST, LAST, SUMMARY, TEXT, USER } = this.state.constants;
-    // var currentAnswers = {};
-    // for (var x = FIRST; x <= LAST; x++)
-    //   currentAnswers[x] = post[x]; //<- set previous answers
-    // if (post[ SUMMARY ] === "")
-    //   currentAnswers[ SUMMARY ] = post[ TEXT ];
-    // currentAnswers[ USER ] = user;
-    // if(changed)
-    //   return { answers: currentAnswers, changed: false }
-    // return { answers: currentAnswers }
+  // getCurrentAnswers (post, user, changed) {
+  //   // const { FIRST, LAST, SUMMARY, TEXT, USER } = this.state.constants;
+  //   // var currentAnswers = {};
+  //   // for (var x = FIRST; x <= LAST; x++)
+  //   //   currentAnswers[x] = post[x]; //<- set previous answers
+  //   // if (post[ SUMMARY ] === "")
+  //   //   currentAnswers[ SUMMARY ] = post[ TEXT ];
+  //   // currentAnswers[ USER ] = user;
+  //   // if(changed)
+  //   //   return { answers: currentAnswers, changed: false }
+  //   // return { answers: currentAnswers }
 
-    post.editor_username = user;
-    post = this.setNewFields(post);
-    if(changed)
-      return { answer: post, changed: false };
-    return { answer: post };
-  }
+  //   post.editor_username = user;
+  //   post = this.setNewFields(post);
+  //   if(changed)
+  //     return { answer: post, changed: false };
+  //   return { answer: post };
+  // }
   
   //react lifecycle methods
   static getDerivedStateFromProps(props, state) {
@@ -325,20 +321,20 @@ class Survey extends Component {
           />
           <TextArea
             question={questions.TITLE}
-            handleTextInput={(e) => this.handleAnswerArray('labels', answers.labels.length - 1, e)}
+            handleTextInput={(e) => this.handleAnswerArray('labels', e.target.value)}
             value={answers.labels[answers.labels.length - 1]}
             rows= {'1'}
           />
 
           <ImgUploader
             tooltip={questions.PRE_IMG}
-            handleImgLoad={(newImg) => this.handleImgLoad('question_images', newImg)}
-            answer={answers.question_images} // to remember image 
+            handleImgLoad={(newImg) => this.handleAnswerArray('question_images', newImg)}
+            answer={answers.question_images[answers.question_images.length - 1]} // to remember image 
           />
           <ImgUploader
             tooltip={questions.POST_IMG}
-            handleImgLoad={(newImg) => this.handleImgLoad('story_images', newImg)}
-            answer={answers.story_images} // to remember image 
+            handleImgLoad={(newImg) => this.handleAnswerArray('story_images', newImg)}
+            answer={answers.story_images[answers.story_images.length - 1]} // to remember image 
           />
 
           <Radio
