@@ -29,8 +29,6 @@ class Survey extends Component {
       answers: this.setNewFields(this.props.post),
       listWithPreviosAnswers:[],
       changed: false,
-      // table: 'newData/',
-      table: 'version4/', // --> Developer's DB <--
     }; // <- set up react state
   }
 
@@ -76,8 +74,10 @@ class Survey extends Component {
       if(getFromThere[getThis] !== null | undefined)
         return getFromThere[getThis];
     } else {
-      if(getFromThere[getThis][index] !== null | undefined)
-        return getFromThere[getThis][index]; 
+      if(getFromThere[getThis].length > index) {
+        if(getFromThere[getThis][index] !== null | undefined)
+          return getFromThere[getThis][index]; 
+      }
     } return undefined;
   }
 
@@ -254,8 +254,7 @@ class Survey extends Component {
        method: 'POST',
        headers: headers,
        body: toDB
-    //  }).then(res => console.log('Status: ', res.status))
-     }).then(res => console.log(res))
+     }).then(res => console.log('Status: ', res.status))
        .catch(error => console.error('Error: ', error));
   }
   
@@ -271,25 +270,6 @@ class Survey extends Component {
       this.setState( {changed: true});
     }
   }
-
-  // getCurrentAnswers (post, user, changed) {
-  //   // const { FIRST, LAST, SUMMARY, TEXT, USER } = this.state.constants;
-  //   // var currentAnswers = {};
-  //   // for (var x = FIRST; x <= LAST; x++)
-  //   //   currentAnswers[x] = post[x]; //<- set previous answers
-  //   // if (post[ SUMMARY ] === "")
-  //   //   currentAnswers[ SUMMARY ] = post[ TEXT ];
-  //   // currentAnswers[ USER ] = user;
-  //   // if(changed)
-  //   //   return { answers: currentAnswers, changed: false }
-  //   // return { answers: currentAnswers }
-
-  //   post.editor_username = user;
-  //   post = this.setNewFields(post);
-  //   if(changed)
-  //     return { answer: post, changed: false };
-  //   return { answer: post };
-  // }
   
   //react lifecycle methods
   static getDerivedStateFromProps(props, state) {
@@ -325,12 +305,13 @@ class Survey extends Component {
           />
 
           <ImgUploader
-            tooltip={questions.PRE_IMG}
+            question={questions.PRE_IMG}
             handleImgLoad={(newImg) => this.handleAnswerArray('question_images', newImg)}
             answer={answers.question_images[answers.question_images.length - 1]} // to remember image 
           />
+
           <ImgUploader
-            tooltip={questions.POST_IMG}
+            question={questions.POST_IMG}
             handleImgLoad={(newImg) => this.handleAnswerArray('story_images', newImg)}
             answer={answers.story_images[answers.story_images.length - 1]} // to remember image 
           />
