@@ -20,6 +20,7 @@
 // }
 /*global google*/ 
 import React from "react";
+import SearchField from './SearchField';
 const _ = require("lodash");
 const { compose, withProps, lifecycle } = require("recompose");
 const {
@@ -48,7 +49,6 @@ const MapContainer = compose(
         },
         markers: [],
         onMapMounted: ref => {
-			console.log(ref);
           refs.map = ref;
         },
         onBoundsChanged: () => {
@@ -84,18 +84,21 @@ const MapContainer = compose(
           });
          refs.map.fitBounds(bounds);
         },
-      })
+	  })
+	 
     },
   }),
   withScriptjs,
   withGoogleMap
-)(props =>
+)(props => <div>
+	<SearchField marker = {props.markers}></SearchField>
   <GoogleMap
     ref={props.onMapMounted}
     defaultZoom={15}
     defaultCenter ={props.center}
     onBoundsChanged={props.onBoundsChanged}
   >
+  
     <SearchBox
       ref={props.onSearchBoxMounted}
       bounds={props.bounds}
@@ -124,5 +127,6 @@ const MapContainer = compose(
       <Marker key={index} position={marker.position} draggable={true}/>
     )}
   </GoogleMap>
+  </div>
 );
 export default MapContainer;

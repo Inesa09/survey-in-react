@@ -8,6 +8,7 @@
     "firebaseui": "^3.4.1",
     "google-maps-react": "^2.0.2",
     "react": "^16.4.2",
+    "react-autocomplete": "^1.8.1",
     "react-dom": "^16.4.2",
     "react-google-maps": "^9.4.5",
     "react-router-dom": "^4.3.1",
