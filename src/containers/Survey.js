@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+
+import gcp_config from '../GCP_configs';
+
 import Radio from '../components/Radio';
 import TextArea from '../components/TextArea';
 import SmallMessage from '../components/SmallMessage';
 import TriviaQuestion from '../components/TriviaQuestion';
 import ImgUploader from './ImgUploader';
+
 import '../css/Button.css';
 
 class Survey extends Component {
@@ -12,40 +16,52 @@ class Survey extends Component {
     super(props);
     this.state = {
       setNewFields: this.setNewFields.bind(this),
-      questions: {
-        PLACE: 'מיקום קשור',
-        TITLE: 'QUESTION TITLE',
-        PRE_IMG: 'Pre Question Image',
-        POST_IMG: 'Post Question Image',
-        DIFFICULTY: 'Difficulty',
-        PLACE_REL: 'עד כמה התוכן רלוונטי למקום?',
-        INTERESTING: 'עד כמה התוכן מעניין?',
-        TOURIST_REL: 'כמה רלוונטי לתיירים',
-        EDIT_TEXT: 'תקציר התוכן',
-        TRIVIA1: '#1 שאלת טריוויה',
-        TRIVIA2: '#2 שאלת טריוויה',
-        NOTES: 'הערות',
-      },
       answers: this.setNewFields(this.props.post),
       listWithPreviosAnswers:[],
       changed: false,
     }; // <- set up react state
   }
 
-  setNewFields(change) {
+  static defaultProps = {
+    questions: {
+      PLACE: 'מיקום קשור',
+      TITLE: 'QUESTION TITLE',
+      PRE_IMG: 'Pre Question Image',
+      POST_IMG: 'Post Question Image',
+      DIFFICULTY: 'Difficulty',
+      PLACE_REL: 'עד כמה התוכן רלוונטי למקום?',
+      INTERESTING: 'עד כמה התוכן מעניין?',
+      TOURISTS_REL: 'כמה רלוונטי לתיירים',
+      EDIT_TEXT: 'תקציר התוכן',
+      TRIVIA1: '#1 שאלת טריוויה',
+      TRIVIA2: '#2 שאלת טריוויה',
+      NOTES: 'הערות',
+    },
+    constants: {
+      numericFields: [ 'difficulty', 'place_relevancy', 'score', 'tourists_relevancy', ],
+      textFields: [ 'place', 'story', 'notes' ],
+      arrayFields: [ 'labels', 'question_images', 'story_images' ],
+    },
+  }
+
+  setNewFields(change) {   
+    const { numericFields, textFields, arrayFields } = this.props.constants;
+
+    change.editor_username = this.props.user;
+
     for (let i = 1; i < 3; i++){
       change = this.setTrivia(i, change);
     } 
 
     for(let prop in change){
-      if(change[prop] === null)
+      if( (numericFields.indexOf(prop) !== -1) && (change[prop] === "") )
+        change[prop] = null;
+      else if( (textFields.indexOf(prop) !== -1) && (change[prop] === null) )
         change[prop] = "";
+      else if( arrayFields.indexOf(prop) !== -1 )
+        change[prop].push("");
     }
-    
-    change.editor_username = this.props.user;
-    change.labels.push("");
-    change.question_images.push("");
-    change.story_images.push("");
+
     return change;
   }
 
@@ -103,7 +119,7 @@ class Survey extends Component {
     let copy = this.state.answers;
     let result = e.target.value;
 
-    if(!isNaN(result)){
+    if(this.props.constants.numericFields.indexOf(question) !== -1){
       result = parseInt(result);
     }
 
@@ -238,17 +254,13 @@ class Survey extends Component {
   }
 
   updatePostInDB = (data) => {
-    let username = 'shinom';
-    let password = 'iloveToRide';
-
     let headers = new Headers();
-    headers.set('Authorization', 'Basic ' + btoa(username + ":" + password));
+    headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
     headers.set('Accept', 'application/json');
     headers.set('Content-Type', 'application/json');
 
-    console.log("UPDATE: ", data);
-    const toDB = JSON.stringify(data);
-    // const toDB = JSON.stringify({ item: data });
+    const toDB = JSON.stringify({ item: data });
+    console.log("UPDATE: ", toDB);
 
      fetch('https://roadio-master.appspot.com/v1/edit_item', {
        method: 'POST',
@@ -271,6 +283,11 @@ class Survey extends Component {
     }
   }
   
+  getNumOrNull = (getFromThere) => {
+    getFromThere = (getFromThere === "") ? null : getFromThere;
+    return getFromThere;
+  }
+
   //react lifecycle methods
   static getDerivedStateFromProps(props, state) {
     if (state.changed){
@@ -279,8 +296,9 @@ class Survey extends Component {
   }
 
   render() {
-    const { questions, answers } = this.state;
-    const { postNum, numberOfPreviousElemnts, submitted } = this.props;
+    const { answers } = this.state;
+    const { postNum, numberOfPreviousElemnts, submitted, questions } = this.props;
+    const getNumOrNull = this.getNumOrNull;
 
     return submitted ?
     (<button className={numberOfPreviousElemnts > 0 ?
@@ -319,22 +337,22 @@ class Survey extends Component {
           <Radio
             question={questions.DIFFICULTY}
             handleOptionChange={(e) => this.handleAnswer('difficulty', e)}
-            answer={answers.difficulty}
+            answer={ getNumOrNull(answers.difficulty) }
           />
           <Radio
             question={questions.PLACE_REL}
             handleOptionChange={(e) => this.handleAnswer('place_relevancy', e)}
-            answer={answers.place_relevancy}
+            answer={ getNumOrNull(answers.place_relevancy) }
           />
           <Radio
             question={questions.INTERESTING}
             handleOptionChange={(e) => this.handleAnswer('score', e)}
-            answer={answers.score}
+            answer={ getNumOrNull(answers.score) }
           />
           <Radio
-            question={questions.TOURIST_REL}
-            handleOptionChange={(e) => this.handleAnswer('tourist_relevancy', e)}
-            answer={answers.tourist_relevancy}
+            question={questions.TOURISTS_REL}
+            handleOptionChange={(e) => this.handleAnswer('tourists_relevancy', e)}
+            answer={ getNumOrNull(answers.tourists_relevancy) }
           />
 
           <TextArea
