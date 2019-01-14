@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
+
+import fireDB from '../fireDB';
+import gcp_config from '../GCP_configs';
+
 import Text from '../components/Text';
 import Top from '../components/Top';
 import Survey from './Survey';
-import fireDB from '../fireDB';
 import Heading from '../components/Heading';
 import Message from '../components/Message';
 import Login from './Login';
 import MapContainer from '../components/MapContainer';
+
 import '../css/Hidden.css';
 
 class App extends Component {
@@ -107,19 +111,10 @@ class App extends Component {
 
     // ---> 3. GCP <---
   componentDidMount() {
-
-    // fireDB.database().ref(this.state.table).on('value', snapshot => {
-    //   this.setState({ text: snapshot.val() });
-    // });
     this.authListener(); // <--- FIREBASE DB
 
-    let base64 = require('base-64');
-
-    let username = 'shinom';
-    let password = 'iloveToRide';
-
     let headers = new Headers();
-    headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
+    headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
 
     fetch('https://roadio-master.appspot.com/v1/get_user_items?user_id=management_user&limit=-1', {method:'GET',headers: headers,})
      .then(response =>response.json())
@@ -131,9 +126,6 @@ class App extends Component {
   }
 
   render() {
-    // for(var i = 1; i <= 100; i++){
-    //   fireDB.database().ref(`version4/${i}`).update({ 27: ''}); // <- send to db
-    // }
     console.log("RENDER: ", this.state.text);
 
     let username = 'shinom';
