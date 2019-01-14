@@ -77,19 +77,21 @@ const MapContainer = compose(
             position: place.geometry.location,
           }));
           const nextCenter = _.get(nextMarkers, '0.position', this.state.center);
-      console.log(nextMarkers);
+      console.log(nextCenter);
       console.log(bounds);
           this.setState({
-            center: nextCenter,
+            center: {nextCenter},
             markers: nextMarkers,
           });
          refs.map.fitBounds(bounds);
         },
-        onPlacesChangedAutoCompleate: (newmarkers) => {
-          console.log(this);
-          console.log(refs);
+        onPlacesChangedAutoCompleate: (newmarkers, lat, lng) => {
+          console.log(this.center);
+          let newcenter = newmarkers[0].position;
+          console.log(newcenter);
+          console.log(newmarkers[0].position.lng);
           this.setState({
-            center: newmarkers[0].position,
+            center: {newcenter},
             markers: newmarkers,
           });
         },
