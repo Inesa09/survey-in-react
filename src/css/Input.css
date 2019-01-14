@@ -3,12 +3,12 @@
     margin-top: 10px;
     text-align: right;
 }
-#input:focus, #inputImgUrl:focus  {
+#input:focus, #inputImgUrl:focus, .inputField:focus, #inputG:focus, #inputC:focus  {
     border-radius: 3px;
     outline: none !important;
     border: 1.4px solid rgb(73, 33, 126);
 }
 
-#inputImgUrl {
+#inputImgUrl, #inputG, #inputC {
     text-align: right;
 }

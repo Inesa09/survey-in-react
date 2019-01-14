@@ -6,6 +6,7 @@ import Radio from '../components/Radio';
 import TextArea from '../components/TextArea';
 import SmallMessage from '../components/SmallMessage';
 import TriviaQuestion from '../components/TriviaQuestion';
+import ToggleFields from '../components/ToggleFields';
 import ImgUploader from './ImgUploader';
 
 import '../css/Button.css';
@@ -311,6 +312,9 @@ class Survey extends Component {
     :
     (<div className="Survey">
         <form id='form'>
+
+        <ToggleFields />
+
           <TextArea
             question={questions.PLACE}
             handleTextInput={(e) => this.handleAnswer("place", e)} // ---> handleAnswerPlace ???
