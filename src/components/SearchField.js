@@ -155,12 +155,12 @@ class SearchField extends Component {
         };
     
     }
-    componentDidMount(){
-      console.log(1010100101010101010011111111111111111111111111);
-      fetch('https://roadio-master.appspot.com/v1/get_places?limit=-1')
-     .then(response =>response.json())
-     .then(data => this.setState({ places: data}));
-    }
+    // componentDidMount(){
+    //   console.log(1010100101010101010011111111111111111111111111);
+    //   fetch('https://roadio-master.appspot.com/v1/get_places?limit=-1')
+    //  .then(response =>response.json())
+    //  .then(data => this.setState({ places: data}));
+    // }
   matchStocks(state, value){
     return (state.place_name.toLowerCase().indexOf(value.toLowerCase()) !== -1);
   }

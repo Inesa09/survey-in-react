@@ -89,6 +89,7 @@ const MapContainer = compose(
           console.log(this.center);
           let newcenter = newmarkers[0].position;
           console.log(newcenter);
+          console.log(refs.ma)
           console.log(newmarkers[0].position.lng);
           this.setState({
             center: {newcenter},
