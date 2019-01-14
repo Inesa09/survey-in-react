@@ -61,7 +61,7 @@ const MapContainer = compose(
           refs.searchBox = ref;
         },
         onPlacesChanged: () => {
-		console.log("dsfsdf");
+		console.log(refs);
 		  const places = refs.searchBox.getPlaces();
 		  
           const bounds = new google.maps.LatLngBounds();
@@ -77,12 +77,21 @@ const MapContainer = compose(
             position: place.geometry.location,
           }));
           const nextCenter = _.get(nextMarkers, '0.position', this.state.center);
-		  console.log(nextMarkers);
+      console.log(nextMarkers);
+      console.log(bounds);
           this.setState({
             center: nextCenter,
             markers: nextMarkers,
           });
          refs.map.fitBounds(bounds);
+        },
+        onPlacesChangedAutoCompleate: (newmarkers) => {
+          console.log(this);
+          console.log(refs);
+          this.setState({
+            center: newmarkers[0].position,
+            markers: newmarkers,
+          });
         },
 	  })
 	 
@@ -91,7 +100,9 @@ const MapContainer = compose(
   withScriptjs,
   withGoogleMap
 )(props => <div>
-	<SearchField marker = {props.markers}></SearchField>
+  <SearchField marker = {props.markers}
+  center = {props.center}
+  onPlacesChangedAutoCompleate={props.onPlacesChangedAutoCompleate}></SearchField>
   <GoogleMap
     ref={props.onMapMounted}
     defaultZoom={15}

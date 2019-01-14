@@ -141,7 +141,7 @@
 
 
 // export default SearchField;
-
+/*global google*/ 
 import React, { Component } from 'react';
 import Autocomplete from  'react-autocomplete';
 import '../css/SearchField.css';
@@ -173,8 +173,22 @@ class SearchField extends Component {
           onChange={(event, value) => this.setState({ value }) }
           onSelect={ value => {
               for( let i = 0, size = this.state.places.length; i < size; i++){
-                  if(this.state.places[i].place_name.toLowerCase() === value.toLowerCase){
-                   // props.marker.setState({ parseFloat(places[i].lat), parseFloat(places[i].lon)});
+                console.log(i);
+                console.log(value);
+                console.log(this.state.places[i].place_name.toLowerCase(), value.toLowerCase());
+                  if(this.state.places[i].place_name.toLowerCase() === value.toLowerCase()){
+                    console.log(this);
+                    let lat = parseFloat(this.state.places[i].lat);
+                    let lng = parseFloat(this.state.places[i].lon);
+                    let newmarker = {};
+                    newmarker.position = new google.maps.LatLng(lat, lng);
+                    let markers = [newmarker];
+                    console.log(this.props.center);
+                    console.log(markers[0].position);
+                    // console.log(this.props.marker);            
+                    // console.log(new google.maps.LatLng(lat, lng));
+                     this.props.onPlacesChangedAutoCompleate(markers);
+                    console.log(this.props.marker);
                     break;
                   }
               }
