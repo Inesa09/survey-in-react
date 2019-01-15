@@ -1,23 +1,3 @@
-// import React from "react";
-// import MyMap from "./MyMap";
-// import {  Marker} from "react-google-maps";
-
-// export default class MapContainer extends React.Component {
-	
-// 	render() {
-// 		console.log(this.props);
-// 		return (
-// 			<div>
-// 			<MyMap
-// 				googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyD_iiWJaeAl0fu3nz_tYhBVA1dBDeUp-QQ&v=3.exp&libraries=geometry,drawing,places`}
-// 				loadingElement={<div style={{ height: `100%` }} />}
-// 				containerElement={<div style={{ height: `600px`, width: `600px` }} />}
-// 				mapElement={<div style={{ height: `100%` }} />}
-// 			/>
-// 			</div>
-// 		);
-// 	}
-// }
 /*global google*/ 
 import React from "react";
 import SearchField from './SearchField';
