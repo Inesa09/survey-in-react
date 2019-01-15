@@ -7,7 +7,9 @@ import TextArea from '../components/TextArea';
 import SmallMessage from '../components/SmallMessage';
 import TriviaQuestion from '../components/TriviaQuestion';
 import ToggleFields from '../components/ToggleFields';
+import Question from '../components/Question';
 import ImgUploader from './ImgUploader';
+import MapContainer from '../components/MapContainer';
 
 import '../css/Button.css';
 
@@ -139,6 +141,14 @@ class Survey extends Component {
     let copy = this.state.answers;
     let trivia = this.getTriviaByNum(triviaNum);
     copy[trivia][question] = e.target.value;
+    this.setState({ answers: copy });
+  }
+
+  handleAnswerPlace = (currentPlace) => {
+    let copy = this.state.answers;
+    copy.place = currentPlace.place_name;
+    copy.lon = currentPlace.lon;
+    copy.lat = currentPlace.lat;
     this.setState({ answers: copy });
   }
 
@@ -314,6 +324,10 @@ class Survey extends Component {
         <form id='form'>
 
         <ToggleFields />
+
+        <Question question={questions.PLACE} />
+        
+        <MapContainer handleAnswer={(place) => this.handleAnswerPlace(place)}/>
 
           <TextArea
             question={questions.PLACE}

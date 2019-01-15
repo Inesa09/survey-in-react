@@ -114,22 +114,22 @@ const MapContainer = compose(
           });
         },
 	  })
-	 
     },
+
+    // static getDerivedStateFromProps(props, state){
+    //   return { currentPlace: props.answer }
+    // }
+
   }),
   withScriptjs,
   withGoogleMap
 )(props => <div>
   <SearchField marker = {props.markers}
   center = {props.center}
-  onPlacesChangedAutoCompleate={props.onPlacesChangedAutoCompleate}></SearchField>
-  <GoogleMap
-    ref={props.onMapMounted}
-    defaultZoom={15}
-    center = {props.center}
-  >
-  
-    <SearchBox
+  onPlacesChangedAutoCompleate={props.onPlacesChangedAutoCompleate}>
+  </SearchField>
+
+  <SearchBox
       ref={props.onSearchBoxMounted}
       bounds={props.bounds}
       controlPosition={google != undefined ? google.maps.ControlPosition.TOP_LEFT : ''}
@@ -152,7 +152,13 @@ const MapContainer = compose(
           textOverflow: `ellipses`,
         }}
       />
-    </SearchBox>
+  </SearchBox>
+
+  <GoogleMap
+    ref={props.onMapMounted}
+    defaultZoom={15}
+    center = {props.center}
+  >
     {props.markers.map((marker, index) =>
       <Marker 
       key={index} 
