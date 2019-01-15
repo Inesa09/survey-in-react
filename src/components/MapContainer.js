@@ -70,11 +70,13 @@ const MapContainer = compose(
           this.setState({currentPlace: editPlaces}, () =>{
             console.log(this.state.currentPlace);
           });
+          this.props.handleAnswer(this.state.currentPlace);
 
         },
         updatePlaces: () => {
           let editedPlace = this.state.currentPlace;
-          editedPlace.place_name = "_edited" + editedPlace.place_name;
+          if(!editedPlace.place_name.includes("_edited"))
+            editedPlace.place_name = editedPlace.place_name + "_edited";
           const position = refs.marker.getPosition();
           let lat = position.lat().toString();
           let lng = position.lng().toString();
@@ -128,6 +130,9 @@ const MapContainer = compose(
             markers: nextMarkers,
           });
          refs.map.fitBounds(bounds);
+
+         this.props.handleAnswer(this.state.currentPlace);
+         console.log("curr", this.state.currentPlace);
         },
         onPlacesChangedAutoCompleate: (newmarkers, newPlace) => {
           console.log(newPlace);
@@ -138,9 +143,9 @@ const MapContainer = compose(
             markers: newmarkers,
           }, () =>{
             console.log(this.state.currentPlace);
+            this.props.handleAnswer(this.state.currentPlace);
           });
           //this.state.writePlaceToDb();
-          
         },
 	  })
     },

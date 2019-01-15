@@ -145,11 +145,13 @@ class Survey extends Component {
   }
 
   handleAnswerPlace = (currentPlace) => {
+    console.log("current", currentPlace);
     let copy = this.state.answers;
     copy.place = currentPlace.place_name;
     copy.lon = currentPlace.lon;
     copy.lat = currentPlace.lat;
     this.setState({ answers: copy });
+    console.log(this.state.answers);
   }
 
     // ---> 1. GCP <---
@@ -323,7 +325,7 @@ class Survey extends Component {
     (<div className="Survey">
         <form id='form'>
 
-        <ToggleFields />
+        {/* <ToggleFields /> */}
 
         <Question question={questions.PLACE} />
         
