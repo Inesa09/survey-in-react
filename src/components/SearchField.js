@@ -191,7 +191,7 @@ class SearchField extends Component {
                     console.log(markers[0].position);
                     // console.log(this.props.marker);            
                     // console.log(new google.maps.LatLng(lat, lng));
-                     this.props.onPlacesChangedAutoCompleate(markers, lat, lng);
+                     this.props.onPlacesChangedAutoCompleate(markers, this.state.places[i]);
                     console.log(this.props.marker);
                     break;
                   }
