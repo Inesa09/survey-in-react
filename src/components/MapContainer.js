@@ -51,7 +51,14 @@ const MapContainer = compose(
         onMapMounted: ref => {
           refs.map = ref;
         },
-        
+        onPositionChanged: () => {
+          const position = refs.marker.getPosition();
+          console.log(position.toString());
+          console.log(this.state.markers[0].position.toString());
+        },
+        onMarkerMounted: ref => {
+          refs.marker = ref;
+        },
         onSearchBoxMounted: ref => {
           refs.searchBox = ref;
         },
@@ -133,7 +140,13 @@ const MapContainer = compose(
       />
     </SearchBox>
     {props.markers.map((marker, index) =>
-      <Marker key={index} position={marker.position} draggable={true}/>
+      <Marker 
+      key={index} 
+      position={marker.position} 
+      draggable={true}
+      onPositionChanged={props.onPositionChanged}
+      ref={props.onMarkerMounted}
+      />
     )}
   </GoogleMap>
   </div>
