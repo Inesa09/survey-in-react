@@ -30,13 +30,47 @@ const MapContainer = compose(
         },
         markers: [],
         currentPlace: {},
+        // placeToDB: {},
+        writeGoogleCurrentPlace: (googlePlace) => {
+          let newPlace = {
+            area : null,
+            geo_json: null,
+            lat: googlePlace.geometry.location.lat().toString(),
+            lon: googlePlace.geometry.location.lng().toString(),
+            place_id: googlePlace.place_id,
+            place_name: googlePlace.name,
+            wiki_image: "",
+          };
+          this.setState({currentPlace: newPlace});
+          console.log(newPlace);
+        },
+        // writePlaceToDb: () => {
+        //   let newPlaceToDb = {};
+        //   newPlaceToDb.place_name = this.state.currentPlace.place_name;
+        //   newPlaceToDb.lat = this.state.currentPlace.lat;
+        //   newPlaceToDb.lon = this.state.currentPlace.lon;
+        //   console.log(newPlaceToDb);
+        //   this.setState({placeToDB: newPlaceToDb});
+        //   console.log(this.state.placeToDB);
+        // },
+        // writeGooglePlaceToDb: () => {
+        //   let newPlaceToDb = {};
+        //   newPlaceToDb.place_name = this.state.currentPlace.name;
+        //   newPlaceToDb.lat = this.state.currentPlace.geometry.location.lat().toString();
+        //   newPlaceToDb.lon = this.state.currentPlace.geometry.location.lng().toString();
+        //   console.log(newPlaceToDb);
+        //   this.setState({placeToDB: newPlaceToDb});
+        //   console.log(this.state.placeToDB);
+        // },
         onMapMounted: ref => {
           refs.map = ref;
         },
         onPositionChanged: () => {
-          const position = refs.marker.getPosition();
-          console.log(position.toString());
-          console.log(this.state.markers[0].position.toString());
+          let editPlaces = this.state.updatePlaces();
+          this.setState({currentPlace: editPlaces}, () =>{
+            console.log(this.state.currentPlace);
+          });
+
         },
         updatePlaces: () => {
           let editedPlace = this.state.currentPlace;
@@ -46,11 +80,10 @@ const MapContainer = compose(
           let lng = position.lng().toString();
           editedPlace.lat = lat;
           editedPlace.lon = lng;
-          console.log(editedPlace);
-          console.log(position);
-          console.log(position.lat.toString());
-          console.log(position.lat());
-          console.log(position.lat().toString());
+          return editedPlace;
+        },
+        updatePlacesInDB: () => {
+          let editedPlace = this.state.updatePlaces();
           let headers = new Headers();
             headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
             headers.set('Accept', 'application/json');
@@ -64,7 +97,8 @@ const MapContainer = compose(
        
      }).then(res => console.log('Status: ', res.status))
        .catch(error => console.error('Error: ', error));
-        },
+        return editedPlace;
+      },
         onMarkerMounted: ref => {
           refs.marker = ref;
         },
@@ -72,13 +106,12 @@ const MapContainer = compose(
           refs.searchBox = ref;
         },
         onPlacesChanged: () => {
-		console.log(refs);
 		  const places = refs.searchBox.getPlaces();
 		  
           const bounds = new google.maps.LatLngBounds();
-
+          console.log(this.state.currentPlace);
           places.forEach(place => {
-            console.log(place);
+            this.state.writeGoogleCurrentPlace(place);
             if (place.geometry.viewport) {
               bounds.union(place.geometry.viewport)
             } else {
@@ -89,8 +122,7 @@ const MapContainer = compose(
             position: place.geometry.location,
           }));
           const nextCenter = _.get(nextMarkers, '0.position', this.state.center);
-      console.log(nextCenter);
-      console.log(bounds);
+          //this.state.writePlaceToDb();
           this.setState({
             center: {nextCenter},
             markers: nextMarkers,
@@ -99,19 +131,16 @@ const MapContainer = compose(
         },
         onPlacesChangedAutoCompleate: (newmarkers, newPlace) => {
           console.log(newPlace);
-          console.log(this.state.currentPlace);
-          if(refs.marker != undefined){
-          const position = refs.marker.getPosition();
-          if(position.toString() != this.state.markers[0].position.toString()){
-            this.state.updatePlaces();
-          }
-        }
           let newcenter = newmarkers[0].position;
           this.setState({
             currentPlace : newPlace,
             center: newcenter,
             markers: newmarkers,
+          }, () =>{
+            console.log(this.state.currentPlace);
           });
+          //this.state.writePlaceToDb();
+          
         },
 	  })
 	 
