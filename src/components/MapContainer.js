@@ -41,19 +41,27 @@ const MapContainer = compose(
         updatePlaces: () => {
           let editedPlace = this.state.currentPlace;
           editedPlace.place_name = "_edited" + editedPlace.place_name;
+          const position = refs.marker.getPosition();
+          let lat = position.lat().toString();
+          let lng = position.lng().toString();
+          editedPlace.lat = lat;
+          editedPlace.lon = lng;
           console.log(editedPlace);
+          console.log(position);
+          console.log(position.lat.toString());
+          console.log(position.lat());
+          console.log(position.lat().toString());
           let headers = new Headers();
             headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
             headers.set('Accept', 'application/json');
-            headers.set('Content-Type', 'application/json');
-
+          let url = 'https://roadio-master.appspot.com/v1/​update_place?place_name=' + editedPlace.place_name + '&lat=' + editedPlace.lat + '&lon=' + editedPlace.lon;
     const toDB = JSON.stringify({ item: editedPlace });
-    console.log("UPDATE: ", toDB);
+    console.log("POST: ", toDB);
 
-     fetch('https://roadio-master.appspot.com/v1/​update_place', {
-       method: 'POST',
+     fetch(url, {
+       method: 'GET',
        headers: headers,
-       body: toDB
+       
      }).then(res => console.log('Status: ', res.status))
        .catch(error => console.error('Error: ', error));
         },
