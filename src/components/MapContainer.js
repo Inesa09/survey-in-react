@@ -33,7 +33,7 @@ const { SearchBox } = require("react-google-maps/lib/components/places/SearchBox
 
 const MapContainer = compose(
   withProps({
-    googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyD_iiWJaeAl0fu3nz_tYhBVA1dBDeUp-QQ&v=3.exp&libraries=geometry,drawing,places",
+    googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyD_iiWJaeAl0fu3nz_tYhBVA1dBDeUp-QQ&v=3&libraries=geometry,drawing,places",
     loadingElement: <div style={{ height: `100%` }} />,
     containerElement: <div style={{ height: `400px` }} />,
     mapElement: <div style={{ height: `100%` }} />,
@@ -51,12 +51,7 @@ const MapContainer = compose(
         onMapMounted: ref => {
           refs.map = ref;
         },
-        onBoundsChanged: () => {
-          this.setState({
-            bounds: refs.map.getBounds(),
-            center: refs.map.getCenter(),
-          })
-        },
+        
         onSearchBoxMounted: ref => {
           refs.searchBox = ref;
         },
@@ -87,12 +82,13 @@ const MapContainer = compose(
         },
         onPlacesChangedAutoCompleate: (newmarkers, lat, lng) => {
           console.log(this.center);
+          console.log(refs);
           let newcenter = newmarkers[0].position;
           console.log(newcenter);
-          console.log(refs.ma)
+        
           console.log(newmarkers[0].position.lng);
           this.setState({
-            center: {newcenter},
+            center: newcenter,
             markers: newmarkers,
           });
         },
@@ -109,8 +105,7 @@ const MapContainer = compose(
   <GoogleMap
     ref={props.onMapMounted}
     defaultZoom={15}
-    defaultCenter ={props.center}
-    onBoundsChanged={props.onBoundsChanged}
+    center = {props.center}
   >
   
     <SearchBox
