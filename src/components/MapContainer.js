@@ -1,6 +1,7 @@
 /*global google*/ 
 import React from "react";
 import SearchField from './SearchField';
+import gcp_config from '../GCP_configs';
 const _ = require("lodash");
 const { compose, withProps, lifecycle } = require("recompose");
 const {
