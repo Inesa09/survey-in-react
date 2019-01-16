@@ -1,7 +1,8 @@
 /*global google*/ 
 import React from "react";
-import SearchField from './SearchField';
+// import SearchField from './SearchField';
 import gcp_config from '../GCP_configs';
+import Autosuggest from './Autocomplete';
 const _ = require("lodash");
 const { compose, withProps, lifecycle } = require("recompose");
 const {
@@ -41,7 +42,7 @@ const MapContainer = compose(
             place_name: googlePlace.name,
             wiki_image: "",
           };
-          this.setState({currentPlace: newPlace});
+         // this.setState({currentPlace: newPlace});
           console.log(newPlace);
         },
         // writePlaceToDb: () => {
@@ -67,14 +68,12 @@ const MapContainer = compose(
         },
         onPositionChanged: () => {
           let editPlaces = this.state.updatePlaces();
-          this.setState({currentPlace: editPlaces}, () =>{
-            console.log(this.state.currentPlace);
-          });
+          this.setState({currentPlace: editPlaces});
 
         },
         updatePlaces: () => {
-          let editedPlace = this.state.currentPlace;
-          editedPlace.place_name = "_edited" + editedPlace.place_name;
+          let editedPlace = Object.assign({}, this.state.currentPlace);
+          editedPlace.place_name = editedPlace.place_name.startsWith("_edited") ? editedPlace.place_name : ("_edited" + editedPlace.place_name) ;
           const position = refs.marker.getPosition();
           let lat = position.lat().toString();
           let lng = position.lng().toString();
@@ -149,9 +148,12 @@ const MapContainer = compose(
   withScriptjs,
   withGoogleMap
 )(props => <div>
-  <SearchField marker = {props.markers}
+  {/* <SearchField marker = {props.markers}
   center = {props.center}
-  onPlacesChangedAutoCompleate={props.onPlacesChangedAutoCompleate}></SearchField>
+  onPlacesChangedAutoCompleate={props.onPlacesChangedAutoCompleate}></SearchField> */}
+  <Autosuggest 
+  placesList = {props.placesList}
+  onPlacesChangedAutoCompleate={props.onPlacesChangedAutoCompleate}/>
   <GoogleMap
     ref={props.onMapMounted}
     defaultZoom={15}
