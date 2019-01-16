@@ -7,7 +7,9 @@ import TextArea from '../components/TextArea';
 import SmallMessage from '../components/SmallMessage';
 import TriviaQuestion from '../components/TriviaQuestion';
 import ToggleFields from '../components/ToggleFields';
+import Question from '../components/Question';
 import ImgUploader from './ImgUploader';
+import MapContainer from '../components/MapContainer';
 
 import '../css/Button.css';
 
@@ -140,6 +142,16 @@ class Survey extends Component {
     let trivia = this.getTriviaByNum(triviaNum);
     copy[trivia][question] = e.target.value;
     this.setState({ answers: copy });
+  }
+
+  handleAnswerPlace = (currentPlace) => {
+    console.log("current", currentPlace);
+    let copy = this.state.answers;
+    copy.place = currentPlace.place_name;
+    copy.lon = currentPlace.lon;
+    copy.lat = currentPlace.lat;
+    this.setState({ answers: copy });
+    console.log(this.state.answers);
   }
 
     // ---> 1. GCP <---
@@ -313,7 +325,14 @@ class Survey extends Component {
     (<div className="Survey">
         <form id='form'>
 
-        <ToggleFields />
+        {/* <ToggleFields /> */}
+
+        <Question question={questions.PLACE} />
+        
+        <MapContainer 
+        handleAnswer={(place) => this.handleAnswerPlace(place)}
+        placesList = {this.props.placesList}
+        />
 
           <TextArea
             question={questions.PLACE}

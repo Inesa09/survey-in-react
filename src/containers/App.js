@@ -9,8 +9,7 @@ import Survey from './Survey';
 import Heading from '../components/Heading';
 import Message from '../components/Message';
 import Login from './Login';
-import MapContainer from '../components/MapContainer';
-
+import MapContainer from '../components/MapContainer'
 import '../css/Hidden.css';
 
 class App extends Component {
@@ -269,8 +268,8 @@ class App extends Component {
             post={submitted ? '' : text[number]}
             user={submitted ? '' : user.email}
             submitted={submitted}
+            placesList = {this.state.placesList}
           />
-          <MapContainer placesList = {this.state.placesList}/>
         </Top>
       )
     }

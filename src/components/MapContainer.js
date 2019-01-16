@@ -127,6 +127,9 @@ const MapContainer = compose(
             markers: nextMarkers,
           });
          refs.map.fitBounds(bounds);
+
+         this.props.handleAnswer(this.state.currentPlace);
+         console.log("curr", this.state.currentPlace);
         },
         onPlacesChangedAutoCompleate: (newmarkers, newPlace) => {
           console.log(newPlace);
@@ -137,13 +140,17 @@ const MapContainer = compose(
             markers: newmarkers,
           }, () =>{
             console.log(this.state.currentPlace);
+            this.props.handleAnswer(this.state.currentPlace);
           });
           //this.state.writePlaceToDb();
-          
         },
 	  })
-	 
     },
+
+    // static getDerivedStateFromProps(props, state){
+    //   return { currentPlace: props.answer }
+    // }
+
   }),
   withScriptjs,
   withGoogleMap
@@ -183,7 +190,7 @@ const MapContainer = compose(
           textOverflow: `ellipses`,
         }}
       />
-    </SearchBox>
+  </SearchBox>
     {props.markers.map((marker, index) =>
       <Marker 
       key={index} 
@@ -196,4 +203,5 @@ const MapContainer = compose(
   </GoogleMap>
   </div>
 );
+
 export default MapContainer;
