@@ -195,7 +195,7 @@ class App extends Component {
 
 
 
-    // const data = JSON.stringify({ item: current });
+    const data = JSON.stringify({ item: current });
     //  console.log(data);
 
     //  fetch('https://roadio-master.appspot.com/v1/edit_item', {

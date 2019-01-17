@@ -325,20 +325,12 @@ class Survey extends Component {
     (<div className="Survey">
         <form id='form'>
 
-        {/* <ToggleFields /> */}
-
-        <Question question={questions.PLACE} />
-        
-        <MapContainer 
-        handleAnswer={(place) => this.handleAnswerPlace(place)}
-        placesList = {this.props.placesList}
-        />
-
-          <TextArea
-            question={questions.PLACE}
-            handleTextInput={(e) => this.handleAnswer("place", e)} // ---> handleAnswerPlace ???
-            value={answers.place}
+          <Question question={questions.PLACE} />
+          <MapContainer 
+            handleAnswer={(place) => this.handleAnswerPlace(place)}
+            placesList = {this.props.placesList}
           />
+
           <TextArea
             question={questions.TITLE}
             handleTextInput={(e) => this.handleAnswerArray('labels', e.target.value)}

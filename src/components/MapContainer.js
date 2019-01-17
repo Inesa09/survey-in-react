@@ -18,7 +18,7 @@ const MapContainer = compose(
     googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyD_iiWJaeAl0fu3nz_tYhBVA1dBDeUp-QQ&v=3&libraries=geometry,drawing,places",
     loadingElement: <div style={{ height: `100%` }} />,
     containerElement: <div style={{ height: `400px` }} />,
-    mapElement: <div style={{ height: `100%` }} />,
+    mapElement: <div style={{ height: `100%`, margin: '0px 30px' }} />,
   }),
 
   lifecycle({
@@ -127,19 +127,44 @@ const MapContainer = compose(
             this.props.handleAnswer(this.state.currentPlace);
           });
         },
+
+        toggle: (activeBtn, fieldToShow, greyBtn, fieldToHide, ) => {
+          document.getElementById(activeBtn).className = 'ui button violet';
+          document.getElementById(greyBtn).className = 'ui button active';
+          document.getElementById(fieldToShow).style.display = 'block';
+          document.getElementById(fieldToHide).style.display = 'none';
+        }, 
+
+        clickGoogle: () => {
+          this.state.toggle('btnG', 'inputG', 'btnC',  'inputC');
+        }, 
+      
+        clickCustom:  () => {
+          this.state.toggle('btnC',  'inputC', 'btnG', 'inputG');
+        },
+
 	    })
     },
   }),
 
   withScriptjs,
   withGoogleMap
-)(props => <div>
+)(props => <div >
 
-  <Autosuggest 
-    placesList = {props.placesList}
-    onPlacesChangedAutoCompleate={props.onPlacesChangedAutoCompleate}
-  />
+  <div class="ui buttons" style={{ display: 'flex', justifyContent: 'center', 
+    margin: '20px 60px' }}>
+    <div class="ui button violet" id='btnG' onClick={props.clickGoogle} >Google</div >
+    <div class="or"></div>
+    <div  class="ui button active" id='btnC' onClick={props.clickCustom} > Custom </div >
+  </div>
 
+  <div id='inputC' style={{display: 'none'}} >
+    <Autosuggest 
+      placesList = {props.placesList}
+      onPlacesChangedAutoCompleate={props.onPlacesChangedAutoCompleate}
+    />
+  </div>
+   
   <GoogleMap
     ref={props.onMapMounted}
     defaultZoom={15}
@@ -152,8 +177,9 @@ const MapContainer = compose(
       onPlacesChanged={props.onPlacesChanged}
     >
       <input
+        id='inputG'
         type="text"
-        placeholder="Customized your placeholder"
+        placeholder="Google autosuggest"
         style={{
           boxSizing: `border-box`,
           border: `1px solid transparent`,
@@ -168,7 +194,7 @@ const MapContainer = compose(
           textOverflow: `ellipses`,
         }}
       />
-   </SearchBox>
+    </SearchBox>
 
     {props.markers.map((marker, index) =>
       <Marker 
