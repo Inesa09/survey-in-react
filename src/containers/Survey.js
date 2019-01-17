@@ -123,7 +123,7 @@ class Survey extends Component {
     let result = e.target.value;
 
     if(this.props.constants.numericFields.indexOf(question) !== -1){
-      result = parseInt(result);
+      result = parseInt(result, 10);
     }
 
     copy[question] = result;
@@ -208,8 +208,8 @@ class Survey extends Component {
       //   copy[ LOCATION ] = '';
       // }
 
-    answers.lon = answers.lon.toString();
-    answers.lat = answers.lat.toString();
+    // answers.lon = answers.lon.toString();
+    // answers.lat = answers.lat.toString();
     return answers;
   }
 
@@ -250,7 +250,7 @@ class Survey extends Component {
     if(toDB.length === 0){
       this.updatePostInDB(answers);
     } else {
-      for(var i in toDB){
+      for(let i in toDB){
         this.updatePostInDB(toDB[i]);
       }
     }
