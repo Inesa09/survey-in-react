@@ -120,12 +120,12 @@ class App extends Component {
      .then(response =>response.json())
      .then(data => this.setState({ text: data.items}));
 
-      fetch('https://roadio-master.appspot.com/v1/get_places?limit=-1')
+    fetch('https://roadio-master.appspot.com/v1/get_places?limit=-1')
      .then(response =>response.json())
      .then(data => this.setState({ placesList: data}, () =>{
       console.log(this.state.placesList);
      }));
-     console.log("a");
+    console.log("a");
     console.log(this.state.placesList);
     console.log("a");
 

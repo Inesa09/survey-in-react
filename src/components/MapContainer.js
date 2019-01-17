@@ -1,6 +1,5 @@
 /*global google*/ 
 import React from "react";
-// import SearchField from './SearchField';
 import gcp_config from '../GCP_configs';
 import Autosuggest from './Autocomplete';
 const _ = require("lodash");
@@ -31,7 +30,6 @@ const MapContainer = compose(
         },
         markers: [],
         currentPlace: {},
-        // placeToDB: {},
         writeGoogleCurrentPlace: (googlePlace) => {
           let newPlace = {
             area : null,
@@ -45,24 +43,6 @@ const MapContainer = compose(
           this.setState({currentPlace: newPlace});
           console.log(newPlace);
         },
-        // writePlaceToDb: () => {
-        //   let newPlaceToDb = {};
-        //   newPlaceToDb.place_name = this.state.currentPlace.place_name;
-        //   newPlaceToDb.lat = this.state.currentPlace.lat;
-        //   newPlaceToDb.lon = this.state.currentPlace.lon;
-        //   console.log(newPlaceToDb);
-        //   this.setState({placeToDB: newPlaceToDb});
-        //   console.log(this.state.placeToDB);
-        // },
-        // writeGooglePlaceToDb: () => {
-        //   let newPlaceToDb = {};
-        //   newPlaceToDb.place_name = this.state.currentPlace.name;
-        //   newPlaceToDb.lat = this.state.currentPlace.geometry.location.lat().toString();
-        //   newPlaceToDb.lon = this.state.currentPlace.geometry.location.lng().toString();
-        //   console.log(newPlaceToDb);
-        //   this.setState({placeToDB: newPlaceToDb});
-        //   console.log(this.state.placeToDB);
-        // },
         onMapMounted: ref => {
           refs.map = ref;
         },
@@ -88,17 +68,14 @@ const MapContainer = compose(
             headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
             headers.set('Accept', 'application/json');
           let url = 'https://roadio-master.appspot.com/v1/​update_place?place_name=' + editedPlace.place_name + '&lat=' + editedPlace.lat + '&lon=' + editedPlace.lon;
-    const toDB = JSON.stringify({ item: editedPlace });
-    console.log("POST: ", toDB);
+          const toDB = JSON.stringify({ item: editedPlace });
+          console.log("POST: ", toDB);
 
-     fetch(url, {
-       method: 'GET',
-       headers: headers,
-       
-     }).then(res => console.log('Status: ', res.status))
-       .catch(error => console.error('Error: ', error));
-        return editedPlace;
-      },
+          fetch(url, {method: 'GET',headers: headers,})
+            .then(res => console.log('Status: ', res.status))
+            .catch(error => console.error('Error: ', error));
+          return editedPlace;
+        },
         onMarkerMounted: ref => {
           refs.marker = ref;
         },
@@ -106,8 +83,7 @@ const MapContainer = compose(
           refs.searchBox = ref;
         },
         onPlacesChanged: () => {
-		  const places = refs.searchBox.getPlaces();
-		  
+		      const places = refs.searchBox.getPlaces();
           const bounds = new google.maps.LatLngBounds();
           console.log(this.state.currentPlace);
           places.forEach(place => {
@@ -122,15 +98,10 @@ const MapContainer = compose(
             position: place.geometry.location,
           }));
           const nextCenter = _.get(nextMarkers, '0.position', this.state.center);
-          //this.state.writePlaceToDb();
-          this.setState({
-            center: {nextCenter},
-            markers: nextMarkers,
-          });
-         refs.map.fitBounds(bounds);
-
-         this.props.handleAnswer(this.state.currentPlace);
-         console.log("curr", this.state.currentPlace);
+          this.setState({center: {nextCenter}, markers: nextMarkers,});
+          refs.map.fitBounds(bounds);
+          this.props.handleAnswer(this.state.currentPlace);
+          console.log("curr", this.state.currentPlace);
         },
         onPlacesChangedAutoCompleate: (newmarkers, newPlace) => {
           console.log(newPlace);
@@ -143,22 +114,14 @@ const MapContainer = compose(
             console.log(this.state.currentPlace);
             this.props.handleAnswer(this.state.currentPlace);
           });
-          //this.state.writePlaceToDb();
         },
-	  })
+	    })
     },
-
-    // static getDerivedStateFromProps(props, state){
-    //   return { currentPlace: props.answer }
-    // }
 
   }),
   withScriptjs,
   withGoogleMap
 )(props => <div>
-  {/* <SearchField marker = {props.markers}
-  center = {props.center}
-  onPlacesChangedAutoCompleate={props.onPlacesChangedAutoCompleate}></SearchField> */}
   <Autosuggest 
   placesList = {props.placesList}
   onPlacesChangedAutoCompleate={props.onPlacesChangedAutoCompleate}/>

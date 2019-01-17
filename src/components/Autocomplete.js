@@ -101,22 +101,22 @@ class IntegrationAutosuggest extends React.Component {
     suggestions: [],
   };
 }
-getSuggestions(value) {
-  const inputValue = deburr(value.trim()).toLowerCase();
-  const inputLength = inputValue.length;
-  let count = 0;
-  console.log(this.props);
-  return inputLength === 0
-    ? []
-    : this.props.placesList.filter(suggestion => {
-        const keep =
-          count < 5 && suggestion.place_name.slice(0, inputLength).toLowerCase() === inputValue;
+  getSuggestions(value) {
+    const inputValue = deburr(value.trim()).toLowerCase();
+    const inputLength = inputValue.length;
+    let count = 0;
+    console.log(this.props);
+    return inputLength === 0
+      ? []
+      : this.props.placesList.filter(suggestion => {
+          const keep =
+            count < 5 && suggestion.place_name.slice(0, inputLength).toLowerCase() === inputValue;
 
-        if (keep) {
-          count += 1;
-        }
-        return keep;
-      });
+          if (keep) {
+            count += 1;
+          }
+          return keep;
+        });
 };
   handleSuggestionsFetchRequested = ({ value }) => {
     this.setState({
@@ -139,15 +139,14 @@ getSuggestions(value) {
   onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) =>{
     console.log(suggestions);
     let lat = parseFloat(suggestion.lat);
-  let lng = parseFloat(suggestion.lon);
-  let newmarker = {};
-  newmarker.position = new google.maps.LatLng(lat, lng);
-  let markers = [newmarker];       
-  this.props.onPlacesChangedAutoCompleate(markers, suggestion);
+    let lng = parseFloat(suggestion.lon);
+    let newmarker = {};
+    newmarker.position = new google.maps.LatLng(lat, lng);
+    let markers = [newmarker];       
+    this.props.onPlacesChangedAutoCompleate(markers, suggestion);
 };
   render() {
     const { classes } = this.props;
-
     const autosuggestProps = {
       renderInputComponent,
       suggestions: this.state.suggestions,
