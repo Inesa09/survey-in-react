@@ -335,6 +335,7 @@ class Survey extends Component {
             question={questions.TITLE}
             handleTextInput={(e) => this.handleAnswerArray('labels', e.target.value)}
             value={answers.labels[answers.labels.length - 1]}
+            margin={'100px'}
           />
 
           <ImgUploader
