@@ -1,6 +1,5 @@
 /*global google*/ 
 import React from "react";
-import gcp_config from '../GCP_configs';
 import Autosuggest from './Autocomplete';
 const _ = require("lodash");
 const { compose, withProps, lifecycle } = require("recompose");
@@ -71,18 +70,6 @@ const MapContainer = compose(
 
         updatePlacesInDB: () => {
           let editedPlace = this.state.updatePlaces();
-          let headers = new Headers();
-          headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
-          headers.set('Accept', 'application/json');
-          let url = 'https://roadio-master.appspot.com/v1/​update_place?place_name=' + editedPlace.place_name 
-            + '&lat=' + editedPlace.lat 
-            + '&lon=' + editedPlace.lon;
-          const toDB = JSON.stringify({ item: editedPlace });
-          console.log("POST: ", toDB);
-
-          fetch(url, {method: 'GET',headers: headers,})
-            .then(res => console.log('Status: ', res.status))
-            .catch(error => console.error('Error: ', error));
           return editedPlace;
         },
 
