@@ -9,7 +9,6 @@ import Survey from './Survey';
 import Heading from '../components/Heading';
 import Message from '../components/Message';
 import Login from './Login';
-import MapContainer from '../components/MapContainer'
 import '../css/Hidden.css';
 
 class App extends Component {
@@ -22,9 +21,6 @@ class App extends Component {
       placesList: [],
       previosIndexList: [],
       user : {},
-      constants: {
-        DATE: 29,
-      },
       // table: 'newData/',
       table: 'version4/', //--> Developer's DB <--
     }; // <- set up react state
@@ -73,7 +69,7 @@ class App extends Component {
   }
 
   findNextUnsubmitedElement = (post) => {
-    const {text, constants} = this.state;
+    const {text} = this.state;
     for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
       // console.log(text[i].submission_time);
       if (text[i].submission_time === null && text[i].story === "test") {   //TODO delete "test"
@@ -199,7 +195,7 @@ class App extends Component {
 
 
 
-    const data = JSON.stringify({ item: current });
+    // const data = JSON.stringify({ item: current });
     //  console.log(data);
 
     //  fetch('https://roadio-master.appspot.com/v1/edit_item', {
