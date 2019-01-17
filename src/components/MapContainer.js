@@ -42,7 +42,7 @@ const MapContainer = compose(
             place_name: googlePlace.name,
             wiki_image: "",
           };
-         // this.setState({currentPlace: newPlace});
+          this.setState({currentPlace: newPlace});
           console.log(newPlace);
         },
         // writePlaceToDb: () => {
@@ -79,6 +79,7 @@ const MapContainer = compose(
           let lng = position.lng().toString();
           editedPlace.lat = lat;
           editedPlace.lon = lng;
+          this.props.handleAnswer(editedPlace);
           return editedPlace;
         },
         updatePlacesInDB: () => {
