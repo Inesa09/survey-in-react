@@ -8,7 +8,6 @@ import parse from 'autosuggest-highlight/parse';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
-import Popper from '@material-ui/core/Popper';
 import { withStyles } from '@material-ui/core/styles';
 
 const suggestions = [
@@ -131,7 +130,7 @@ class IntegrationAutosuggest extends React.Component {
   };
 
   handleChange = name => (event, { newValue, method }) => {
-    if(method != 'up' && method != 'down')
+    if(method !== 'up' && method !== 'down')
     this.setState({
       [name]: newValue,
     });
