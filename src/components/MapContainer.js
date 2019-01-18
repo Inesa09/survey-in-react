@@ -17,8 +17,8 @@ const MapContainer = compose(
   withProps({
     googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyDSbOVMr0GAABOWMFiaUZJqjWrWu9p00fw&v=3&libraries=geometry,drawing,places",
     loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ height: `400px` }} />,
-    mapElement: <div style={{ height: `100%`, margin: '0px 30px' }} />,
+    containerElement: <div className="mainContainer" style={{ height: `400px` }} />,
+    mapElement: <div className="map-item" style={{ height: `100%`, margin: '0px 30px' }} />,
   }),
 
   lifecycle({
@@ -132,64 +132,63 @@ const MapContainer = compose(
 
   withScriptjs,
   withGoogleMap
-)(props => <div >
+)(props => <div className="mapController-item">
 
-  <div class="ui buttons" style={{ display: 'flex', justifyContent: 'center', 
-    margin: '20px 60px' }}>
-    <div class="ui button violet" id='btnG' onClick={props.clickGoogle} >Google</div >
-    <div class="or"></div>
-    <div  class="ui button active" id='btnC' onClick={props.clickCustom} > Custom </div >
-  </div>
 
-  <div id='inputC' style={{display: 'none'}} >
-    <Autosuggest 
-      placesList = {props.placesList}
-      onPlacesChangedAutoCompleate={props.onPlacesChangedAutoCompleate}
-    />
-  </div>
-   
-  <GoogleMap
-    ref={props.onMapMounted}
-    defaultZoom={15}
-    center = {props.center}
-  >
-    <SearchBox
-      ref={props.onSearchBoxMounted}
-      bounds={props.bounds}
-      controlPosition={google !== undefined ? google.maps.ControlPosition.TOP_LEFT : ''}
-      onPlacesChanged={props.onPlacesChanged}
-    >
-      <input
-        id='inputG'
-        type="text"
-        placeholder="Google autosuggest"
-        style={{
-          boxSizing: `border-box`,
-          border: `1px solid transparent`,
-          width: `240px`,
-          height: `32px`,
-          marginTop: `27px`,
-          padding: `0 12px`,
-          borderRadius: `3px`,
-          boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-          fontSize: `14px`,
-          outline: `none`,
-          textOverflow: `ellipses`,
-        }}
-      />
-    </SearchBox>
+      <GoogleMap
+        ref={props.onMapMounted}
+        defaultZoom={15}
+        center = {props.center}
+      >
+        {props.markers.map((marker, index) =>
+          <Marker 
+            key={index} 
+            position={marker.position} 
+            draggable={true}
+            onPositionChanged={props.onPositionChanged}
+            ref={props.onMarkerMounted}
+          />
+        )}
+      </GoogleMap>
 
-    {props.markers.map((marker, index) =>
-      <Marker 
-        key={index} 
-        position={marker.position} 
-        draggable={true}
-        onPositionChanged={props.onPositionChanged}
-        ref={props.onMarkerMounted}
-      />
-    )}
+        <SearchBox
+          ref={props.onSearchBoxMounted}
+          bounds={props.bounds}
+          controlPosition={ google.maps.ControlPosition.TOP_LEFT }
+          onPlacesChanged={props.onPlacesChanged}
+        >
+          <input
+            id='inputG'
+            type="text"
+            placeholder="Google autosuggest"
+            style={{
+              boxSizing: `border-box`,
+              border: `1px solid transparent`,
+              width: `240px`,
+              height: `32px`,
+              marginTop: `27px`,
+              padding: `0 12px`,
+              borderRadius: `3px`,
+              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+              fontSize: `14px`,
+              outline: `none`,
+              textOverflow: `ellipses`,
+            }}
+          />
+        </SearchBox>
+        <div class="ui buttons" style={{ display: 'flex', justifyContent: 'center', 
+          margin: '20px 60px' }}>
+          <div class="ui button violet" id='btnG' onClick={props.clickGoogle} >Google</div >
+          <div class="or"></div>
+          <div  class="ui button active" id='btnC' onClick={props.clickCustom} > Custom </div >
+        </div>
 
-  </GoogleMap>
-</div> );
+        <div id='inputC' style={{display: 'none'}} >
+        <Autosuggest 
+        placesList = {props.placesList}
+        onPlacesChangedAutoCompleate={props.onPlacesChangedAutoCompleate}
+        />
+        </div>
+  </div>);
 
 export default MapContainer;
