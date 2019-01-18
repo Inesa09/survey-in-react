@@ -1,6 +1,7 @@
 /*global google*/ 
 import React from "react";
 import Autosuggest from './Autocomplete';
+import '../css/MapContainer.css';
 const _ = require("lodash");
 const { compose, withProps, lifecycle } = require("recompose");
 const {
@@ -45,7 +46,6 @@ const MapContainer = compose(
             wiki_image: "",
           };
           this.setState({currentPlace: newPlace});
-          console.log(newPlace);
         },
 
         onMapMounted: ref => {
@@ -83,7 +83,6 @@ const MapContainer = compose(
         onPlacesChanged: () => {
 		      const places = refs.searchBox.getPlaces();
           const bounds = new google.maps.LatLngBounds();
-          console.log(this.state.currentPlace);
           places.forEach(place => {
             this.state.writeGoogleCurrentPlace(place);
             if (place.geometry.viewport) {
@@ -99,18 +98,15 @@ const MapContainer = compose(
           this.setState({center: {nextCenter}, markers: nextMarkers,});
           refs.map.fitBounds(bounds);
           this.props.handleAnswer(this.state.currentPlace);
-          console.log("curr", this.state.currentPlace);
         },
 
         onPlacesChangedAutoCompleate: (newmarkers, newPlace) => {
-          console.log(newPlace);
           let newcenter = newmarkers[0].position;
           this.setState({
             currentPlace : newPlace,
             center: newcenter,
             markers: newmarkers,
           }, () =>{
-            console.log(this.state.currentPlace);
             this.props.handleAnswer(this.state.currentPlace);
           });
         },
