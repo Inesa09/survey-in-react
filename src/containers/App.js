@@ -253,7 +253,6 @@ class App extends Component {
           <div className={hideDiv ? 'hidden' : ''}>
             <Heading heading={hideDiv ? '' : `תוכן - בהקשר ל ${text[number].place}`} />
             <Text text={hideDiv ? '' : text[number].raw_text} heading={hideDiv ? '' : text[number].place} />
-            <Heading heading={"שדות למילוי"} />
           </div>
           
           <Survey postNum={number}

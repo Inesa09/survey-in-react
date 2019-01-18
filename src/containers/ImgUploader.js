@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import Image from '../components/Image';
 import ImgSetter from '../components/ImgSetter';
-import Question from '../components/Question';
 
 class ImgUploader extends Component {
 
@@ -13,6 +12,10 @@ class ImgUploader extends Component {
         notImg: false,
         image: this.props.answer,
     }; // <- set up react state
+  }
+
+  static defaultProps = {
+    margin: '0px'
   }
 
   uploadImg = e => {
@@ -43,7 +46,7 @@ class ImgUploader extends Component {
 
   render() {
     const { uploading, notImg, image, } = this.state
-    const { question, handleImgLoad } = this.props
+    const { question, handleImgLoad, margin } = this.props
 
     const content = () => {
       switch(true) {
@@ -53,11 +56,11 @@ class ImgUploader extends Component {
           </div>
         case notImg:
           return <div>
-            <ImgSetter uploadImg={this.uploadImg} 
+            <ImgSetter uploadImg={this.uploadImg} question={question}
               handleImgLoad={handleImgLoad} value={image} />
             <div className={`ui negative message`}>
               <div className='content'>
-                <div className='header'>Wrong Format</div>
+                <div className='header'> סוג קובץ לא נתמך </div>       {/* wrong format */}
                 <p>Upload an image please!</p>
               </div>
             </div>
@@ -65,14 +68,14 @@ class ImgUploader extends Component {
         case image !== undefined && image !== '' && image.includes("blob"):
           return <Image img={image} removeImg={this.removeImg} />
         default:
-          return <ImgSetter uploadImg={this.uploadImg}
+          return <ImgSetter uploadImg={this.uploadImg} question={question}
             handleImgLoad={handleImgLoad} value={image}/>
       }
     }
 
     return (
-      <div>
-        <Question question={question}/>
+      <div style={{  marginTop: margin }}>
+        {/* <Question question={question}/> */}
         <div className="ui placeholder segment" style={{ margin:"30px", marginTop: '10px', minHeight:'100px' }}> 
           {content()} 
         </div>

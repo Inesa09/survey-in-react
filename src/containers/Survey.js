@@ -6,7 +6,6 @@ import Radio from '../components/Radio';
 import TextArea from '../components/TextArea';
 import SmallMessage from '../components/SmallMessage';
 import TriviaQuestion from '../components/TriviaQuestion';
-import ToggleFields from '../components/ToggleFields';
 import Question from '../components/Question';
 import ImgUploader from './ImgUploader';
 import MapContainer from '../components/MapContainer';
@@ -28,14 +27,14 @@ class Survey extends Component {
   static defaultProps = {
     questions: {
       PLACE: 'מיקום קשור',
-      TITLE: 'QUESTION TITLE',
-      PRE_IMG: 'Pre Question Image',
-      POST_IMG: 'Post Question Image',
-      DIFFICULTY: 'Difficulty',
+      TITLE: 'כותרת שאלה / תגיות',
+      PRE_IMG: 'תמונה בזמן שאלה',
+      POST_IMG: 'תמונה בזמן תשובה',
+      DIFFICULTY: 'רמת קושי שאלה',
       PLACE_REL: 'עד כמה התוכן רלוונטי למקום?',
       INTERESTING: 'עד כמה התוכן מעניין?',
       TOURISTS_REL: 'כמה רלוונטי לתיירים',
-      EDIT_TEXT: 'תקציר התוכן',
+      EDIT_TEXT: 'סיפור קצר משלים',
       TRIVIA1: '#1 שאלת טריוויה',
       TRIVIA2: '#2 שאלת טריוויה',
       NOTES: 'הערות',
@@ -179,8 +178,6 @@ class Survey extends Component {
       if(copy.labels[copy.labels.length - 1] === "")
         copy.labels.pop();
 
-      //TODO ---> WAIT FOR DIMA ---> lat & lon - STRINGS!
-      copy = this.processLocation(copy);
       this.processTrivias(copy);  // <- process trivias and send to db
 
       showEl('success', 1000, true);
@@ -192,25 +189,6 @@ class Survey extends Component {
     let temporaryList = this.state.listWithPreviosAnswers; 
     temporaryList.push(answers);
     this.setState({ listWithPreviosAnswers: temporaryList });
-  }
-
-  processLocation = (answers) => {
-    // if(answers[ PLACE ] !== post[ PLACE ]){ // <- add a new post if place has been changed
-      //   let textsRef = db.ref(this.state.table);
-      //   let all;
-      //   textsRef.on('value', snapshot => {
-      //     all = snapshot.val();
-      //   });
-
-      //   let newPost = all.length;
-      //   textsRef.child(newPost).set(all[postNum]);
-      //   postNum = newPost;
-      //   copy[ LOCATION ] = '';
-      // }
-
-    // answers.lon = answers.lon.toString();
-    // answers.lat = answers.lat.toString();
-    return answers;
   }
 
   processTrivias = (answers) => {
@@ -325,59 +303,6 @@ class Survey extends Component {
     (<div className="Survey">
         <form id='form'>
 
-          <Question question={questions.PLACE} />
-          <MapContainer 
-            handleAnswer={(place) => this.handleAnswerPlace(place)}
-            placesList = {this.props.placesList}
-          />
-
-          <TextArea
-            question={questions.TITLE}
-            handleTextInput={(e) => this.handleAnswerArray('labels', e.target.value)}
-            value={answers.labels[answers.labels.length - 1]}
-            margin={'100px'}
-          />
-
-          <ImgUploader
-            question={questions.PRE_IMG}
-            handleImgLoad={(newImg) => this.handleAnswerArray('question_images', newImg)}
-            answer={answers.question_images[answers.question_images.length - 1]} // to remember image 
-          />
-
-          <ImgUploader
-            question={questions.POST_IMG}
-            handleImgLoad={(newImg) => this.handleAnswerArray('story_images', newImg)}
-            answer={answers.story_images[answers.story_images.length - 1]} // to remember image 
-          />
-
-          <Radio
-            question={questions.DIFFICULTY}
-            handleOptionChange={(e) => this.handleAnswer('difficulty', e)}
-            answer={ getNumOrNull(answers.difficulty) }
-          />
-          <Radio
-            question={questions.PLACE_REL}
-            handleOptionChange={(e) => this.handleAnswer('place_relevancy', e)}
-            answer={ getNumOrNull(answers.place_relevancy) }
-          />
-          <Radio
-            question={questions.INTERESTING}
-            handleOptionChange={(e) => this.handleAnswer('score', e)}
-            answer={ getNumOrNull(answers.score) }
-          />
-          <Radio
-            question={questions.TOURISTS_REL}
-            handleOptionChange={(e) => this.handleAnswer('tourists_relevancy', e)}
-            answer={ getNumOrNull(answers.tourists_relevancy) }
-          />
-
-          <TextArea
-            question={questions.EDIT_TEXT}
-            handleTextInput={(e) => this.handleAnswer('story', e)}
-            value={answers.story}
-            rows= {'10'}
-          />
-
           <TriviaQuestion
             question={questions.TRIVIA1}
             tooltip={'answer is..'}
@@ -399,6 +324,58 @@ class Survey extends Component {
             value3={answers.trivia2.wrong_answer1}
             value4={answers.trivia2.wrong_answer2}
             value5={answers.trivia2.wrong_answer3}
+          />
+
+          <TextArea
+            question={questions.EDIT_TEXT}
+            handleTextInput={(e) => this.handleAnswer('story', e)}
+            value={answers.story}
+            rows= {'10'}
+          />
+
+          <Question question={questions.PLACE} />
+          <MapContainer 
+            handleAnswer={(place) => this.handleAnswerPlace(place)}
+            placesList = {this.props.placesList}
+          />
+
+          <ImgUploader
+            question={questions.PRE_IMG}
+            handleImgLoad={(newImg) => this.handleAnswerArray('question_images', newImg)}
+            answer={answers.question_images[answers.question_images.length - 1]} // to remember image 
+            margin={'130px'}
+          />
+          <ImgUploader
+            question={questions.POST_IMG}
+            handleImgLoad={(newImg) => this.handleAnswerArray('story_images', newImg)}
+            answer={answers.story_images[answers.story_images.length - 1]} // to remember image 
+          />
+
+          <TextArea
+            question={questions.TITLE}
+            handleTextInput={(e) => this.handleAnswerArray('labels', e.target.value)}
+            value={answers.labels[answers.labels.length - 1]}
+          />
+
+          <Radio
+            question={questions.DIFFICULTY}
+            handleOptionChange={(e) => this.handleAnswer('difficulty', e)}
+            answer={ getNumOrNull(answers.difficulty) }
+          />
+          <Radio
+            question={questions.PLACE_REL}
+            handleOptionChange={(e) => this.handleAnswer('place_relevancy', e)}
+            answer={ getNumOrNull(answers.place_relevancy) }
+          />
+          <Radio
+            question={questions.INTERESTING}
+            handleOptionChange={(e) => this.handleAnswer('score', e)}
+            answer={ getNumOrNull(answers.score) }
+          />
+          <Radio
+            question={questions.TOURISTS_REL}
+            handleOptionChange={(e) => this.handleAnswer('tourists_relevancy', e)}
+            answer={ getNumOrNull(answers.tourists_relevancy) }
           />
 
           <TextArea
