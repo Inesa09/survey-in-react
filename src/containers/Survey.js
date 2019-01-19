@@ -343,7 +343,7 @@ class Survey extends Component {
             question={questions.PRE_IMG}
             handleImgLoad={(newImg) => this.handleAnswerArray('question_images', newImg)}
             answer={answers.question_images[answers.question_images.length - 1]} // to remember image 
-            margin={'130px'}
+            margin={'25px'}
           />
           <ImgUploader
             question={questions.POST_IMG}

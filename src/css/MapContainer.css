@@ -6,8 +6,8 @@
 }
 .map-item{
     width: 100%;
-    margin: 0 !important;
+    /* margin: 0 !important; */
 }
-.mapController-item{
+/* .mapController-item{
     margin-left: 15%;
-}
+} */

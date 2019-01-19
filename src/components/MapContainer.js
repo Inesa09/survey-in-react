@@ -160,7 +160,7 @@ const MapContainer = compose(
           <input
             id='inputG'
             type="text"
-            placeholder="Google autosuggest"
+            placeholder="חפש שם מקום בגוגל"
             style={{
               boxSizing: `border-box`,
               border: `1px solid transparent`,
@@ -177,7 +177,7 @@ const MapContainer = compose(
           />
         </SearchBox>
         <div class="ui buttons" style={{ display: 'flex', justifyContent: 'center', 
-          margin: '20px 60px' }}>
+          margin: '20px 30px 20px 0px' }}>
           <div class="ui button violet" id='btnG' onClick={props.clickGoogle} >Google</div >
           <div class="or"></div>
           <div  class="ui button active" id='btnC' onClick={props.clickCustom} > Custom </div >

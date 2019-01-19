@@ -158,7 +158,7 @@ class IntegrationAutosuggest extends React.Component {
           {...autosuggestProps}
           inputProps={{
             classes,
-            placeholder: 'Search a country',
+            placeholder: 'חפש שם מקום במאגר שלנו',
             value: this.state.single,
             onChange: this.handleChange('single'),
           }}
