@@ -61,12 +61,16 @@ function getSuggestionValue(suggestion) {
 
 
 const styles = theme => ({
+  input: {
+    textAlign: 'right',
+  },
   root: {
     height: 250,
     flexGrow: 1,
   },
   container: {
     position: 'relative',
+    marginRight: '10px',
   },
   suggestionsContainerOpen: {
     position: 'absolute',
