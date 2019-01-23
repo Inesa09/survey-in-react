@@ -29,11 +29,11 @@ const MapContainer = compose(
       this.setState({
         bounds: null,
         center: {
-          lat: 41.9, 
-          lng: -87.624
+          lat: parseFloat(this.props.placesList[0].lat), 
+          lng: parseFloat(this.props.placesList[0].lon)
         },
         markers: [],
-        currentPlace: {},
+        currentPlace: this.props.placesList[0],
 
         writeGoogleCurrentPlace: (googlePlace) => {
           let newPlace = {
@@ -50,6 +50,10 @@ const MapContainer = compose(
 
         onMapMounted: ref => {
           refs.map = ref;
+          let newmarker = {};
+          newmarker.position = new google.maps.LatLng(parseFloat(this.props.placesList[0].lat), parseFloat(this.props.placesList[0].lon));
+          let markers = [newmarker];      
+          this.setState({markers}); 
         },
         onPositionChanged: () => {
           let editPlaces = this.state.updatePlaces();
@@ -98,6 +102,7 @@ const MapContainer = compose(
           this.setState({center: {nextCenter}, markers: nextMarkers,});
           refs.map.fitBounds(bounds);
           this.props.handleAnswer(this.state.currentPlace);
+          console.log(this);
         },
 
         onPlacesChangedAutoCompleate: (newmarkers, newPlace) => {

@@ -109,16 +109,15 @@ class App extends Component {
     console.log(this);
     let headers = new Headers();
     headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
-
-    fetch('https://roadio-master.appspot.com/v1/get_user_items?user_id=management_user&limit=-1', {method:'GET',headers: headers,})
-     .then(response =>response.json())
-     .then(data => this.setState({ text: data.items}));
-
     fetch('https://roadio-master.appspot.com/v1/get_places?limit=-1')
      .then(response =>response.json())
      .then(data => this.setState({ placesList: data}, () =>{
-      console.log(this.state.placesList);
+      fetch('https://roadio-master.appspot.com/v1/get_user_items?user_id=management_user&limit=-1', {method:'GET',headers: headers,})
+     .then(response =>response.json())
+     .then(data => this.setState({ text: data.items}));
      }));
+
+    
     console.log("a");
     console.log(this.state.placesList);
     console.log("a");
