@@ -31,13 +31,11 @@ class Survey extends Component {
       PRE_IMG: 'תמונה בזמן שאלה',
       POST_IMG: 'תמונה בזמן תשובה',
       DIFFICULTY: 'רמת קושי שאלה',
-      PLACE_REL: 'עד כמה התוכן רלוונטי למקום?',
-      INTERESTING: 'עד כמה התוכן מעניין?',
+      INTERESTING: 'איכות שאלה',
       TOURISTS_REL: 'כמה רלוונטי לתיירים',
       EDIT_TEXT: 'סיפור קצר משלים',
-      TRIVIA1: '#1 שאלת טריוויה',
-      TRIVIA2: '#2 שאלת טריוויה',
-      NOTES: 'הערות',
+      TRIVIA1: 'שאלת טריוויה',
+      // TRIVIA2: '#2 שאלת טריוויה',
     },
     constants: {
       numericFields: [ 'difficulty', 'place_relevancy', 'score', 'tourists_relevancy', ],
@@ -160,7 +158,7 @@ class Survey extends Component {
     const { nextElementExistanse, showNext, toUndef, showEl } = this.props;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
-    if(answers.place_relevancy === "") // <- mandatory question
+    if(answers.place_relevancy === "") // <- mandatory question  ?????????????????????????????????????/
       showEl('negative', 250000000, false);
     else {
       this.addToPreviousAnswers(answers);
@@ -319,7 +317,7 @@ class Survey extends Component {
             value4={answers.trivia1.wrong_answer2}
             value5={answers.trivia1.wrong_answer3}
           />
-          <TriviaQuestion
+          {/* <TriviaQuestion
             question={questions.TRIVIA2}
             tooltip={'answer is..'}
             numbers={['question', 'right_answer', 'wrong_answer1', 'wrong_answer2', 'wrong_answer3']} 
@@ -329,7 +327,7 @@ class Survey extends Component {
             value3={answers.trivia2.wrong_answer1}
             value4={answers.trivia2.wrong_answer2}
             value5={answers.trivia2.wrong_answer3}
-          />
+          /> */}
 
           <TextArea
             question={questions.EDIT_TEXT}
@@ -371,11 +369,6 @@ class Survey extends Component {
             answer={ getNumOrNull(answers.difficulty) }
           />
           <Radio
-            question={questions.PLACE_REL}
-            handleOptionChange={(e) => this.handleAnswer('place_relevancy', e)}
-            answer={ getNumOrNull(answers.place_relevancy) }
-          />
-          <Radio
             question={questions.INTERESTING}
             handleOptionChange={(e) => this.handleAnswer('score', e)}
             answer={ getNumOrNull(answers.score) }
@@ -384,13 +377,6 @@ class Survey extends Component {
             question={questions.TOURISTS_REL}
             handleOptionChange={(e) => this.handleAnswer('tourists_relevancy', e)}
             answer={ getNumOrNull(answers.tourists_relevancy) }
-          />
-
-          <TextArea
-            question={questions.NOTES}
-            handleTextInput={(e) => this.handleAnswer('notes', e)}
-            value={answers.notes}
-            rows= {'5'}
           />
 
 
