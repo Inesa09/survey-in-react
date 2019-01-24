@@ -19,7 +19,7 @@ class Survey extends Component {
     this.state = {
       setNewFields: this.setNewFields.bind(this),
       answers: this.props.submitted ? '' : this.setNewFields(this.props.post),
-      listWithPreviosAnswers:[],
+      listWithPreviosAnswers: [],
       changed: false,
       changedForMap: false,
     }; // <- set up react state
@@ -39,27 +39,27 @@ class Survey extends Component {
       TRIVIA2: '#2 שאלת טריוויה',
     },
     constants: {
-      numericFields: [ 'difficulty', 'score', 'tourists_relevancy', ],
-      textFields: [ 'place', 'story' ],
-      arrayFields: [ 'labels', 'question_images', 'story_images' ],
+      numericFields: ['difficulty', 'score', 'tourists_relevancy',],
+      textFields: ['place', 'story'],
+      arrayFields: ['labels', 'question_images', 'story_images'],
     },
   }
 
-  setNewFields(change) {   
+  setNewFields(change) {
     const { numericFields, textFields, arrayFields } = this.props.constants;
 
     change.editor_username = this.props.user;
 
-    for (let i = 1; i < 3; i++){
+    for (let i = 1; i < 3; i++) {
       change = this.setTrivia(i, change);
-    } 
+    }
 
-    for(let prop in change){
-      if( (numericFields.indexOf(prop) !== -1) && (change[prop] === "") )
+    for (let prop in change) {
+      if ((numericFields.indexOf(prop) !== -1) && (change[prop] === ""))
         change[prop] = null;
-      else if( (textFields.indexOf(prop) !== -1) && (change[prop] === null) )
+      else if ((textFields.indexOf(prop) !== -1) && (change[prop] === null))
         change[prop] = "";
-      else if( arrayFields.indexOf(prop) !== -1 )
+      else if (arrayFields.indexOf(prop) !== -1)
         change[prop].push("");
     }
 
@@ -70,37 +70,37 @@ class Survey extends Component {
     const getIfNotNull = this.getIfNotNull;
     let trivia = this.getTriviaByNum(triviaNum);
 
-    change[trivia] =  (triviaNum === 1) ? {
+    change[trivia] = (triviaNum === 1) ? {
       question: getIfNotNull(change, 'question'),
       right_answer: getIfNotNull(change, 'right_answer'),
       wrong_answer1: getIfNotNull(change, 'answers', 1),
       wrong_answer2: getIfNotNull(change, 'answers', 2),
       wrong_answer3: getIfNotNull(change, 'answers', 3),
     } : {
-      question: undefined,
-      right_answer: undefined,
-      wrong_answer1: undefined,
-      wrong_answer2: undefined,
-      wrong_answer3: undefined,
-    }
+        question: undefined,
+        right_answer: undefined,
+        wrong_answer1: undefined,
+        wrong_answer2: undefined,
+        wrong_answer3: undefined,
+      }
     return change;
   }
 
-  getIfNotNull = (getFromThere, getThis, index=0) => {
-    if(index === 0){
-      if(getFromThere[getThis] !== null | undefined)
+  getIfNotNull = (getFromThere, getThis, index = 0) => {
+    if (index === 0) {
+      if (getFromThere[getThis] !== null | undefined)
         return getFromThere[getThis];
     } else {
-      if(getFromThere[getThis].length > index) {
-        if(getFromThere[getThis][index] !== null | undefined)
-          return getFromThere[getThis][index]; 
+      if (getFromThere[getThis].length > index) {
+        if (getFromThere[getThis][index] !== null | undefined)
+          return getFromThere[getThis][index];
       }
     } return undefined;
   }
 
   getTriviaByNum = (num) => {
     let trivia;
-    switch(num){
+    switch (num) {
       case 1:
         trivia = 'trivia1';
         break;
@@ -120,7 +120,7 @@ class Survey extends Component {
     let copy = this.state.answers;
     let result = e.target.value;
 
-    if(this.props.constants.numericFields.indexOf(question) !== -1){
+    if (this.props.constants.numericFields.indexOf(question) !== -1) {
       result = parseInt(result, 10);
     }
 
@@ -131,7 +131,7 @@ class Survey extends Component {
   handleAnswerArray = (question, element) => {
     let copy = this.state.answers;
     let size = copy[question].length;
-    copy[question][size-1] = element;
+    copy[question][size - 1] = element;
     this.setState({ answers: copy });
   }
 
@@ -152,7 +152,7 @@ class Survey extends Component {
     console.log(this.state.answers);
   }
 
-    // ---> 1. GCP <---
+  // ---> 1. GCP <---
   //Submit
   addAnswers = (e, postNum) => {
     const { answers, } = this.state;
@@ -173,18 +173,18 @@ class Survey extends Component {
     let copy = Object.assign({}, answers);
     copy.submission_time = new Date().toLocaleString("en-US");
 
-    if(copy.labels[copy.labels.length - 1] === "")
+    if (copy.labels[copy.labels.length - 1] === "")
       copy.labels.pop();
 
     this.processTrivias(copy);  // <- process trivias and send to db
 
     showEl('success', 1000, true);
     this.setState({ changed: true, changedForMap: true });
-  
+
   }
 
   addToPreviousAnswers = (answers) => {
-    let temporaryList = this.state.listWithPreviosAnswers; 
+    let temporaryList = this.state.listWithPreviosAnswers;
     temporaryList.push(answers);
     this.setState({ listWithPreviosAnswers: temporaryList });
   }
@@ -196,12 +196,12 @@ class Survey extends Component {
 
     let sent = false;
     let toDB = [];
-    for(var i in trivias){
-      
-      let tr = trivias[i];
-      for(var prop in tr){
+    for (var i in trivias) {
 
-        if(tr[prop] !== undefined){
+      let tr = trivias[i];
+      for (var prop in tr) {
+
+        if (tr[prop] !== undefined) {
           let newAn = Object.assign({}, answers);
           const pushIfExist = this.pushIfExist;
 
@@ -212,8 +212,8 @@ class Survey extends Component {
           newAn.answers = pushIfExist(newAn.answers, tr['wrong_answer1'], true);
           newAn.answers = pushIfExist(newAn.answers, tr['wrong_answer2'], true);
           newAn.answers = pushIfExist(newAn.answers, tr['wrong_answer3'], true);
-          
-          if(sent)
+
+          if (sent)
             delete newAn.datastore_id;
           toDB.push(newAn);
 
@@ -223,18 +223,18 @@ class Survey extends Component {
       }
     }
 
-    if(toDB.length === 0){
+    if (toDB.length === 0) {
       this.updatePostInDB(answers);
     } else {
-      for(let i in toDB){
+      for (let i in toDB) {
         this.updatePostInDB(toDB[i]);
       }
     }
   }
 
-  pushIfExist = (pushThere, pushThat, isArr=false) => {
-    if(pushThat !== undefined){
-      if(isArr){
+  pushIfExist = (pushThere, pushThat, isArr = false) => {
+    if (pushThat !== undefined) {
+      if (isArr) {
         pushThere.push(pushThat);
       } else {
         pushThere = pushThat;
@@ -251,12 +251,12 @@ class Survey extends Component {
     const toDB = JSON.stringify({ item: data });
     console.log("UPDATE: ", toDB);
 
-     fetch('https://roadio-master.appspot.com/v1/edit_item', {
-       method: 'POST',
-       headers: headers,
-       body: toDB
-     }).then(res => console.log('Status: ', res.status))
-       .catch(error => console.error('Error: ', error));
+    fetch('https://roadio-master.appspot.com/v1/edit_item', {
+      method: 'POST',
+      headers: headers,
+      body: toDB
+    }).then(res => console.log('Status: ', res.status))
+      .catch(error => console.error('Error: ', error));
   }
 
   //Show previous answers
@@ -270,7 +270,7 @@ class Survey extends Component {
       console.log("show prev: ", this.state.answers);
     });
   }
-  
+
   getNumOrNull = (getFromThere) => {
     getFromThere = (getFromThere === "") ? null : getFromThere;
     return getFromThere;
@@ -278,13 +278,13 @@ class Survey extends Component {
 
   //react lifecycle methods
   static getDerivedStateFromProps(props, state) {
-    if (state.changed){
+    if (state.changed) {
       return { answers: state.setNewFields(props.post), changed: false }
     } return null;
   }
 
   changeToFalse = () => {
-    this.setState({ changedForMap:false });
+    this.setState({ changedForMap: false });
   }
 
   render() {
@@ -293,21 +293,21 @@ class Survey extends Component {
     const getNumOrNull = this.getNumOrNull;
 
     return submitted ?
-    (<button className={numberOfPreviousElemnts > 0 ?
-      'ui labeled icon violet basic massive button ' : 'ui labeled icon grey basic massive button disabled'}
-      style={{ margin: '30px 35%' }}
-      onClick={this.showPrev}>
-      <i class="arrow left icon"></i>
-      הקודם
+      (<button className={numberOfPreviousElemnts > 0 ?
+        'ui labeled icon violet basic massive button ' : 'ui labeled icon grey basic massive button disabled'}
+        style={{ margin: '30px 35%' }}
+        onClick={this.showPrev}>
+        <i class="arrow left icon"></i>
+        הקודם
     </button>)
-    :
-    (<div className="Survey">
+      :
+      (<div className="Survey">
         <form id='form'>
 
           <TriviaQuestion
             question={questions.TRIVIA1}
             tooltip={'answer is..'}
-            numbers={['question', 'right_answer', 'wrong_answer1', 'wrong_answer2', 'wrong_answer3']} 
+            numbers={['question', 'right_answer', 'wrong_answer1', 'wrong_answer2', 'wrong_answer3']}
             handleTextInput={(e, number) => this.handleAnswerTrivia(1, number, e)}
             value1={answers.trivia1.question}
             value2={answers.trivia1.right_answer}
@@ -331,29 +331,41 @@ class Survey extends Component {
             question={questions.EDIT_TEXT}
             handleTextInput={(e) => this.handleAnswer('story', e)}
             value={answers.story}
-            rows= {'10'}
+            rows={'10'}
           />
 
           <Question question={questions.PLACE} />
-          <MapContainer 
+          <MapContainer
             handleAnswer={(place) => this.handleAnswerPlace(place)}
-            placesList = {this.props.placesList}
+            placesList={this.props.placesList}
             answer={answers.place}
             changed={this.state.changedForMap}
             changeToFalse={this.changeToFalse}
           />
 
-          <ImgUploader
-            question={questions.PRE_IMG}
-            handleImgLoad={(newImg) => this.handleAnswerArray('question_images', newImg)}
-            answer={answers.question_images[answers.question_images.length - 1]} // to remember image 
-            margin={'25px'}
-          />
-          <ImgUploader
-            question={questions.POST_IMG}
-            handleImgLoad={(newImg) => this.handleAnswerArray('story_images', newImg)}
-            answer={answers.story_images[answers.story_images.length - 1]} // to remember image 
-          />
+
+          <div className="ui placeholder segment" style={{ margin: '30px', marginBottom: '10px', }}>
+            <div className="ui two column stackable center aligned grid">
+              <div className="ui vertical divider"> And </div>
+              <div className="middle aligned row" >
+                <div className="column" >
+                  <ImgUploader
+                    question={questions.PRE_IMG}
+                    handleImgLoad={(newImg) => this.handleAnswerArray('question_images', newImg)}
+                    answer={answers.question_images[answers.question_images.length - 1]} // to remember image 
+                  />
+                </div>
+                <div className="column" >
+                  <ImgUploader
+                    question={questions.POST_IMG}
+                    handleImgLoad={(newImg) => this.handleAnswerArray('story_images', newImg)}
+                    answer={answers.story_images[answers.story_images.length - 1]} // to remember image 
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
 
           <TextArea
             question={questions.TITLE}
@@ -364,17 +376,17 @@ class Survey extends Component {
           <Radio
             question={questions.DIFFICULTY}
             handleOptionChange={(e) => this.handleAnswer('difficulty', e)}
-            answer={ getNumOrNull(answers.difficulty) }
+            answer={getNumOrNull(answers.difficulty)}
           />
           <Radio
             question={questions.INTERESTING}
             handleOptionChange={(e) => this.handleAnswer('score', e)}
-            answer={ getNumOrNull(answers.score) }
+            answer={getNumOrNull(answers.score)}
           />
           <Radio
             question={questions.TOURISTS_REL}
             handleOptionChange={(e) => this.handleAnswer('tourists_relevancy', e)}
-            answer={ getNumOrNull(answers.tourists_relevancy) }
+            answer={getNumOrNull(answers.tourists_relevancy)}
           />
 
 
