@@ -69,8 +69,8 @@ class App extends Component {
   findNextUnsubmitedElement = (post) => {
     const {text} = this.state;
     for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
-      // console.log(text[i].submission_time);
-      if (text[i].submission_time === null && text[i].story === "test") {   //TODO delete "test"
+      console.log(this.state.user.email);
+      if (text[i].assigned_user === this.state.user.email  && text[i].submission_time === null && text[i].story === "test") {   //TODO delete "test"
         console.log("Item ID: ", text[i].datastore_id);
         // console.log(1640970940540570457547809);
         return i;
@@ -179,7 +179,8 @@ class App extends Component {
         story_voices:[],
         submission_time:null,
         tourists_relevancy:null,
-        type:"question"
+        type:"question",
+        assigned_user:"inesusja@gmail.com"
      }
   //    current.lon = current.lon.toString();
   //    current.lat = current.lat.toString();
@@ -218,6 +219,8 @@ class App extends Component {
       let submitted = false;
       let hideMessage, hideDiv;
       let number = this.findNextUnsubmitedElement(post);
+      console.log(number);
+      console.log(post);
       if (post !== 0) {
         number = post;
       }
@@ -233,10 +236,12 @@ class App extends Component {
           </Top>
         )
       else if (post === undefined || (post === 0 && number === undefined)){ //All text submitted
+        console.log("---------------------------------------------");
         submitted = true;
         hideMessage = false;
         hideDiv = true;
       } else { //Main
+        console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++00");
         hideMessage = true;
         hideDiv = false;
       }
