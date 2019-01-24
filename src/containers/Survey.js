@@ -164,6 +164,7 @@ class Survey extends Component {
       showEl('negative', 250000000, false);
     else {
       this.addToPreviousAnswers(answers);
+      console.log("add to prev answers", this.state.answers);
 
       document.getElementById("form").reset(); // <- clear the input
       if (nextElementExistanse) // <- use methods from App.js
@@ -181,7 +182,7 @@ class Survey extends Component {
       this.processTrivias(copy);  // <- process trivias and send to db
 
       showEl('success', 1000, true);
-      this.setState( {changed: true});
+      this.setState({ changed: true });
     }
   }
 
@@ -260,7 +261,7 @@ class Survey extends Component {
      }).then(res => console.log('Status: ', res.status))
        .catch(error => console.error('Error: ', error));
   }
-  
+
   //Show previous answers
   showPrev = (e) => {
     e.preventDefault();
@@ -268,7 +269,7 @@ class Survey extends Component {
     let temporaryList = this.state.listWithPreviosAnswers;
     if (temporaryList.length > 0) {
       let previosAnswers = temporaryList.pop();
-      this.setState({ answers: previosAnswers, listWithPreviosAnswers: temporaryList });
+      this.setState({ answers: previosAnswers, listWithPreviosAnswers: temporaryList, changed:true });
     } else {
       this.setState( {changed: true});
     }
@@ -282,8 +283,12 @@ class Survey extends Component {
   //react lifecycle methods
   static getDerivedStateFromProps(props, state) {
     if (state.changed){
-      return { answers: state.setNewFields(props.post), changed:false }
+      return { answers: state.setNewFields(props.post) }
     } return null;
+  }
+
+  changeToFalse = () => {
+    this.setState({ changed:false });
   }
 
   render() {
@@ -337,6 +342,9 @@ class Survey extends Component {
           <MapContainer 
             handleAnswer={(place) => this.handleAnswerPlace(place)}
             placesList = {this.props.placesList}
+            answer={answers.place}
+            changed={this.state.changed}
+            changeToFalse={this.changeToFalse}
           />
 
           <ImgUploader

@@ -95,12 +95,12 @@ const styles = theme => ({
 class IntegrationAutosuggest extends React.Component {
   constructor(props) {
     super(props);
-  this.state = {
-    single: '',
-    popper: '',
-    suggestions: [],
-  };
-}
+    this.state = {
+      single: this.props.answer,
+      popper: '',
+      suggestions: [],
+    };  
+  } 
   getSuggestions(value) {
     const inputValue = deburr(value.trim()).toLowerCase();
     const inputLength = inputValue.length;
@@ -116,7 +116,7 @@ class IntegrationAutosuggest extends React.Component {
           }
           return keep;
         });
-};
+  };
   handleSuggestionsFetchRequested = ({ value }) => {
     this.setState({
       suggestions: this.getSuggestions(value),
@@ -142,7 +142,19 @@ class IntegrationAutosuggest extends React.Component {
     newmarker.position = new google.maps.LatLng(lat, lng);
     let markers = [newmarker];       
     this.props.onPlacesChangedAutoCompleate(markers, suggestion);
-};
+  };
+
+  static getDerivedStateFromProps(props, state) {
+    console.log("deliver");
+    if(props.changed) {
+    console.log("deliver if");
+    props.changeToFalse();
+      return { single: props.answer }
+    }
+    else
+      return null;
+  }
+
   render() {
     const { classes } = this.props;
     const autosuggestProps = {
