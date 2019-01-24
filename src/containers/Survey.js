@@ -21,6 +21,7 @@ class Survey extends Component {
       answers: this.setNewFields(this.props.post),
       listWithPreviosAnswers:[],
       changed: false,
+      changedForMap: false,
     }; // <- set up react state
   }
 
@@ -35,11 +36,11 @@ class Survey extends Component {
       TOURISTS_REL: 'כמה רלוונטי לתיירים',
       EDIT_TEXT: 'סיפור קצר משלים',
       TRIVIA1: 'שאלת טריוויה',
-      // TRIVIA2: '#2 שאלת טריוויה',
+      TRIVIA2: '#2 שאלת טריוויה',
     },
     constants: {
-      numericFields: [ 'difficulty', 'place_relevancy', 'score', 'tourists_relevancy', ],
-      textFields: [ 'place', 'story', 'notes' ],
+      numericFields: [ 'difficulty', 'score', 'tourists_relevancy', ],
+      textFields: [ 'place', 'story' ],
       arrayFields: [ 'labels', 'question_images', 'story_images' ],
     },
   }
@@ -154,34 +155,32 @@ class Survey extends Component {
     // ---> 1. GCP <---
   //Submit
   addAnswers = (e, postNum) => {
-    const { answers } = this.state;
+    const { answers, } = this.state;
     const { nextElementExistanse, showNext, toUndef, showEl } = this.props;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
-    if(answers.place_relevancy === "") // <- mandatory question  ?????????????????????????????????????/
-      showEl('negative', 250000000, false);
+
+    this.addToPreviousAnswers(answers);
+    console.log("add to prev answers", this.state.answers);
+
+    document.getElementById("form").reset(); // <- clear the input
+    if (nextElementExistanse) // <- use methods from App.js
+      showNext(postNum, e);
     else {
-      this.addToPreviousAnswers(answers);
-      console.log("add to prev answers", this.state.answers);
-
-      document.getElementById("form").reset(); // <- clear the input
-      if (nextElementExistanse) // <- use methods from App.js
-        showNext(postNum, e);
-      else {
-        toUndef(postNum, e);
-      }
-
-      let copy = Object.assign({}, answers);
-      copy.submission_time = new Date().toLocaleString("en-US");
-
-      if(copy.labels[copy.labels.length - 1] === "")
-        copy.labels.pop();
-
-      this.processTrivias(copy);  // <- process trivias and send to db
-
-      showEl('success', 1000, true);
-      this.setState({ changed: true });
+      toUndef(postNum, e);
     }
+
+    let copy = Object.assign({}, answers);
+    copy.submission_time = new Date().toLocaleString("en-US");
+
+    if(copy.labels[copy.labels.length - 1] === "")
+      copy.labels.pop();
+
+    this.processTrivias(copy);  // <- process trivias and send to db
+
+    showEl('success', 1000, true);
+    this.setState({ changed: true, changedForMap: true });
+  
   }
 
   addToPreviousAnswers = (answers) => {
@@ -265,12 +264,11 @@ class Survey extends Component {
     e.preventDefault();
     this.props.showPrev(e);
     let temporaryList = this.state.listWithPreviosAnswers;
-    if (temporaryList.length > 0) {
-      let previosAnswers = temporaryList.pop();
-      this.setState({ answers: previosAnswers, listWithPreviosAnswers: temporaryList, changed:true });
-    } else {
-      this.setState( {changed: true});
-    }
+
+    let previosAnswers = temporaryList.pop();
+    this.setState({ answers: previosAnswers, listWithPreviosAnswers: temporaryList, changedForMap: true }, () => {
+      console.log("show prev: ", this.state.answers);
+    });
   }
   
   getNumOrNull = (getFromThere) => {
@@ -281,12 +279,12 @@ class Survey extends Component {
   //react lifecycle methods
   static getDerivedStateFromProps(props, state) {
     if (state.changed){
-      return { answers: state.setNewFields(props.post) }
+      return { answers: state.setNewFields(props.post), changed: false }
     } return null;
   }
 
   changeToFalse = () => {
-    this.setState({ changed:false });
+    this.setState({ changedForMap:false });
   }
 
   render() {
@@ -341,7 +339,7 @@ class Survey extends Component {
             handleAnswer={(place) => this.handleAnswerPlace(place)}
             placesList = {this.props.placesList}
             answer={answers.place}
-            changed={this.state.changed}
+            changed={this.state.changedForMap}
             changeToFalse={this.changeToFalse}
           />
 

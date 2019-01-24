@@ -5,7 +5,7 @@ import Question from '../components/Question';
 import '../css/Input.css';
 import '../css/Hidden.css';
 
-const ImgSetter = ({ uploadImg, handleImgLoad, image, question }) => {
+const ImgSetter = ({ uploadImg, handleImgLoad, value, question }) => {
     return (
         // <div>
         //     <div className="ui two column stackable center aligned grid">
@@ -33,7 +33,7 @@ const ImgSetter = ({ uploadImg, handleImgLoad, image, question }) => {
                             </div>
                             <Question question={question}/> 
                             <div className='ui small input' style={{display: 'flex', width:'100%'}}>
-                                <input type="text" id='inputImgUrl' value={image}
+                                <input type="text" id='inputImgUrl' value={value}
                                 onChange={(e) => handleImgLoad(e.target.value) }
                                 placeholder="Input image URL" />   
                             </div>

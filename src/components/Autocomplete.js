@@ -145,10 +145,8 @@ class IntegrationAutosuggest extends React.Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    console.log("deliver");
     if(props.changed) {
-    console.log("deliver if");
-    props.changeToFalse();
+      props.changeToFalse();
       return { single: props.answer }
     }
     else
