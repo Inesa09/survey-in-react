@@ -182,11 +182,11 @@ const MapContainer = compose(
             }}
           />
         </SearchBox>
-        <div className="ui buttons" style={{ display: 'flex', justifyContent: 'center', 
+        <div class="ui buttons" style={{ display: 'flex', justifyContent: 'center', 
           margin: '20px 30px 20px 20px' }}>
-          <div className="ui button active" id='btnG' onClick={props.clickGoogle} > מיקום ב </div >
-          <div className="or"></div>
-          <div  className="ui button violet" id='btnC' onClick={props.clickCustom} > מאגר פנימי </div >
+          <div class="ui button active" id='btnG' onClick={props.clickGoogle} > מיקום ב </div >
+          <div class="or"></div>
+          <div  class="ui button violet" id='btnC' onClick={props.clickCustom} > מאגר פנימי </div >
         </div>
 
         <div id='inputC' >
