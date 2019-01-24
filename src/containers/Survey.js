@@ -18,7 +18,7 @@ class Survey extends Component {
     super(props);
     this.state = {
       setNewFields: this.setNewFields.bind(this),
-      answers: this.setNewFields(this.props.post),
+      answers: this.props.submitted ? '' : this.setNewFields(this.props.post),
       listWithPreviosAnswers:[],
       changed: false,
       changedForMap: false,
