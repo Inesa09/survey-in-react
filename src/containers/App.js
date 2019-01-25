@@ -78,11 +78,6 @@ class App extends Component {
     }
   }
 
-    // ---> 2. FIREBASE DB <---
-  signOut() {
-    fireDB.auth().signOut();
-  }
-
   //CSS methods
   showEl = (el, time, bool) => {
     const current = document.getElementById(el);
@@ -226,11 +221,12 @@ class App extends Component {
       }
       let isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
       // console.log(number);
+
+      const itemId = text[number] === undefined ? false : text[number].datastore_id;
+      
       if (text.length === 0)  //Loading
         return (
-
-
-          <Top user={user.email} signOut={this.signOut}>
+          <Top user={user.email} itemId={itemId} >
             <Message color='teal' icon='circle notched loading icon'
               text1='רק שניה' text2='מביאים לכם את התוכן' />
           </Top>
@@ -247,7 +243,7 @@ class App extends Component {
       // console.log(text[number].raw_text);
       // console.log(text[number].place);
       return (
-        <Top user={user.email} signOut={this.signOut}>
+        <Top user={user.email} itemId={itemId} >
           <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
             text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
           <div className={hideDiv ? 'hidden' : ''}>
