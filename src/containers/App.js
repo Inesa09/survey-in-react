@@ -254,7 +254,7 @@ class App extends Component {
           <Route path ="/:name" exact render={ (routeProps) => {
             console.log(routeProps);
             console.log(number);
-            console.log(this);
+            console.log(window.location.pathname);
             console.log(window.location.href);
             if(!isNaN(routeProps.match.params.name) && number != post){
               number = parseFloat(routeProps.match.params.name);
