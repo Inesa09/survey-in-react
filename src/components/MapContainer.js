@@ -30,21 +30,16 @@ const MapContainer = compose(
         bounds: null,
         center: {lat: parseFloat(this.props.post.lat) , lng: parseFloat(this.props.post.lon)},
         markers: [],
-        currentPlace: this.props.post,
+        currentPlace: this.props.post.place === null ? { place_name: null, lat: undefined, lon: undefined} : {place_name: this.props.post.place, lat: this.props.post.lat, lon: this.props.post.lon},
 
         writeGoogleCurrentPlace: (googlePlace) => {
           let newPlace = {
-            area : null,
-            geo_json: null,
             lat: googlePlace.geometry.location.lat().toString(),
             lon: googlePlace.geometry.location.lng().toString(),
-            place_id: googlePlace.place_id,
             place_name: googlePlace.name,
-            wiki_image: "",
           };
           this.setState({currentPlace: newPlace});
         },
-
         onMapMounted: ref => {
           refs.map = ref;
           console.log("2222222222222222222222222222");
@@ -136,12 +131,15 @@ const MapContainer = compose(
       if(this.props.changed){
         let lat = parseFloat(this.props.post.lat);
         let lng = parseFloat(this.props.post.lon);
-        if(lat != null){
-        let newCentr = {lat: lat , lng: lng};
-        let newmarker = {};
-        newmarker.position = new google.maps.LatLng(parseFloat(this.props.post.lat), parseFloat(this.props.post.lon));
-        let markers = [newmarker];
-        this.setState({center: newCentr, markers: markers});
+        if(lat != undefined){
+          let newCentr = {lat: lat , lng: lng};
+          let newmarker = {};
+          newmarker.position = new google.maps.LatLng(parseFloat(this.props.post.lat), parseFloat(this.props.post.lon));
+          let markers = [newmarker];
+          this.setState({center: newCentr, markers: markers, currentPlace: {place_name: this.props.post.place, lat: this.props.post.lat, lon: this.props.post.lon}});
+        }
+        else{
+          this.setState({markers: [], currentPlace: { place_name: null, lat: undefined, lon: undefined}});
         }
       }
     },

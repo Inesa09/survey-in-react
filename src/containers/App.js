@@ -193,13 +193,13 @@ class App extends Component {
     const data = JSON.stringify({ item: current });
     //  console.log(data);
 
-    fetch('https://roadio-master.appspot.com/v1/edit_item', {
-      method: 'POST',
-      headers: headers,
-      body: data
-    }).then(res => console.log(res))
-      // .then(response => console.log('Success:', JSON.stringify(response)))
-      .catch(error => console.error('Error:', error));
+    // fetch('https://roadio-master.appspot.com/v1/edit_item', {
+    //   method: 'POST',
+    //   headers: headers,
+    //   body: data
+    // }).then(res => console.log(res))
+    //   // .then(response => console.log('Success:', JSON.stringify(response)))
+    //   .catch(error => console.error('Error:', error));
 
 
 
