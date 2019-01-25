@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 
 import fireDB from '../fireDB';
 import gcp_config from '../GCP_configs';
-
+import {BrowserRouter as Router, Redirect} from 'react-router-dom';
+import Route from 'react-router-dom/Route';
 import Text from '../components/Text';
 import Top from '../components/Top';
 import Survey from './Survey';
@@ -70,7 +71,8 @@ class App extends Component {
     const {text} = this.state;
     for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
       console.log(this.state.user.email);
-      if (text[i].assigned_user === this.state.user.email  && text[i].submission_time === null && text[i].story === "test") {   //TODO delete "test"
+      console.log(text[i]);
+      if ((text[i].assigned_user === this.state.user.email || text[i].assigned_user === null)  && text[i].submission_time === null && text[i].story === "test") {   //TODO delete "test"
         console.log("Item ID: ", text[i].datastore_id);
         // console.log(1640970940540570457547809);
         return i;
@@ -111,7 +113,7 @@ class App extends Component {
     headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
     fetch('https://roadio-master.appspot.com/v1/get_places?limit=-1')
      .then(response =>response.json())
-     .then(data => this.setState({ placesList: data}, () =>{
+     .then(placeData => this.setState({ placesList: placeData}, () =>{
       fetch('https://roadio-master.appspot.com/v1/get_user_items?user_id=management_user&limit=-1', {method:'GET',headers: headers,})
      .then(response =>response.json())
      .then(data => this.setState({ text: data.items}));
@@ -196,13 +198,13 @@ class App extends Component {
     const data = JSON.stringify({ item: current });
     //  console.log(data);
 
-    //  fetch('https://roadio-master.appspot.com/v1/edit_item', {
-    //    method: 'POST',
-    //    headers: headers,
-    //    body: data
-    //  }).then(res => console.log(res))
-    //    // .then(response => console.log('Success:', JSON.stringify(response)))
-    //    .catch(error => console.error('Error:', error));
+     fetch('https://roadio-master.appspot.com/v1/edit_item', {
+       method: 'POST',
+       headers: headers,
+       body: data
+     }).then(res => console.log(res))
+       // .then(response => console.log('Success:', JSON.stringify(response)))
+       .catch(error => console.error('Error:', error));
    
 
 
@@ -245,11 +247,29 @@ class App extends Component {
         hideMessage = true;
         hideDiv = false;
       }
-      
+      console.log(this);
       // console.log(text[number].raw_text);
       // console.log(text[number].place);
       return (
+        <Router>
+          <div>
+          <Route path ="/:name" exact render={ (routeProps) => {
+            console.log(routeProps);
+            console.log(number);
+            console.log(this);
+            console.log(window.location.href);
+            if(!isNaN(routeProps.match.params.name) && number != post){
+              number = parseFloat(routeProps.match.params.name);
+            }
+            let string = "/" + number;
+            console.log(string);
+            //
+           // routeProps.history.push(string);
+           routeProps.match.url = string;
+           routeProps.location.pathname = string;
+            return(
         <Top user={user.email} signOut={this.signOut}>
+        <Redirect to={string}/>
           <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
             text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
           <div className={hideDiv ? 'hidden' : ''}>
@@ -268,6 +288,35 @@ class App extends Component {
             placesList = {this.state.placesList}
           />
         </Top>
+        );
+        }}/>
+        <Route path ="/" exact render={ () => {
+          let string = "/" + number;
+          return(
+            <Top user={user.email} signOut={this.signOut}>
+            <Redirect to={string}/>
+              <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
+                text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
+              <div className={hideDiv ? 'hidden' : ''}>
+                <Heading heading={hideDiv ? '' : `תוכן - בהקשר ל ${text[number].place}`} />
+                <Text text={hideDiv ? '' : text[number].raw_text} heading={hideDiv ? '' : text[number].place} />
+              </div>
+              
+              <Survey postNum={number}
+                showPrev={this.showPrev} showNext={this.showNext} showEl={this.showEl}
+                numberOfPreviousElemnts={previosIndexList.length}
+                nextElementExistanse={isNextElementExist}
+                toUndef={this.toUndef}
+                post={submitted ? '' : text[number]}
+                user={submitted ? '' : user.email}
+                submitted={submitted}
+                placesList = {this.state.placesList}
+              />
+            </Top>
+            );
+        }  } />
+        </div>
+        </Router>
       )
     }
     else{
