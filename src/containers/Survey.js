@@ -9,6 +9,7 @@ import TriviaQuestion from '../components/TriviaQuestion';
 import Question from '../components/Question';
 import ImgUploader from './ImgUploader';
 import MapContainer from '../components/MapContainer';
+import Checkbox from '../components/Checkbox';
 
 import '../css/Button.css';
 import '../css/Segment.css';
@@ -34,20 +35,23 @@ class Survey extends Component {
       POST_IMG: 'תמונה בזמן תשובה',
       DIFFICULTY: 'רמת קושי שאלה',
       INTERESTING: 'איכות שאלה',
-      TOURISTS_REL: 'כמה רלוונטי לתיירים',
       EDIT_TEXT: 'סיפור קצר משלים',
       TRIVIA1: 'שאלת טריוויה',
       TRIVIA2: '#2 שאלת טריוויה',
+      TOURISTS_REL: 'כמה רלוונטי לתיירים',
+      NIGHT_ITEM: "האם מתאים בחושך",
+      SEE_ITEM: 'האם צריך לראות בזמן אמת',
     },
     constants: {
-      numericFields: ['difficulty', 'score', 'tourists_relevancy',],
+      numericFields: ['difficulty', 'score'],
       textFields: ['place', 'story'],
       arrayFields: ['labels', 'question_images', 'story_images'],
+      checkFields: ['tourists_relevancy', 'night_item', 'see_item']
     },
   }
 
   setNewFields(change) {
-    const { numericFields, textFields, arrayFields } = this.props.constants;
+    const { numericFields, textFields, arrayFields, checkFields } = this.props.constants;
 
     change.editor_username = this.props.user;
 
@@ -62,6 +66,8 @@ class Survey extends Component {
         change[prop] = "";
       else if (arrayFields.indexOf(prop) !== -1)
         change[prop].push("");
+      else if ((checkFields.indexOf(prop) !== -1) && (change[prop] === null))
+        change[prop] = false;
     }
 
     return change;
@@ -150,26 +156,25 @@ class Survey extends Component {
     copy.lon = currentPlace.lon;
     copy.lat = currentPlace.lat;
     this.setState({ answers: copy });
-    console.log(this.state.answers);
+  }
+
+  handleCheck = (question, e) => {
+    let copy = this.state.answers;
+    copy[question] = e.target.checked;
+    this.setState({ answers: copy });
   }
 
   // ---> 1. GCP <---
   //Submit
   addAnswers = (e, postNum) => {
     const { answers, } = this.state;
-    const { nextElementExistanse, showNext, toUndef, showEl } = this.props;
+    const { showEl } = this.props;
 
     e.preventDefault(); // <- prevent form submit from reloading the page
-
     this.addToPreviousAnswers(answers);
-    console.log("add to prev answers", this.state.answers);
 
     document.getElementById("form").reset(); // <- clear the input
-    if (nextElementExistanse) // <- use methods from App.js
-      showNext(postNum, e);
-    else {
-      toUndef(postNum, e);
-    }
+    this.showNextItems(e, postNum);
 
     let copy = Object.assign({}, answers);
     copy.submission_time = new Date().toLocaleString("en-US");
@@ -182,6 +187,16 @@ class Survey extends Component {
     showEl('success', 1000, true);
     this.setState({ changed: true, changedForMap: true });
 
+  }
+
+  showNextItems = (e, postNum) => {
+    const { nextElementExistanse, showNext, toUndef } = this.props;
+
+    if (nextElementExistanse) // <- use methods from App.js
+      showNext(postNum, e);
+    else {
+      toUndef(postNum, e);
+    }
   }
 
   addToPreviousAnswers = (answers) => {
@@ -267,9 +282,7 @@ class Survey extends Component {
     let temporaryList = this.state.listWithPreviosAnswers;
 
     let previosAnswers = temporaryList.pop();
-    this.setState({ answers: previosAnswers, listWithPreviosAnswers: temporaryList, changedForMap: true }, () => {
-      console.log("show prev: ", this.state.answers);
-    });
+    this.setState({ answers: previosAnswers, listWithPreviosAnswers: temporaryList, changedForMap: true });
   }
 
   getNumOrNull = (getFromThere) => {
@@ -304,6 +317,17 @@ class Survey extends Component {
       :
       (<div className="Survey">
         <form id='form'>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', margin: '0px 30px' }}>
+            <Checkbox question={questions.TOURISTS_REL}  checked={answers.tourists_relevancy}
+              handleCheck={(e) => this.handleCheck('tourists_relevancy', e)} />
+
+            <Checkbox question={questions.NIGHT_ITEM}  checked={answers.night_item}
+              handleCheck={(e) => this.handleCheck('night_item', e)} />
+
+            <Checkbox question={questions.SEE_ITEM}  checked={answers.see_item}
+              handleCheck={(e) => this.handleCheck('see_item', e)} />
+          </div>
 
           <TriviaQuestion
             question={questions.TRIVIA1}
@@ -383,11 +407,6 @@ class Survey extends Component {
             question={questions.INTERESTING}
             handleOptionChange={(e) => this.handleAnswer('score', e)}
             answer={getNumOrNull(answers.score)}
-          />
-          <Radio
-            question={questions.TOURISTS_REL}
-            handleOptionChange={(e) => this.handleAnswer('tourists_relevancy', e)}
-            answer={getNumOrNull(answers.tourists_relevancy)}
           />
 
 

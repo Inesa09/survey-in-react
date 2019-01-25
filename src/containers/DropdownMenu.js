@@ -17,17 +17,22 @@ class DropdownMenu extends Component {
 
   delete = (itemId) => {
 
-    let headers = new Headers();
-    headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
-    headers.set('Accept', 'application/json');
-    headers.set('Content-Type', 'application/json');
+    console.log(JSON.stringify({ datastore_id: itemId }));
+    if (window.confirm("Are you sure?")) {
+      let headers = new Headers();
+      headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
+      headers.set('Accept', 'application/json');
+      headers.set('Content-Type', 'application/json');
 
-    fetch('', {  //TODO url
-      method: 'POST',
-      headers: headers,
-      body: { datastore_id: itemId }
-    }).then(res => console.log('Status: ', res.status))
-      .catch(error => console.error('Error: ', error));
+      fetch('https://roadio-master.appspot.com/v1/delete_item', {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({ datastore_id: itemId })
+      }).then(res => console.log('Status: ', res.status))
+        .catch(error => console.error('Error: ', error));
+
+      // window.location.reload();
+    }
   }
 
 

@@ -49,9 +49,9 @@
     background-color: #eee;
 }
 
-/* When the radio button is checked, add a blue background */
+/* When the radio button is checked, add a border color */
 .container input:checked ~ .checkmark {
-    border: 3px solid 	#8E869F;
+    border: 2.5px solid 	#8E869F;
 }
 
 /* Create the indicator (the dot/circle - hidden when not checked) */
@@ -68,8 +68,8 @@
 
 /* Style the indicator (dot/circle) */
 .container .checkmark:after {
- 	top: 2px;
-	left: 2px;
+ 	top: 3px;
+	left: 3px;
 	width: 10px;
 	height: 10px;
     border-radius: 50%;

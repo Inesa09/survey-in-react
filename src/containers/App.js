@@ -72,8 +72,9 @@ class App extends Component {
     for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
       console.log(this.state.user.email);
       console.log(text[i]);
-      if ((text[i].assigned_user === this.state.user.email || text[i].assigned_user === null) && text[i].submission_time === null && text[i].story === "test") {   //TODO delete "test"
-        console.log("Item ID: ", text[i].datastore_id);
+      if ((text[i].assigned_user === this.state.user.email || text[i].assigned_user === null) 
+        && text[i].submission_time === null && text[i].story === "test") {   //TODO delete "test"
+        console.log("Item ID: ", text[i]);
         // console.log(1640970940540570457547809);
         return i;
       }
@@ -193,13 +194,13 @@ class App extends Component {
     const data = JSON.stringify({ item: current });
     //  console.log(data);
 
-    fetch('https://roadio-master.appspot.com/v1/edit_item', {
-      method: 'POST',
-      headers: headers,
-      body: data
-    }).then(res => console.log(res))
-      // .then(response => console.log('Success:', JSON.stringify(response)))
-      .catch(error => console.error('Error:', error));
+    // fetch('https://roadio-master.appspot.com/v1/edit_item', {
+    //   method: 'POST',
+    //   headers: headers,
+    //   body: data
+    // }).then(res => console.log(res))
+    //   // .then(response => console.log('Success:', JSON.stringify(response)))
+    //   .catch(error => console.error('Error:', error));
 
 
 
@@ -245,7 +246,7 @@ class App extends Component {
       // console.log(text[number].place);
 
       const itemId = text[number] === undefined ? false : text[number].datastore_id;
-      
+
       return (
         <Router>
           <div>
