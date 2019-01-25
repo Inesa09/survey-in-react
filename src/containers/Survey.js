@@ -11,6 +11,7 @@ import ImgUploader from './ImgUploader';
 import MapContainer from '../components/MapContainer';
 
 import '../css/Button.css';
+import '../css/Segment.css';
 
 class Survey extends Component {
 
@@ -354,7 +355,7 @@ class Survey extends Component {
           />
 
 
-          <div className="ui placeholder segment" style={{ margin: '30px', marginBottom: '10px', }}>
+          <div className="ui placeholder segment" style={{ margin: '30px', marginBottom: '10px' }}>
             <div className="ui two column stackable center aligned grid">
               <div className="ui vertical divider"> And </div>
               <div className="middle aligned row" >
