@@ -18,9 +18,18 @@ class Survey extends Component {
 
   constructor(props) {
     super(props);
+
+    let currentAns;
+    if(this.props.submitted)
+      currentAns = '';
+    else if(this.props.newItem)
+      currentAns = {editor_username: this.props.user};
+    else 
+      currentAns = this.setNewFields(this.props.post);
+
     this.state = {
       setNewFields: this.setNewFields.bind(this),
-      answers: this.props.submitted ? '' : this.setNewFields(this.props.post),
+      answers: currentAns,
       listWithPreviosAnswers: [],
       changed: false,
       changedForMap: false,
@@ -308,6 +317,10 @@ class Survey extends Component {
   }
 
   render() {
+
+    console.log("ANS: ", this.state.answers);
+    console.log("isnew: ", this.props.newItem);
+
     const { answers } = this.state;
     const { postNum, numberOfPreviousElemnts, submitted, questions } = this.props;
     const getNumOrNull = this.getNumOrNull;

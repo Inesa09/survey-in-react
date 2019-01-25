@@ -22,7 +22,12 @@ class App extends Component {
       placesList: [],
       previosIndexList: [],
       user: {},
+      newItem: false,
     }; // <- set up react state
+  }
+
+  setNew = () => {
+    this.setState({ newItem: true });
   }
 
   // ---> 1. FIREBASE DB <---
@@ -213,7 +218,7 @@ class App extends Component {
     // if(this.state.text.items !== undefined)
     // console.log(this.state.text.items[2][29]);
     if (this.state.user) {
-      const { post, text, previosIndexList, user } = this.state;
+      const { post, text, previosIndexList, user, newItem } = this.state;
       let submitted = false;
       let hideMessage, hideDiv;
       let number = this.findNextUnsubmitedElement(post);
@@ -265,7 +270,7 @@ class App extends Component {
               routeProps.match.url = string;
               routeProps.location.pathname = string;
               return (
-                <Top user={user.email} itemId={itemId} >
+                <Top user={user.email} itemId={itemId} setNew={this.setNew} >
                   <Redirect to={string} />
                   <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
                     text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
@@ -282,6 +287,7 @@ class App extends Component {
                     post={submitted ? '' : text[number]}
                     user={submitted ? '' : user.email}
                     submitted={submitted}
+                    newItem={newItem}
                     placesList={this.state.placesList}
                   />
                 </Top>
@@ -290,7 +296,7 @@ class App extends Component {
             <Route path="/" exact render={() => {
               let string = "/" + number;
               return (
-                <Top user={user.email} itemId={itemId} >
+                <Top user={user.email} itemId={itemId} setNew={this.setNew} >
                   <Redirect to={string} />
                   <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
                     text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
@@ -307,6 +313,7 @@ class App extends Component {
                     post={submitted ? '' : text[number]}
                     user={submitted ? '' : user.email}
                     submitted={submitted}
+                    newItem={newItem}
                     placesList={this.state.placesList}
                   />
                 </Top>

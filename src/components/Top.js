@@ -10,7 +10,7 @@ const Top = (props) => {
         <h1 className="App-title">Survey</h1>
         <div className={props.user === '' ? 'hidden' : ''}
           style={{ display: 'flex', justifyContent: 'space-between', marginRight: '-10px' }}>
-            <DropdownMenu itemId={props.itemId} />
+            <DropdownMenu itemId={props.itemId} setNew={props.setNew} />
             <UserName user={props.user} />
         </div>
       </header>

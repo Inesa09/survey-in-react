@@ -17,7 +17,6 @@ class DropdownMenu extends Component {
 
   delete = (itemId) => {
 
-    console.log(JSON.stringify({ datastore_id: itemId }));
     if (window.confirm("Are you sure?")) {
       let headers = new Headers();
       headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
@@ -31,7 +30,7 @@ class DropdownMenu extends Component {
       }).then(res => console.log('Status: ', res.status))
         .catch(error => console.error('Error: ', error));
 
-      // window.location.reload();
+      window.location.reload();
     }
   }
 
@@ -56,7 +55,7 @@ class DropdownMenu extends Component {
         style={{ height: '35px', alignSelf: 'flex-end' }}>
         <Dropdown.Menu className='left'>
 
-          <Dropdown.Item onClick={this.addNew} >
+          <Dropdown.Item onClick={this.props.setNew} >
             <Icon name='edit' />
             <span className='text'>Add new item</span>
           </Dropdown.Item>
