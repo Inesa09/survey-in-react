@@ -50,6 +50,11 @@ class Survey extends Component {
     },
   }
 
+  componentDidMount(){
+    let newCenter = {lat: parseFloat(this.props.post.lat) , lng: parseFloat(this.props.post.lon)};
+    this.setState({center: newCenter});
+  } 
+
   setNewFields(change) {
     const { numericFields, textFields, arrayFields, checkFields } = this.props.constants;
 
@@ -293,6 +298,7 @@ class Survey extends Component {
   //react lifecycle methods
   static getDerivedStateFromProps(props, state) {
     if (state.changed) {
+
       return { answers: state.setNewFields(props.post), changed: false }
     } return null;
   }
@@ -305,7 +311,10 @@ class Survey extends Component {
     const { answers } = this.state;
     const { postNum, numberOfPreviousElemnts, submitted, questions } = this.props;
     const getNumOrNull = this.getNumOrNull;
-
+    console.log(this.center);
+    console.log(this);
+    console.log(this.props.post.lat);
+    console.log(this.props);
     return submitted ?
       (<button className={numberOfPreviousElemnts > 0 ?
         'ui labeled icon violet basic massive button ' : 'ui labeled icon grey basic massive button disabled'}
@@ -366,6 +375,7 @@ class Survey extends Component {
             answer={answers.place}
             changed={this.state.changedForMap}
             changeToFalse={this.changeToFalse}
+            post = {this.props.post}
           />
 
 

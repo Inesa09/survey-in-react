@@ -28,12 +28,9 @@ const MapContainer = compose(
 
       this.setState({
         bounds: null,
-        center: {
-          lat: parseFloat(this.props.placesList[0].lat), 
-          lng: parseFloat(this.props.placesList[0].lon)
-        },
+        center: {lat: parseFloat(this.props.post.lat) , lng: parseFloat(this.props.post.lon)},
         markers: [],
-        currentPlace: this.props.placesList[0],
+        currentPlace: this.props.post,
 
         writeGoogleCurrentPlace: (googlePlace) => {
           let newPlace = {
@@ -50,8 +47,9 @@ const MapContainer = compose(
 
         onMapMounted: ref => {
           refs.map = ref;
+          console.log("2222222222222222222222222222");
           let newmarker = {};
-          newmarker.position = new google.maps.LatLng(parseFloat(this.props.placesList[0].lat), parseFloat(this.props.placesList[0].lon));
+          newmarker.position = new google.maps.LatLng(parseFloat(this.props.post.lat), parseFloat(this.props.post.lon));
           let markers = [newmarker];      
           this.setState({markers}); 
         },
@@ -132,6 +130,20 @@ const MapContainer = compose(
         },
 
 	    })
+    },
+    componentDidUpdate(){
+      console.log(this.props.placesList);
+      if(this.props.changed){
+        let lat = parseFloat(this.props.post.lat);
+        let lng = parseFloat(this.props.post.lon);
+        if(lat != null){
+        let newCentr = {lat: lat , lng: lng};
+        let newmarker = {};
+        newmarker.position = new google.maps.LatLng(parseFloat(this.props.post.lat), parseFloat(this.props.post.lon));
+        let markers = [newmarker];
+        this.setState({center: newCentr, markers: markers});
+        }
+      }
     },
   }),
 
