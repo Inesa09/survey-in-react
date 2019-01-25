@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import Image from '../components/Image';
-import ImgSetter from '../components/ImgSetter';
+import ImgSetter from '../components/ImgSetter_deprecated';
 
 class ImgUploader extends Component {
 
@@ -74,8 +74,11 @@ class ImgUploader extends Component {
     }
 
     return (
-      <div >
-        {content()} 
+      <div style={{  marginTop: margin }}>
+        <Question question={question}/>
+        <div className="ui placeholder segment" style={{ margin:"30px", marginTop: '10px', minHeight:'100px' }}> 
+          {content()} 
+        </div>
       </div>
     )
   }

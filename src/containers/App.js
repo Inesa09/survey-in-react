@@ -221,8 +221,8 @@ class App extends Component {
       let submitted = false;
       let hideMessage, hideDiv;
       let number = this.findNextUnsubmitedElement(post);
-      console.log(number);
-      console.log(post);
+      console.log("number: " + number);
+      console.log("post: " + post);
       if (post !== 0) {
         number = post;
       }
@@ -238,12 +238,10 @@ class App extends Component {
           </Top>
         )
       else if (post === undefined || (post === 0 && number === undefined)){ //All text submitted
-        console.log("---------------------------------------------");
         submitted = true;
         hideMessage = false;
         hideDiv = true;
       } else { //Main
-        console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++00");
         hideMessage = true;
         hideDiv = false;
       }

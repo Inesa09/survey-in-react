@@ -10,7 +10,7 @@ const Radio = ({question, handleOptionChange, answer}) => {
                 display: 'flex',
                 flexDirection: 'column',
             }} key={i}>
-                <h3 style={{marginLeft: '6px'}}> {i} </h3>
+                <h4 style={{marginLeft: '6px'}}> {i} </h4>
                 <RadioBtn 
                     value={i}
                     onChange={handleOptionChange}
@@ -21,17 +21,17 @@ const Radio = ({question, handleOptionChange, answer}) => {
     }
 
     return (
-        <div>
-            <Question question={question}/>
+        <div style={{ display: 'flex',  alignItems: 'center' }}>
             <div style={{
                 display:'flex', 
                 flexDirection: 'row', 
                 justifyContent: 'space-around',
-                width: '60%',
-                marginLeft: '20%',
+                width: '50%',
+                marginLeft: '10%',
                 marginTop: '30px',
-                marginBottom: '30px',
+                marginBottom: '20px',
             }}> {btns} </div>
+            <Question question={question}/>
         </div>
     )
 }
