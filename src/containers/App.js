@@ -238,6 +238,10 @@ class App extends Component {
               text1='רק שניה' text2='מביאים לכם את התוכן' />
           </Top>
         )
+      // else if (this.state.newItem){
+      //   return(
+      //     <NewForm />
+      //   )
       else if (post === undefined || (post === 0 && number === undefined)) { //All text submitted
         submitted = true;
         hideMessage = false;

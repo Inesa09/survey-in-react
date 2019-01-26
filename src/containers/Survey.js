@@ -12,6 +12,7 @@ import MapContainer from '../components/MapContainer';
 import Checkbox from '../components/Checkbox';
 
 import '../css/Button.css';
+import '../css/Hidden.css';
 import '../css/Segment.css';
 
 class Survey extends Component {
@@ -19,20 +20,13 @@ class Survey extends Component {
   constructor(props) {
     super(props);
 
-    let currentAns;
-    if(this.props.submitted)
-      currentAns = '';
-    else if(this.props.newItem)
-      currentAns = {editor_username: this.props.user};
-    else 
-      currentAns = this.setNewFields(this.props.post);
-
     this.state = {
       setNewFields: this.setNewFields.bind(this),
-      answers: currentAns,
+      answers: this.props.submitted ? '' : this.setNewFields(this.props.post),
       listWithPreviosAnswers: [],
       changed: false,
       changedForMap: false,
+      isNewItem: this.props.newItem,
     }; // <- set up react state
   }
 
@@ -59,10 +53,10 @@ class Survey extends Component {
     },
   }
 
-  componentDidMount(){
-    let newCenter = {lat: parseFloat(this.props.post.lat) , lng: parseFloat(this.props.post.lon)};
-    this.setState({center: newCenter});
-  } 
+  componentDidMount() {
+    let newCenter = { lat: parseFloat(this.props.post.lat), lng: parseFloat(this.props.post.lon) };
+    this.setState({ center: newCenter });
+  }
 
   setNewFields(change) {
     const { numericFields, textFields, arrayFields, checkFields } = this.props.constants;
@@ -177,6 +171,7 @@ class Survey extends Component {
     copy[question] = e.target.checked;
     this.setState({ answers: copy });
   }
+
 
   // ---> 1. GCP <---
   //Submit
@@ -307,9 +302,27 @@ class Survey extends Component {
   //react lifecycle methods
   static getDerivedStateFromProps(props, state) {
     if (state.changed) {
+      return { answers: state.setNewFields(props.post), changed: false };
+    } if(state.isNewItem || props.newItem){
+      const { numericFields, textFields, arrayFields, checkFields } = this.props.constants;
+      let copy = state.answers;
 
-      return { answers: state.setNewFields(props.post), changed: false }
-    } return null;
+      for (let prop in state.answers) {
+        if (numericFields.indexOf(prop) !== -1)
+          copy[prop] = null;
+        else if (textFields.indexOf(prop) !== -1)
+          copy[prop] = "";
+        else if (arrayFields.indexOf(prop) !== -1)
+          copy[prop] = [];
+        else if (checkFields.indexOf(prop) !== -1)
+          copy[prop] = false;
+        else
+          copy[prop] = '';
+      }
+      console.log("currentAns: ", copy);
+      return { answers: copy, newItem: false };
+    }
+    return {isNewItem: props.newItem};
   }
 
   changeToFalse = () => {
@@ -328,6 +341,7 @@ class Survey extends Component {
     console.log(this);
     console.log(this.props.post.lat);
     console.log(this.props);
+
     return submitted ?
       (<button className={numberOfPreviousElemnts > 0 ?
         'ui labeled icon violet basic massive button ' : 'ui labeled icon grey basic massive button disabled'}
@@ -341,13 +355,13 @@ class Survey extends Component {
         <form id='form'>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', margin: '0px 30px' }}>
-            <Checkbox question={questions.TOURISTS_REL}  checked={answers.tourists_relevancy}
+            <Checkbox question={questions.TOURISTS_REL} checked={answers.tourists_relevancy}
               handleCheck={(e) => this.handleCheck('tourists_relevancy', e)} />
 
-            <Checkbox question={questions.NIGHT_ITEM}  checked={answers.night_item}
+            <Checkbox question={questions.NIGHT_ITEM} checked={answers.night_item}
               handleCheck={(e) => this.handleCheck('night_item', e)} />
 
-            <Checkbox question={questions.SEE_ITEM}  checked={answers.see_item}
+            <Checkbox question={questions.SEE_ITEM} checked={answers.see_item}
               handleCheck={(e) => this.handleCheck('see_item', e)} />
           </div>
 
