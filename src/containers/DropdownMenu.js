@@ -6,10 +6,6 @@ import gcp_config from '../GCP_configs';
 
 class DropdownMenu extends Component {
 
-  addNew = () => {
-
-  }
-
   // ---> FIREBASE DB <---
   signOut = () => {
     fireDB.auth().signOut();

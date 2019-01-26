@@ -15,17 +15,14 @@ import '../css/Button.css';
 import '../css/Hidden.css';
 import '../css/Segment.css';
 
-class Survey extends Component {
+class NewForm extends Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
       setNewFields: this.setNewFields.bind(this),
-      answers: this.props.submitted ? '' : this.setNewFields(this.props.post),
-      listWithPreviosAnswers: [],
-      changed: false,
-      changedForMap: false,
+      answers: this.setNewFields(this.props.post),
     }; // <- set up react state
   }
 
@@ -52,57 +49,61 @@ class Survey extends Component {
     },
   }
 
-  setNewFields(change) {
+  setNewFields() {
     const { numericFields, textFields, arrayFields, checkFields } = this.props.constants;
 
-    change.editor_username = this.props.user;
+    let copy = {};
+    copy.editor_username = this.props.user;
 
     for (let i = 1; i < 3; i++) {
-      change = this.setTrivia(i, change);
+      copy = this.setTrivia(i, copy);
     }
 
-    for (let prop in change) {
-      if ((numericFields.indexOf(prop) !== -1) && (change[prop] === ""))
-        change[prop] = null;
-      else if ((textFields.indexOf(prop) !== -1) && (change[prop] === null))
-        change[prop] = "";
-      else if ((checkFields.indexOf(prop) !== -1) && (change[prop] === null))
-        change[prop] = false;
-    }
+    for (let i in numericFields)
+      copy[numericFields[i]] = null;
+    for (let i in textFields)
+      copy[textFields[i]] = '';
+    for (let i in arrayFields)
+      copy[arrayFields[i]] = [];
+    for (let i in checkFields)
+      copy[checkFields[i]] = null;
 
-    return change;
+    return copy;
   }
 
   setTrivia = (triviaNum, change) => {
-    const getIfNotNull = this.getIfNotNull;
     let trivia = this.getTriviaByNum(triviaNum);
 
-    change[trivia] = (triviaNum === 1) ? {
-      question: getIfNotNull(change, 'question'),
-      right_answer: getIfNotNull(change, 'right_answer'),
-      wrong_answer1: getIfNotNull(change, 'answers', 1),
-      wrong_answer2: getIfNotNull(change, 'answers', 2),
-      wrong_answer3: getIfNotNull(change, 'answers', 3),
-    } : {
-        question: undefined,
-        right_answer: undefined,
-        wrong_answer1: undefined,
-        wrong_answer2: undefined,
-        wrong_answer3: undefined,
-      }
+    change[trivia] = {
+      question: undefined,
+      right_answer: undefined,
+      wrong_answer1: undefined,
+      wrong_answer2: undefined,
+      wrong_answer3: undefined,
+    }
     return change;
   }
 
-  getIfNotNull = (getFromThere, getThis, index = 0) => {
-    if (index === 0) {
-      if (getFromThere[getThis] !== null | undefined)
-        return getFromThere[getThis];
-    } else {
-      if (getFromThere[getThis].length > index) {
-        if (getFromThere[getThis][index] !== null | undefined)
-          return getFromThere[getThis][index];
-      }
-    } return undefined;
+
+  isEmpty = (data) => {
+    const { numericFields, textFields, arrayFields, checkFields } = this.props.constants;
+
+    for (let prop in data) {
+      if (((numericFields.indexOf(prop) !== -1) || (checkFields.indexOf(prop) !== -1))
+        && (data[prop] !== null))
+        return false;
+      else if ((textFields.indexOf(prop) !== -1) && (data[prop] !== ''))
+        return false;
+      else if ((arrayFields.indexOf(prop) !== -1) && (data[prop].length !== 0))
+        return false;
+    }
+
+    for (let prop in data['trivia1']) {
+      if (data.trivia1[prop] !== undefined)
+        return false;
+    }
+
+    return true;
   }
 
   getTriviaByNum = (num) => {
@@ -150,7 +151,6 @@ class Survey extends Component {
   }
 
   handleAnswerPlace = (currentPlace) => {
-    // console.log("current", currentPlace);
     let copy = this.state.answers;
     copy.place = currentPlace.place_name;
     copy.lon = currentPlace.lon;
@@ -167,43 +167,14 @@ class Survey extends Component {
 
   // ---> 1. GCP <---
   //Submit
-  addAnswers = (e, postNum) => {
+  addAnswers = (e) => {
     const { answers, } = this.state;
-    const { showEl } = this.props;
-
     e.preventDefault(); // <- prevent form submit from reloading the page
-    this.addToPreviousAnswers(answers);
 
     document.getElementById("form").reset(); // <- clear the input
-    this.showNextItems(e, postNum);
 
     let copy = Object.assign({}, answers);
-    copy.submission_time = new Date().toLocaleString("en-US");
-
-    if (copy.labels[copy.labels.length - 1] === "")
-      copy.labels.pop();
-
     this.processTrivias(copy);  // <- process trivias and send to db
-
-    showEl('success', 1000, true);
-    this.setState({ changed: true, changedForMap: true });
-
-  }
-
-  showNextItems = (e, postNum) => {
-    const { nextElementExistanse, showNext, toUndef } = this.props;
-
-    if (nextElementExistanse) // <- use methods from App.js
-      showNext(postNum, e);
-    else {
-      toUndef(postNum, e);
-    }
-  }
-
-  addToPreviousAnswers = (answers) => {
-    let temporaryList = this.state.listWithPreviosAnswers;
-    temporaryList.push(answers);
-    this.setState({ listWithPreviosAnswers: temporaryList });
   }
 
   processTrivias = (answers) => {
@@ -249,6 +220,14 @@ class Survey extends Component {
     }
   }
 
+  processCheck = (answers) => {
+    for (let prop in answers) {
+      if ((this.props.constants.checkFields.indexOf(prop) !== -1) && (answers[prop] === null))
+        answers[prop] = false;
+    }
+    return answers;
+  }
+
   pushIfExist = (pushThere, pushThat, isArr = false) => {
     if (pushThat !== undefined) {
       if (isArr) {
@@ -260,67 +239,62 @@ class Survey extends Component {
   }
 
   updatePostInDB = (data) => {
-    let headers = new Headers();
-    headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
-    headers.set('Accept', 'application/json');
-    headers.set('Content-Type', 'application/json');
 
-    const toDB = JSON.stringify({ item: data });
-    // console.log("UPDATE: ", toDB);
+    if (this.isEmpty(data)) {
+      const id = 'negative';
+      this.showEl(id, () => document.getElementById(id).style.display = 'none');
+    } else {
+      data = this.processCheck(data);
 
-    fetch('https://roadio-master.appspot.com/v1/edit_item', {
-      method: 'POST',
-      headers: headers,
-      body: toDB
-    }).then(res => console.log('Status: ', res.status))
-      .catch(error => console.error('Error: ', error));
+      let headers = new Headers();
+      headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
+      headers.set('Accept', 'application/json');
+      headers.set('Content-Type', 'application/json');
+
+      const toDB = JSON.stringify({ item: data });
+      // console.log("SAVE NEW ITEM: ", toDB);
+
+      fetch('https://roadio-master.appspot.com/v1/edit_item', {
+        method: 'POST',
+        headers: headers,
+        body: toDB
+      }).then(res => console.log('Status: ', res.status))
+        .catch(error => console.error('Error: ', error));
+
+      this.showEl('success', () => { this.props.setNew(false) });
+    }
   }
 
-  //Show previous answers
-  showPrev = (e) => {
-    e.preventDefault();
-    this.props.showPrev(e);
-    let temporaryList = this.state.listWithPreviosAnswers;
 
-    let previosAnswers = temporaryList.pop();
-    console.log(previosAnswers);
-    this.setState({ answers: previosAnswers, listWithPreviosAnswers: temporaryList, changedForMap: true });
+  showEl = (id, func='') => {
+    const current = document.getElementById(id);
+    const move = this.moveToTop;
+    if (current.style.display === 'none') {
+      current.style.display = 'block';
+      current.scrollIntoView(true);
+      setTimeout(() => {
+        func(); 
+        move();  // move to top
+      }, 1000);
+    }
   }
 
+  moveToTop = () => document.getElementById("top").scrollIntoView(true);
+  
   getNumOrNull = (getFromThere) => {
     getFromThere = (getFromThere === "") ? null : getFromThere;
     return getFromThere;
   }
 
-  //react lifecycle methods
-  static getDerivedStateFromProps(props, state) {
-    if (state.changed) {
-      return { answers: state.setNewFields(props.post), changed: false };
-    } return null;
-  }
-
-  changeToFalse = () => {
-    this.setState({ changedForMap: false });
-  }
-
   render() {
-
     const { answers } = this.state;
-    const { postNum, numberOfPreviousElemnts, submitted, questions } = this.props;
+    const { questions } = this.props;
     const getNumOrNull = this.getNumOrNull;
 
-    console.log(this.state.listWithPreviosAnswers);
+    console.log("NEW: ", answers);
 
-    return submitted ?
-      (<button className={numberOfPreviousElemnts > 0 ?
-        'ui labeled icon violet basic massive button ' : 'ui labeled icon grey basic massive button disabled'}
-        style={{ margin: '30px 35%' }}
-        onClick={this.showPrev}>
-        <i class="arrow left icon"></i>
-        הקודם
-    </button>)
-      :
-      (<div className="Survey">
+    return (
+      <div className="Survey">
         <form id='form'>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', margin: '0px 30px' }}>
@@ -345,17 +319,6 @@ class Survey extends Component {
             value4={answers.trivia1.wrong_answer2}
             value5={answers.trivia1.wrong_answer3}
           />
-          {/* <TriviaQuestion
-            question={questions.TRIVIA2}
-            tooltip={'answer is..'}
-            numbers={['question', 'right_answer', 'wrong_answer1', 'wrong_answer2', 'wrong_answer3']} 
-            handleTextInput={(e, number) => this.handleAnswerTrivia(2, number, e)}
-            value1={answers.trivia2.question}
-            value2={answers.trivia2.right_answer}
-            value3={answers.trivia2.wrong_answer1}
-            value4={answers.trivia2.wrong_answer2}
-            value5={answers.trivia2.wrong_answer3}
-          /> */}
 
           <TextArea
             question={questions.EDIT_TEXT}
@@ -371,7 +334,7 @@ class Survey extends Component {
             answer={answers.place}
             changed={this.state.changedForMap}
             changeToFalse={this.changeToFalse}
-            post = {this.props.post}
+            post={this.props.post}
           />
 
 
@@ -421,17 +384,19 @@ class Survey extends Component {
             justifyContent: 'space-between',
             marginTop: '20px'
           }}>
-            <button className={numberOfPreviousElemnts > 0 ?
-              'ui labeled icon violet basic button ' : 'ui labeled icon grey basic button disabled'}
+            <button className={'ui labeled icon violet basic button '}
               style={{ margin: '30px' }}
-              onClick={this.showPrev}>
+              onClick={() => { 
+                this.props.setNew(false);
+                this.moveToTop();
+              }}>
               <i className="arrow left icon"></i>
-              הקודם
+              Cancel
             </button>
             <button className='ui right labeled icon violet basic button'
               style={{ margin: '30px' }}
-              onClick={(e) => { this.addAnswers(e, postNum) }}>
-              הבא
+              onClick={(e) => { this.addAnswers(e) }}>
+              Save
               <i className="arrow right icon"></i>
             </button>
           </div>
@@ -446,4 +411,5 @@ class Survey extends Component {
   }
 }
 
-export default Survey;
+
+export default NewForm;
