@@ -78,7 +78,7 @@ class App extends Component {
       console.log(this.state.user.email);
       console.log(text[i]);
       if ((text[i].assigned_user === this.state.user.email || text[i].assigned_user === null) 
-        && text[i].submission_time === null && text[i].story === "test") {   //TODO delete "test"
+        && text[i].submission_time === null ) {   //TODO delete "test"
         console.log("Item ID: ", text[i]);
         // console.log(1640970940540570457547809);
         return i;
@@ -271,10 +271,12 @@ class App extends Component {
               console.log("12" == 12);
               console.log(typeof text[number].datastore_id);
               console.log(typeof routeProps.match.params.name);
-              if (!isNaN(routeProps.match.params.name) && number != post) {
-                number = parseFloat(routeProps.match.params.name);
-              }
-              let string = "/" + number;
+              console.log(number);
+              console.log(Object.values(text).length);
+              // if (!isNaN(routeProps.match.params.name) && number != post) {
+              //   number = parseFloat(routeProps.match.params.name);
+              // }
+              let string = "/" + text[number].datastore_id;
               console.log(string);
               //
               // routeProps.history.push(string);
