@@ -314,8 +314,6 @@ class Survey extends Component {
     console.log(this.props.post.lat);
     console.log(this.props);
 
-    document.getElementById("top").scrollIntoView(true);  // move to top
-
     return submitted ?
       (<button className={numberOfPreviousElemnts > 0 ?
         'ui labeled icon violet basic massive button ' : 'ui labeled icon grey basic massive button disabled'}

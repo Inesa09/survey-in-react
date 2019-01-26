@@ -242,10 +242,7 @@ class NewForm extends Component {
 
     if (this.isEmpty(data)) {
       const id = 'negative';
-      this.showEl(id, () => { 
-        document.getElementById(id).style.display = 'none';
-        document.getElementById("top").scrollIntoView(true);
-      });
+      this.showEl(id, () => document.getElementById(id).style.display = 'none');
     } else {
       data = this.processCheck(data);
 
@@ -271,12 +268,18 @@ class NewForm extends Component {
 
   showEl = (id, func='') => {
     const current = document.getElementById(id);
+    const move = this.moveToTop;
     if (current.style.display === 'none') {
       current.style.display = 'block';
       current.scrollIntoView(true);
-      setTimeout(func, 1000);
+      setTimeout(() => {
+        func(); 
+        move();  // move to top
+      }, 1000);
     }
   }
+
+  moveToTop = () => document.getElementById("top").scrollIntoView(true);
   
   getNumOrNull = (getFromThere) => {
     getFromThere = (getFromThere === "") ? null : getFromThere;
@@ -383,7 +386,10 @@ class NewForm extends Component {
           }}>
             <button className={'ui labeled icon violet basic button '}
               style={{ margin: '30px' }}
-              onClick={() => { this.props.setNew(false) }}>
+              onClick={() => { 
+                this.props.setNew(false);
+                this.moveToTop();
+              }}>
               <i className="arrow left icon"></i>
               Cancel
             </button>
