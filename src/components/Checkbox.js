@@ -13,7 +13,7 @@ const Checkbox = ({ question, handleCheck, checked }) => {
         <div class="pretty p-default p-curve p-thick p-smooth p-bigger">
             {getInput(checked)}
             <div class="state p-primary-o">
-                <label> {question} </label>
+                <label style={{fontSize: '1.2em', fontFamily: '"Times New Roman", Times, serif' }}> {question} </label>
             </div>
         </div>
     )
