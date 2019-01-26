@@ -150,7 +150,7 @@ class Survey extends Component {
   }
 
   handleAnswerPlace = (currentPlace) => {
-    console.log("current", currentPlace);
+    // console.log("current", currentPlace);
     let copy = this.state.answers;
     copy.place = currentPlace.place_name;
     copy.lon = currentPlace.lon;
@@ -266,7 +266,7 @@ class Survey extends Component {
     headers.set('Content-Type', 'application/json');
 
     const toDB = JSON.stringify({ item: data });
-    console.log("UPDATE: ", toDB);
+    // console.log("UPDATE: ", toDB);
 
     fetch('https://roadio-master.appspot.com/v1/edit_item', {
       method: 'POST',
@@ -283,6 +283,7 @@ class Survey extends Component {
     let temporaryList = this.state.listWithPreviosAnswers;
 
     let previosAnswers = temporaryList.pop();
+    console.log(previosAnswers);
     this.setState({ answers: previosAnswers, listWithPreviosAnswers: temporaryList, changedForMap: true });
   }
 
@@ -307,10 +308,8 @@ class Survey extends Component {
     const { answers } = this.state;
     const { postNum, numberOfPreviousElemnts, submitted, questions } = this.props;
     const getNumOrNull = this.getNumOrNull;
-    console.log(this.center);
-    console.log(this);
-    console.log(this.props.post.lat);
-    console.log(this.props);
+
+    console.log(this.state.listWithPreviosAnswers);
 
     return submitted ?
       (<button className={numberOfPreviousElemnts > 0 ?

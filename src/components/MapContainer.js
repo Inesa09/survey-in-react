@@ -127,7 +127,7 @@ const MapContainer = compose(
 	    })
     },
     componentDidUpdate(){
-      console.log(this.props.placesList);
+      // console.log(this.props.placesList);
       if(this.props.changed){
         let lat = parseFloat(this.props.post.lat);
         let lng = parseFloat(this.props.post.lon);
