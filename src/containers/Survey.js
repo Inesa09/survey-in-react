@@ -66,8 +66,6 @@ class Survey extends Component {
         change[prop] = null;
       else if ((textFields.indexOf(prop) !== -1) && (change[prop] === null))
         change[prop] = "";
-      else if (arrayFields.indexOf(prop) !== -1)
-        change[prop].push("");
       else if ((checkFields.indexOf(prop) !== -1) && (change[prop] === null))
         change[prop] = false;
     }
