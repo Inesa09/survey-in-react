@@ -261,6 +261,8 @@ class App extends Component {
         <Router>
           <div>
             <Route path="/:name" exact render={(routeProps) => {
+              let string = "/";
+              if(itemId){
               console.log(number);
               console.log(this.state.previosIndexList);
               // console.log(routeProps);
@@ -290,12 +292,13 @@ class App extends Component {
               //   number = parseFloat(routeProps.match.params.name);
               // }
               
-              let string = "/" + text[number].datastore_id;
+               string = "/" + text[number].datastore_id;
               console.log(string);
               //
               // routeProps.history.push(string);
               // routeProps.match.url = string;
               // routeProps.location.pathname = string;
+          }
               return (
                 <Top user={user.email} itemId={itemId} setNew={this.setNew} >
                   <Redirect to={string} />
