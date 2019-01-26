@@ -21,6 +21,7 @@ class App extends Component {
       text: [],
       placesList: [],
       previosIndexList: [],
+      previosDatascore_id: undefined,
       user: {},
       newItem: false,
     }; // <- set up react state
@@ -33,7 +34,7 @@ class App extends Component {
   // ---> 1. FIREBASE DB <---
   authListener() {
     fireDB.auth().onAuthStateChanged((user) => {
-      console.log(user);
+      // console.log(user);
       if (user) {
         this.setState({ user });
         localStorage.setItem('user', user.uid);
@@ -51,7 +52,8 @@ class App extends Component {
     let temporaryList = this.state.previosIndexList;
     if (temporaryList.length > 0) {
       let previosElement = temporaryList.pop();
-      this.setState({ post: previosElement, previosIndexList: temporaryList });
+      console.log(previosElement);
+      this.setState({ post: previosElement, previosIndexList: temporaryList, previosDatascore_id: this.state.text[previosElement].datastore_id});
     }
   }
 
@@ -59,6 +61,7 @@ class App extends Component {
     e.preventDefault();
     let temporaryList = this.state.previosIndexList;
     let number = this.findNextUnsubmitedElement(post);
+    // console.log(number);
     if (number !== undefined) {
       temporaryList.push(post);
       this.setState({ post: number, previosIndexList: temporaryList });
@@ -75,11 +78,11 @@ class App extends Component {
   findNextUnsubmitedElement = (post) => {
     const { text } = this.state;
     for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
-      console.log(this.state.user.email);
-      console.log(text[i]);
+      // console.log(this.state.user.email);
+      // console.log(text[i]);
       if ((text[i].assigned_user === this.state.user.email || text[i].assigned_user === null) 
-        && text[i].submission_time === null ) {   //TODO delete "test"
-        console.log("Item ID: ", text[i]);
+        && text[i].submission_time === null && text[i].story === "test") {   //TODO delete "test"
+        // console.log("Item ID: ", text[i]);
         // console.log(1640970940540570457547809);
         return i;
       }
@@ -109,7 +112,7 @@ class App extends Component {
   // ---> 3. GCP <---
   componentDidMount() {
     this.authListener(); // <--- FIREBASE DB
-    console.log(this);
+    // console.log(this);
     let headers = new Headers();
     headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
     fetch('https://roadio-master.appspot.com/v1/get_places?limit=-1')
@@ -121,15 +124,15 @@ class App extends Component {
       }));
 
 
-    console.log("a");
-    console.log(this.state.placesList);
-    console.log("a");
+    // console.log("a");
+    // console.log(this.state.placesList);
+    // console.log("a");
 
   }
 
   render() {
-    console.log("RENDER: ", this.state.text);
-
+    // console.log("RENDER: ", this.state.text);
+    console.log(11111111111111111111111);
     let username = 'shinom';
     let password = 'iloveToRide';
 
@@ -149,7 +152,7 @@ class App extends Component {
         c++;
       }
     }
-    console.log("test:" + c)
+    // console.log("test:" + c)
 
     let current = {
       answers: ["כור גרעיני"],
@@ -222,13 +225,13 @@ class App extends Component {
       let submitted = false;
       let hideMessage, hideDiv;
       let number = this.findNextUnsubmitedElement(post);
-      console.log("number: " + number);
-      console.log("post: " + post);
+      // console.log("number: " + number);
+      // console.log("post: " + post);
       if (post !== 0) {
         number = post;
       }
       let isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
-      // console.log(number);
+      
 
 
       if (text.length === 0)  //Loading
@@ -246,7 +249,9 @@ class App extends Component {
         hideMessage = true;
         hideDiv = false;
       }
-      console.log(this);
+      // console.log(this);
+      // console.log(number);
+      // console.log(this.state.previosIndexList);
       // console.log(text[number].raw_text);
       // console.log(text[number].place);
 
@@ -256,11 +261,16 @@ class App extends Component {
         <Router>
           <div>
             <Route path="/:name" exact render={(routeProps) => {
-              console.log(routeProps);
               console.log(number);
-              console.log(this);
-              console.log(window.location.href);
+              console.log(this.state.previosIndexList);
+              // console.log(routeProps);
+              // console.log(number);
+              // console.log(this);
+              // console.log(window.location.href);
               let postExistanse = false;
+              console.log(this.state.previosDatascore_id );
+              console.log(text[number].datastore_id);
+              if(!(this.state.previosIndexList.length > 0 && this.findNextUnsubmitedElement(this.state.previosIndexList[this.state.previosIndexList.length - 1]) === number) && this.state.previosDatascore_id != text[number].datastore_id){
               for (let i = 0, size = Object.values(text).length; i < size; i++) {
                 if(text[i].datastore_id == routeProps.match.params.name){
                     postExistanse = true;
@@ -268,14 +278,18 @@ class App extends Component {
                     break;
                 }
               }
-              console.log("12" == 12);
-              console.log(typeof text[number].datastore_id);
-              console.log(typeof routeProps.match.params.name);
-              console.log(number);
-              console.log(Object.values(text).length);
+            }
+              
+             console.log(number);
+              // console.log("12" == 12);
+              // console.log(typeof text[number].datastore_id);
+              // console.log(typeof routeProps.match.params.name);
+              // console.log(number);
+              // console.log(Object.values(text).length);
               // if (!isNaN(routeProps.match.params.name) && number != post) {
               //   number = parseFloat(routeProps.match.params.name);
               // }
+              
               let string = "/" + text[number].datastore_id;
               console.log(string);
               //
@@ -308,7 +322,8 @@ class App extends Component {
             }} />
             <Route path="/" exact render={() => {
               let string = "/" + (text[number] === undefined ? "" : text[number].datastore_id);
-              console.log(number);
+              // console.log(number);
+              // console.log(previosIndexList);
               return (
                 <Top user={user.email} itemId={itemId} setNew={this.setNew} >
                   <Redirect to={string} />
@@ -318,7 +333,7 @@ class App extends Component {
                     <Heading heading={hideDiv ? '' : `תוכן - בהקשר ל ${text[number].place}`} />
                     <Text text={hideDiv ? '' : text[number].raw_text} heading={hideDiv ? '' : text[number].place} />
                   </div>
-
+                  
                   <Survey postNum={number}
                     showPrev={this.showPrev} showNext={this.showNext} showEl={this.showEl}
                     numberOfPreviousElemnts={previosIndexList.length}
