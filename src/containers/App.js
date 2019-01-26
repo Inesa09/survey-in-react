@@ -264,6 +264,17 @@ class App extends Component {
               console.log(number);
               console.log(this);
               console.log(window.location.href);
+              let postExistanse = false;
+              for (let i = 0, size = Object.values(text).length; i < size; i++) {
+                if(text[i].datastore_id == routeProps.match.params.name){
+                    postExistanse = true;
+                    number = i;
+                    break;
+                }
+              }
+              console.log("12" == 12);
+              console.log(typeof text[number].datastore_id);
+              console.log(typeof routeProps.match.params.name);
               if (!isNaN(routeProps.match.params.name) && number != post) {
                 number = parseFloat(routeProps.match.params.name);
               }
@@ -271,8 +282,8 @@ class App extends Component {
               console.log(string);
               //
               // routeProps.history.push(string);
-              routeProps.match.url = string;
-              routeProps.location.pathname = string;
+              // routeProps.match.url = string;
+              // routeProps.location.pathname = string;
               return (
                 <Top user={user.email} itemId={itemId} setNew={this.setNew} >
                   <Redirect to={string} />
@@ -298,7 +309,8 @@ class App extends Component {
               );
             }} />
             <Route path="/" exact render={() => {
-              let string = "/" + number;
+              let string = "/" + (text[number] === undefined ? "" : text[number].datastore_id);
+              console.log(number);
               return (
                 <Top user={user.email} itemId={itemId} setNew={this.setNew} >
                   <Redirect to={string} />
