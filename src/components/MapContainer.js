@@ -28,7 +28,7 @@ const MapContainer = compose(
 
       this.setState({
         bounds: null,
-        center: {lat: parseFloat(this.props.post.lat) , lng: parseFloat(this.props.post.lon)},
+        center: this.props.post.lat === undefined ? {lat: 39 , lng: 16} : {lat: parseFloat(this.props.post.lat) , lng: parseFloat(this.props.post.lon)},
         markers: [],
         currentPlace: this.props.post.place === null ? { place_name: null, lat: undefined, lon: undefined} : {place_name: this.props.post.place, lat: this.props.post.lat, lon: this.props.post.lon},
 

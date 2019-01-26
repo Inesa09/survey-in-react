@@ -7,6 +7,7 @@ import Route from 'react-router-dom/Route';
 import Text from '../components/Text';
 import Top from '../components/Top';
 import Survey from './Survey';
+import NewForm from './NewForm';
 import Heading from '../components/Heading';
 import Message from '../components/Message';
 import Login from './Login';
@@ -26,8 +27,8 @@ class App extends Component {
     }; // <- set up react state
   }
 
-  setNew = () => {
-    this.setState({ newItem: true });
+  setNew = (bool) => {
+    this.setState({ newItem: bool });
   }
 
   // ---> 1. FIREBASE DB <---
@@ -77,8 +78,8 @@ class App extends Component {
     for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
       console.log(this.state.user.email);
       console.log(text[i]);
-      if ((text[i].assigned_user === this.state.user.email || text[i].assigned_user === null) 
-        && text[i].submission_time === null ) {   //TODO delete "test"
+      if ((text[i].assigned_user === this.state.user.email || text[i].assigned_user === null)
+        && text[i].submission_time === null && text[i].story === "test") {   //TODO delete "test"
         console.log("Item ID: ", text[i]);
         // console.log(1640970940540570457547809);
         return i;
@@ -227,22 +228,32 @@ class App extends Component {
       if (post !== 0) {
         number = post;
       }
+
       let isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
-      // console.log(number);
+      const itemId = text[number] === undefined ? false : text[number].datastore_id;
 
 
       if (text.length === 0)  //Loading
         return (
-          <Top user={user.email} itemId={itemId} >
+          <Top user={user.email} itemId={false} >
             <Message color='teal' icon='circle notched loading icon'
               text1='רק שניה' text2='מביאים לכם את התוכן' />
           </Top>
         )
-      // else if (this.state.newItem){
-      //   return(
-      //     <NewForm />
-      //   )
-      else if (post === undefined || (post === 0 && number === undefined)) { //All text submitted
+      else if (this.state.newItem) {
+        return (
+          <Top user={user.email} itemId={false} >
+            <Heading heading={'New item'} />
+            <NewForm
+              user={user.email}
+              post={{ place: null, lat: undefined, lon: undefined}}
+              placesList={this.state.placesList} 
+              setNew={this.setNew}
+            />
+          </Top>
+
+        )
+      } else if (post === undefined || (post === 0 && number === undefined)) { //All text submitted
         submitted = true;
         hideMessage = false;
         hideDiv = true;
@@ -254,8 +265,6 @@ class App extends Component {
       // console.log(text[number].raw_text);
       // console.log(text[number].place);
 
-      const itemId = text[number] === undefined ? false : text[number].datastore_id;
-
       return (
         <Router>
           <div>
@@ -266,10 +275,10 @@ class App extends Component {
               console.log(window.location.href);
               let postExistanse = false;
               for (let i = 0, size = Object.values(text).length; i < size; i++) {
-                if(text[i].datastore_id == routeProps.match.params.name){
-                    postExistanse = true;
-                    number = i;
-                    break;
+                if (text[i].datastore_id == routeProps.match.params.name) {
+                  postExistanse = true;
+                  number = i;
+                  break;
                 }
               }
               console.log("12" == 12);
@@ -287,7 +296,7 @@ class App extends Component {
               // routeProps.match.url = string;
               // routeProps.location.pathname = string;
               return (
-                <Top user={user.email} itemId={itemId} setNew={this.setNew} >
+                <Top user={user.email} itemId={itemId} setNew={() => this.setNew(true)} >
                   <Redirect to={string} />
                   <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
                     text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
@@ -304,7 +313,6 @@ class App extends Component {
                     post={submitted ? '' : text[number]}
                     user={submitted ? '' : user.email}
                     submitted={submitted}
-                    newItem={newItem}
                     placesList={this.state.placesList}
                   />
                 </Top>
@@ -314,7 +322,7 @@ class App extends Component {
               let string = "/" + (text[number] === undefined ? "" : text[number].datastore_id);
               console.log(number);
               return (
-                <Top user={user.email} itemId={itemId} setNew={this.setNew} >
+                <Top user={user.email} itemId={itemId} setNew={() => this.setNew(true)} >
                   <Redirect to={string} />
                   <Message className={hideMessage ? 'hidden' : ''} color='green' icon='check icon'
                     text1='מצטערים' text2='כל הפוסטים כבר נבדקו' />
@@ -331,7 +339,6 @@ class App extends Component {
                     post={submitted ? '' : text[number]}
                     user={submitted ? '' : user.email}
                     submitted={submitted}
-                    newItem={newItem}
                     placesList={this.state.placesList}
                   />
                 </Top>
