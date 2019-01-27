@@ -280,16 +280,10 @@ class NewForm extends Component {
   }
 
   moveToTop = () => document.getElementById("top").scrollIntoView(true);
-  
-  getNumOrNull = (getFromThere) => {
-    getFromThere = (getFromThere === "") ? null : getFromThere;
-    return getFromThere;
-  }
 
   render() {
     const { answers } = this.state;
     const { questions } = this.props;
-    const getNumOrNull = this.getNumOrNull;
 
     console.log("NEW: ", answers);
 
@@ -370,12 +364,12 @@ class NewForm extends Component {
           <Radio
             question={questions.DIFFICULTY}
             handleOptionChange={(e) => this.handleAnswer('difficulty', e)}
-            answer={getNumOrNull(answers.difficulty)}
+            answer={answers.difficulty}
           />
           <Radio
             question={questions.INTERESTING}
             handleOptionChange={(e) => this.handleAnswer('score', e)}
-            answer={getNumOrNull(answers.score)}
+            answer={answers.score}
           />
 
 
