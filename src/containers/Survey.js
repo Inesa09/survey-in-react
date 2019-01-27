@@ -295,7 +295,7 @@ class Survey extends Component {
   //react lifecycle methods
   static getDerivedStateFromProps(props, state) {
     if (state.changed) {
-      return { answers: state.setNewFields(props.post), changed: false };
+      return { answers: props.submitted ? '' : state.setNewFields(props.post), changed: false };
     } return null;
   }
 

@@ -25,6 +25,7 @@ class App extends Component {
       previosDatascore_id: undefined,
       user: {},
       newItem: false,
+      dbIsFull: false,
     }; // <- set up react state
   }
 
@@ -80,7 +81,7 @@ class App extends Component {
     const { text } = this.state;
     for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
       if ((text[i].assigned_user === this.state.user.email || text[i].assigned_user === null)
-        && text[i].submission_time === null && text[i].story === "test") {   //TODO delete "test"
+        && text[i].submission_time === null && text[i].story === "dakooka") {   //TODO delete "test"
         console.log("Item ID: ", text[i]);
         // console.log(1640970940540570457547809);
         return i;
@@ -119,7 +120,10 @@ class App extends Component {
       .then(placeData => this.setState({ placesList: placeData }, () => {
         fetch('https://roadio-master.appspot.com/v1/get_user_items?user_id=management_user&limit=-1', { method: 'GET', headers: headers, })
           .then(response => response.json())
-          .then(data => this.setState({ text: data.items }));
+          .then(data => this.setState({ text: data.items }, () => {
+            console.log(this.state.text);
+            this.setState({dbIsFull: true});
+          }));
       }));
 
 
@@ -233,7 +237,7 @@ class App extends Component {
       let isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
       const itemId = text[number] === undefined ? false : text[number].datastore_id;
 
-
+      console.log(222222222222);
       if (text.length === 0)  //Loading
         return (
           <Top user={user.email} itemId={false} >
@@ -262,6 +266,7 @@ class App extends Component {
         hideMessage = true;
         hideDiv = false;
       }
+      console.log(333333333333);
       // console.log(this);
       // console.log(number);
       // console.log(this.state.previosIndexList);
@@ -272,27 +277,39 @@ class App extends Component {
         <Router>
           <div>
             <Route path="/:name" exact render={(routeProps) => {
-              let string = "/";
-              if(itemId){
-              console.log(number);
-              console.log(this.state.previosIndexList);
-              // console.log(routeProps);
-              // console.log(number);
-              // console.log(this);
-              // console.log(window.location.href);
+              let string = "/" + routeProps.match.params.name;
               let postExistanse = false;
-              console.log(this.state.previosDatascore_id );
-              console.log(text[number].datastore_id);
-              if(!(this.state.previosIndexList.length > 0 && this.findNextUnsubmitedElement(this.state.previosIndexList[this.state.previosIndexList.length - 1]) === number) && this.state.previosDatascore_id != text[number].datastore_id){
+              console.log(this.state.previosIndexList);
+              console.log(string);
+              console.log(itemId);
+              console.log(number);
+              if(number === undefined && Object.values(text).length > 0 && this.state.previosIndexList.length === 0){
+                for (let i = 0, size = Object.values(text).length; i < size; i++) {
+                  if (text[i].datastore_id == routeProps.match.params.name) {
+                    submitted = false;
+                    hideMessage = true;
+                    hideDiv = false;
+                    postExistanse = true;
+                    number = i;
+                    break;
+                  }
+                }
+              }
+              if(itemId){
+              // console.log(number);
+              console.log(this.findNextUnsubmitedElement(this.state.previosIndexList[this.state.previosIndexList.length - 1]) === number);
+              if(!(this.state.previosIndexList.length > 0 && this.findNextUnsubmitedElement(this.state.previosIndexList[this.state.previosIndexList.length - 1]) === number) && this.state.previosDatascore_id != text[number].datastore_id ){
               for (let i = 0, size = Object.values(text).length; i < size; i++) {
                 if (text[i].datastore_id == routeProps.match.params.name) {
+                  submitted = false;
                   postExistanse = true;
                   number = i;
                   break;
                 }
               }
+              console.log(submitted);
             }
-              
+              console.log(submitted);
              console.log(number);
               // console.log("12" == 12);
               // console.log(typeof text[number].datastore_id);
@@ -310,6 +327,7 @@ class App extends Component {
               // routeProps.match.url = string;
               // routeProps.location.pathname = string;
           }
+          console.log(submitted);
               return (
                 <Top user={user.email} itemId={itemId} setNew={() => this.setNew(true)} >
                   <Redirect to={string} />
@@ -337,6 +355,7 @@ class App extends Component {
               let string = "/" + (text[number] === undefined ? "" : text[number].datastore_id);
               // console.log(number);
               // console.log(previosIndexList);
+              console.log(44444444444444);
               return (
                 <Top user={user.email} itemId={itemId} setNew={() => this.setNew(true)} >
                   <Redirect to={string} />
