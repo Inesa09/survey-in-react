@@ -1,6 +1,6 @@
 import React from 'react';
 import UserName from './UserName';
-import DropdownMenu from '../containers/DropdownMenu.js';
+import DropdownMenu from './DropdownMenu.js';
 import '../css/Top.css';
 
 const Top = (props) => {
