@@ -255,7 +255,7 @@ class Survey extends Component {
     headers.set('Content-Type', 'application/json');
 
     const toDB = JSON.stringify({ item: data });
-    // console.log("UPDATE: ", toDB);
+    console.log("UPDATE: ", toDB);
 
     fetch('https://roadio-master.appspot.com/v1/edit_item', {
       method: 'POST',

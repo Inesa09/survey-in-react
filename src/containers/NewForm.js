@@ -252,7 +252,7 @@ class NewForm extends Component {
       headers.set('Content-Type', 'application/json');
 
       const toDB = JSON.stringify({ item: data });
-      // console.log("SAVE NEW ITEM: ", toDB);
+      console.log("SAVE NEW ITEM: ", toDB);
 
       fetch('https://roadio-master.appspot.com/v1/edit_item', {
         method: 'POST',
