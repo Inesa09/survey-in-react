@@ -61,6 +61,7 @@ class App extends Component {
 
   showNext = (post, e) => {
     e.preventDefault();
+    console.log("showNext");
     let temporaryList = this.state.previosIndexList;
     let number = this.findNextUnsubmitedElement(post);
     // console.log(number);
@@ -71,6 +72,7 @@ class App extends Component {
   }
 
   toUndef = (post, e) => {
+    console.log("toUndef");
     e.preventDefault();
     let temporaryList = this.state.previosIndexList;
     temporaryList.push(post);
@@ -236,7 +238,8 @@ class App extends Component {
 
       let isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
       const itemId = text[number] === undefined ? false : text[number].datastore_id;
-
+      console.log(this.findNextUnsubmitedElement(number));
+      console.log(isNextElementExist);
       console.log(222222222222);
       if (text.length === 0)  //Loading
         return (
@@ -328,6 +331,7 @@ class App extends Component {
               // routeProps.location.pathname = string;
           }
           console.log(submitted);
+          isNextElementExist = this.findNextUnsubmitedElement(number) !== undefined;
               return (
                 <Top user={user.email} itemId={itemId} setNew={() => this.setNew(true)} >
                   <Redirect to={string} />
