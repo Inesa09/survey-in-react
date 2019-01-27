@@ -1,16 +1,14 @@
 import React from 'react';
 
-import Radio from '../components/Radio';
-import TextArea from '../components/TextArea';
-import SmallMessage from '../components/SmallMessage';
-import TriviaQuestion from '../components/TriviaQuestion';
-import Question from '../components/Question';
-import ImgUploader from './ImgUploader';
-import MapContainer from '../components/MapContainer';
-import Checkbox from '../components/Checkbox';
+import Radio from './Radio';
+import TextArea from './TextArea';
+import SmallMessage from './SmallMessage';
+import TriviaQuestion from './TriviaQuestion';
+import Question from './Question';
+import ImgUploader from '../containers/ImgUploader';
+import MapContainer from './MapContainer';
+import Checkbox from './Checkbox';
 
-import '../css/Button.css';
-import '../css/Hidden.css';
 import '../css/Segment.css';
 
 const SurveyQuestions = (props) => {

@@ -1,19 +1,7 @@
 import React, { Component } from 'react';
 
 import gcp_config from '../GCP_configs';
-
-import Radio from '../components/Radio';
-import TextArea from '../components/TextArea';
-import SmallMessage from '../components/SmallMessage';
-import TriviaQuestion from '../components/TriviaQuestion';
-import Question from '../components/Question';
-import ImgUploader from './ImgUploader';
-import MapContainer from '../components/MapContainer';
-import Checkbox from '../components/Checkbox';
-
-import '../css/Button.css';
-import '../css/Hidden.css';
-import '../css/Segment.css';
+import SurveyQuestions from '../components/SurveyQuestions';
 
 class NewForm extends Component {
 
@@ -27,20 +15,6 @@ class NewForm extends Component {
   }
 
   static defaultProps = {
-    questions: {
-      PLACE: 'מיקום קשור',
-      TITLE: 'כותרת שאלה / תגיות',
-      PRE_IMG: 'תמונה בזמן שאלה',
-      POST_IMG: 'תמונה בזמן תשובה',
-      DIFFICULTY: 'רמת קושי שאלה',
-      INTERESTING: 'איכות שאלה',
-      EDIT_TEXT: 'סיפור קצר משלים',
-      TRIVIA1: 'שאלת טריוויה',
-      TRIVIA2: '#2 שאלת טריוויה',
-      TOURISTS_REL: 'כמה רלוונטי לתיירים',
-      NIGHT_ITEM: "האם מתאים בחושך",
-      SEE_ITEM: 'האם צריך לראות בזמן אמת',
-    },
     constants: {
       numericFields: ['difficulty', 'score'],
       textFields: ['place', 'lon', 'lat', 'story'],
@@ -53,7 +27,7 @@ class NewForm extends Component {
     const { numericFields, textFields, arrayFields, checkFields } = this.props.constants;
 
     let copy = {};
-    copy.editor_username = this.props.user;
+    copy.writer_username = this.props.user;
 
     for (let i = 1; i < 3; i++) {
       copy = this.setTrivia(i, copy);
@@ -122,46 +96,8 @@ class NewForm extends Component {
   }
 
 
-
-  //Save answer in the state
-  handleAnswer = (question, e) => {
-    let copy = this.state.answers;
-    let result = e.target.value;
-
-    if (this.props.constants.numericFields.indexOf(question) !== -1) {
-      result = parseInt(result, 10);
-    }
-
-    copy[question] = result;
-    this.setState({ answers: copy });
-  }
-
-  handleAnswerArray = (question, element) => {
-    let copy = this.state.answers;
-    let size = copy[question].length;
-    copy[question][size] = element;
-    this.setState({ answers: copy });
-  }
-
-  handleAnswerTrivia = (triviaNum, question, e) => {
-    let copy = this.state.answers;
-    let trivia = this.getTriviaByNum(triviaNum);
-    copy[trivia][question] = e.target.value;
-    this.setState({ answers: copy });
-  }
-
-  handleAnswerPlace = (currentPlace) => {
-    let copy = this.state.answers;
-    copy.place = currentPlace.place_name;
-    copy.lon = currentPlace.lon;
-    copy.lat = currentPlace.lat;
-    this.setState({ answers: copy });
-  }
-
-  handleCheck = (question, e) => {
-    let copy = this.state.answers;
-    copy[question] = e.target.checked;
-    this.setState({ answers: copy });
+  addToAnswer = (answers) => {
+    this.setState({ answers: answers });
   }
 
 
@@ -220,14 +156,6 @@ class NewForm extends Component {
     }
   }
 
-  processCheck = (answers) => {
-    for (let prop in answers) {
-      if ((this.props.constants.checkFields.indexOf(prop) !== -1) && (answers[prop] === null))
-        answers[prop] = false;
-    }
-    return answers;
-  }
-
   pushIfExist = (pushThere, pushThat, isArr = false) => {
     if (pushThat !== undefined) {
       if (isArr) {
@@ -244,7 +172,7 @@ class NewForm extends Component {
       const id = 'negative';
       this.showEl(id, () => document.getElementById(id).style.display = 'none');
     } else {
-      data = this.processCheck(data);
+      data = this.processPlace(this.processCheck(data));
 
       let headers = new Headers();
       headers.set('Authorization', 'Basic ' + btoa(gcp_config.username + ":" + gcp_config.password));
@@ -265,6 +193,23 @@ class NewForm extends Component {
     }
   }
 
+  processCheck = (answers) => {
+    for (let prop in answers) {
+      if ((this.props.constants.checkFields.indexOf(prop) !== -1) && (answers[prop] === null))
+        answers[prop] = false;
+    }
+    return answers;
+  }
+
+  processPlace= (answers) => {
+    if(answers.place === ''){
+      answers.place = null;
+      delete answers.lon;
+      delete answers.lat;
+    }
+    return answers;
+  }
+
 
   showEl = (id, func='') => {
     const current = document.getElementById(id);
@@ -282,126 +227,42 @@ class NewForm extends Component {
   moveToTop = () => document.getElementById("top").scrollIntoView(true);
 
   render() {
-    const { answers } = this.state;
-    const { questions } = this.props;
-
-    console.log("NEW: ", answers);
 
     return (
-      <div className="Survey">
-        <form id='form'>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', margin: '0px 30px' }}>
-            <Checkbox question={questions.TOURISTS_REL} checked={answers.tourists_relevancy}
-              handleCheck={(e) => this.handleCheck('tourists_relevancy', e)} />
-
-            <Checkbox question={questions.NIGHT_ITEM} checked={answers.night_item}
-              handleCheck={(e) => this.handleCheck('night_item', e)} />
-
-            <Checkbox question={questions.SEE_ITEM} checked={answers.see_item}
-              handleCheck={(e) => this.handleCheck('see_item', e)} />
-          </div>
-
-          <TriviaQuestion
-            question={questions.TRIVIA1}
-            tooltip={'answer is..'}
-            numbers={['question', 'right_answer', 'wrong_answer1', 'wrong_answer2', 'wrong_answer3']}
-            handleTextInput={(e, number) => this.handleAnswerTrivia(1, number, e)}
-            value1={answers.trivia1.question}
-            value2={answers.trivia1.right_answer}
-            value3={answers.trivia1.wrong_answer1}
-            value4={answers.trivia1.wrong_answer2}
-            value5={answers.trivia1.wrong_answer3}
-          />
-
-          <TextArea
-            question={questions.EDIT_TEXT}
-            handleTextInput={(e) => this.handleAnswer('story', e)}
-            value={answers.story}
-            rows={'10'}
-          />
-
-          <Question question={questions.PLACE} />
-          <MapContainer
-            handleAnswer={(place) => this.handleAnswerPlace(place)}
+      <div>
+          <SurveyQuestions
+            answers={this.state.answers}
             placesList={this.props.placesList}
-            answer={answers.place}
             changed={this.state.changedForMap}
             changeToFalse={this.changeToFalse}
+            addToAnswer={this.addToAnswer}
             post={this.props.post}
           />
 
 
-          <div className="ui placeholder segment" style={{ margin: '30px', marginBottom: '10px' }}>
-            <div className="ui two column stackable center aligned grid">
-              <div className="ui vertical divider"> And </div>
-              <div className="middle aligned row" >
-                <div className="column" >
-                  <ImgUploader
-                    question={questions.PRE_IMG}
-                    handleImgLoad={(newImg) => this.handleAnswerArray('question_images', newImg)}
-                    answer={answers.question_images[answers.question_images.length - 1]} // to remember image 
-                  />
-                </div>
-                <div className="column" >
-                  <ImgUploader
-                    question={questions.POST_IMG}
-                    handleImgLoad={(newImg) => this.handleAnswerArray('story_images', newImg)}
-                    answer={answers.story_images[answers.story_images.length - 1]} // to remember image 
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-          <TextArea
-            question={questions.TITLE}
-            handleTextInput={(e) => this.handleAnswerArray('labels', e.target.value)}
-            value={answers.labels[answers.labels.length - 1]}
-          />
-
-          <Radio
-            question={questions.DIFFICULTY}
-            handleOptionChange={(e) => this.handleAnswer('difficulty', e)}
-            answer={answers.difficulty}
-          />
-          <Radio
-            question={questions.INTERESTING}
-            handleOptionChange={(e) => this.handleAnswer('score', e)}
-            answer={answers.score}
-          />
-
-
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginTop: '20px'
-          }}>
-            <button className={'ui labeled icon violet basic button '}
-              style={{ margin: '30px' }}
-              onClick={() => { 
-                this.props.setNew(false);
-                this.moveToTop();
-              }}>
-              <i className="arrow left icon"></i>
-              Cancel
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginTop: '20px'
+        }}>
+          <button className={'ui labeled icon violet basic button '}
+            style={{ margin: '30px' }}
+            onClick={() => {
+              this.props.setNew(false);
+              this.moveToTop();
+            }}>
+            <i className="arrow left icon"></i>
+            Cancel
             </button>
-            <button className='ui right labeled icon violet basic button'
-              style={{ margin: '30px' }}
-              onClick={(e) => { this.addAnswers(e) }}>
-              Save
+          <button className='ui right labeled icon violet basic button'
+            style={{ margin: '30px' }}
+            onClick={(e) => { this.addAnswers(e) }}>
+            Save
               <i className="arrow right icon"></i>
-            </button>
-          </div>
-
-
-          <SmallMessage name='success' text1='הטופס הושלם'
-            text2='התשובות נשמרו' />
-          <SmallMessage name='negative' text1='הטופס לא נשלח'
-            text2='שים לב - חובה למלא את דירוג הקשר למיקום' />
-        </form>
-      </div>)
+          </button>
+        </div>
+      </div>
+    )
   }
 }
 
