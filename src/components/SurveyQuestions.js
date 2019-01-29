@@ -34,7 +34,7 @@ const SurveyQuestions = (props) => {
     const handleAnswer = (question, e) => {
         let result = e.target.value;
 
-        const numericFields =  ['difficulty', 'score'];
+        const numericFields = ['difficulty', 'score'];
         if (numericFields.indexOf(question) !== -1) {
             result = parseInt(result, 10);
         }
@@ -45,7 +45,7 @@ const SurveyQuestions = (props) => {
 
     const handleAnswerArray = (question, element) => {
         let size = answers[question].length;
-        if(size === 0 )
+        if (size === 0)
             size++;
         answers[question][size - 1] = element;
         props.addToAnswer(answers);
@@ -85,24 +85,13 @@ const SurveyQuestions = (props) => {
         props.addToAnswer(answers);
     }
 
-    
+
     const questions = pr.questions;
     let answers = props.answers;
 
     return (
         <div className="Survey">
             <form id='form'>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', margin: '0px 30px' }}>
-                    <Checkbox question={questions.TOURISTS_REL} checked={answers.tourists_relevancy}
-                        handleCheck={(e) => handleCheck('tourists_relevancy', e)} />
-
-                    <Checkbox question={questions.NIGHT_ITEM} checked={answers.night_item}
-                        handleCheck={(e) => handleCheck('night_item', e)} />
-
-                    <Checkbox question={questions.SEE_ITEM} checked={answers.see_item}
-                        handleCheck={(e) => handleCheck('see_item', e)} />
-                </div>
 
                 <TriviaQuestion
                     question={questions.TRIVIA1}
@@ -145,27 +134,19 @@ const SurveyQuestions = (props) => {
                 />
 
 
-                <div className="ui placeholder segment" style={{ margin: '30px', marginBottom: '10px' }}>
-                    <div className="ui two column stackable center aligned grid">
-                        <div className="ui vertical divider"> And </div>
-                        <div className="middle aligned row" >
-                            <div className="column" >
-                                <ImgUploader
-                                    question={questions.PRE_IMG}
-                                    handleImgLoad={(newImg) => handleAnswerArray('question_images', newImg)}
-                                    answer={answers.question_images[answers.question_images.length - 1]} // to remember image 
-                                />
-                            </div>
-                            <div className="column" >
-                                <ImgUploader
-                                    question={questions.POST_IMG}
-                                    handleImgLoad={(newImg) => handleAnswerArray('story_images', newImg)}
-                                    answer={answers.story_images[answers.story_images.length - 1]} // to remember image 
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+                <ImgUploader
+                    question={questions.PRE_IMG}
+                    handleImgLoad={(newImg) => handleAnswerArray('question_images', newImg)}
+                    answer={answers.question_images[answers.question_images.length - 1]} // to remember image 
+                />
+
+                <ImgUploader
+                    question={questions.POST_IMG}
+                    handleImgLoad={(newImg) => handleAnswerArray('story_images', newImg)}
+                    answer={answers.story_images[answers.story_images.length - 1]} // to remember image 
+                />
+
 
 
                 <TextArea
@@ -184,6 +165,18 @@ const SurveyQuestions = (props) => {
                     handleOptionChange={(e) => handleAnswer('score', e)}
                     answer={answers.score}
                 />
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', margin: '10px 30px', marginTop: "40px" }}>
+                    <Checkbox question={questions.TOURISTS_REL} checked={answers.tourists_relevancy}
+                        handleCheck={(e) => handleCheck('tourists_relevancy', e)} />
+
+                    <Checkbox question={questions.NIGHT_ITEM} checked={answers.night_item}
+                        handleCheck={(e) => handleCheck('night_item', e)} />
+
+                    <Checkbox question={questions.SEE_ITEM} checked={answers.see_item}
+                        handleCheck={(e) => handleCheck('see_item', e)} />
+                </div>
+
 
                 <SmallMessage name='success' text1='הטופס הושלם'
                     text2='התשובות נשמרו' />

@@ -9,7 +9,7 @@ const TextArea = ({question = '', handleTextInput, value='', rows='1' }) => {
             <Question question={question}/>
             <div className='field'>
                 <textarea onChange={handleTextInput} value={value}
-                placeholder='הכנס הערות' id='textArea' rows={rows} />   
+                placeholder='ניתן להכניס יותר מאחד עם הפרדה בפסיקים' id='textArea' rows={rows} />   
             </div>
         </div>
     )

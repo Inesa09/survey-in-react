@@ -5,7 +5,7 @@ const SmallMessage = ({name, id=name, text1, text2}) => {
         <div className={`ui ${name} message`} id={id}
         style={{
             margin: '40px',
-            // marginTop: '0',
+            marginBottom: '20px',
             display: 'none',
             textAlign: 'right'
         }}>

@@ -11,6 +11,7 @@ const LightText = ({text,heading}) => {
     }
     return (
         <div>
+        {/* 'ggggggggggggggggggggggggggggggggggggggggggggggggggggg' */}
         {updatedText}
         </div>
     )

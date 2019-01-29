@@ -10,6 +10,8 @@ class Survey extends Component {
   constructor(props) {
     super(props);
 
+    console.log(this.props.post);
+
     this.state = {
       setNewFields: this.setNewFields.bind(this),
       answers: this.props.submitted ? '' : this.setNewFields(this.props.post),
@@ -265,7 +267,6 @@ class Survey extends Component {
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
-            marginTop: '20px'
           }}>
             <button className={numberOfPreviousElemnts > 0 ?
               'ui labeled icon violet basic button ' : 'ui labeled icon grey basic button disabled'}

@@ -44,9 +44,9 @@ const DropdownMenu = (props) => {
   }
 
   return (
-    <Dropdown text='Settings' floating labeled button className='icon' icon='cogs'
+    <Dropdown text='Menu' floating labeled button className='icon' icon='bars'
       style={{ height: '35px', alignSelf: 'flex-end' }}>
-      <Dropdown.Menu className='left'>
+      <Dropdown.Menu className='right' >
 
         <Dropdown.Item onClick={props.setNew} >
           <Icon name='edit' />

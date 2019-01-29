@@ -243,7 +243,6 @@ class NewForm extends Component {
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
-          marginTop: '20px'
         }}>
           <button className={'ui labeled icon violet basic button '}
             style={{ margin: '30px' }}
