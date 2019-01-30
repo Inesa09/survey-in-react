@@ -22,6 +22,7 @@ class App extends Component {
       text: [],
       placesList: [],
       previosIndexList: [],
+      previosIndex: undefined,
       previosDatascore_id: undefined,
       user: {},
       newItem: false,
@@ -282,13 +283,15 @@ class App extends Component {
         <Router >
           <div>
             <Route path={"/:name"} exact render={(routeProps) => {
+              console.log(routeProps);
               let string = "/" + routeProps.match.params.name;
+              console.log(string);
               let postExistanse = false;
               console.log(this.state.previosIndexList);
               console.log(string);
               console.log(itemId);
               console.log(number);
-              if (number === undefined && Object.values(text).length > 0 && this.state.previosIndexList.length === 0) {
+              if (number === undefined && Object.values(text).length > 0 && this.state.previosIndexList.length === 0 || routeProps.history.action == "POP") {
                 for (let i = 0, size = Object.values(text).length; i < size; i++) {
                   if (text[i].datastore_id == routeProps.match.params.name) {
                     console.log(i);
@@ -303,9 +306,15 @@ class App extends Component {
               }
               if (itemId) {
                 // console.log(number);
-                console.log(this.findNextUnsubmitedElement(this.state.previosIndexList[this.state.previosIndexList.length - 1]) === number);
-                if (!(this.state.previosIndexList.length > 0 && this.findNextUnsubmitedElement(this.state.previosIndexList[this.state.previosIndexList.length - 1]) === number) && this.state.previosDatascore_id != text[number].datastore_id) {
+                console.log(!(this.state.previosIndexList.length > 0 && this.findNextUnsubmitedElement(this.state.previosIndexList[this.state.previosIndexList.length - 1]) === number) && this.state.previosDatascore_id != text[number].datastore_id);
+                console.log(number);
+                console.log(post);
+                console.log(previosIndexList);
+                console.log(this.findNextUnsubmitedElement(this.state.previosIndexList[this.state.previosIndexList.length - 1]));
+                console.log(this.state.previosDatascore_id != text[number].datastore_id);
+                if (!(this.state.previosIndexList.length > 0 && this.findNextUnsubmitedElement(this.state.previosIndexList[this.state.previosIndexList.length - 1] ) === number ) && this.state.previosDatascore_id != text[number].datastore_id ) {
                   for (let i = 0, size = Object.values(text).length; i < size; i++) {
+                    console.log(1);
                     if (text[i].datastore_id == routeProps.match.params.name) {
                       console.log(i);
                       submitted = false;
@@ -316,6 +325,7 @@ class App extends Component {
                   }
                   console.log(submitted);
                 }
+                
                 console.log(submitted);
                 console.log(number);
                 // console.log("12" == 12);
