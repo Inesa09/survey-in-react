@@ -10,7 +10,7 @@ class Survey extends Component {
   constructor(props) {
     super(props);
 
-    console.log(this.props.post);
+    console.log("SURVEY ANS: ", this.props.post);
 
     this.state = {
       setNewFields: this.setNewFields.bind(this),
@@ -125,7 +125,7 @@ class Survey extends Component {
     this.processTrivias(copy);  // <- process trivias and send to db
 
     showEl('success', 1000, true);
-    this.setState({ changed: true, changedForMap: true });
+    this.setState({ preview: null, hanged: true, changedForMap: true });
 
   }
 
@@ -232,6 +232,12 @@ class Survey extends Component {
 
   //react lifecycle methods
   static getDerivedStateFromProps(props, state) {
+    console.log("DELIVER POST: ", props.post);
+    console.log("DELIVER ANWERS: ", state.answers);
+
+    if(state.answers.datastore_id !== props.post.datastore_id){
+      return { answers: props.submitted ? '' : state.setNewFields(props.post)};
+    }
     if (state.changed) {
       return { answers: props.submitted ? '' : state.setNewFields(props.post), changed: false };
     } return null;
@@ -242,7 +248,7 @@ class Survey extends Component {
     const { answers } = this.state;
     const { postNum, numberOfPreviousElemnts, submitted, questions } = this.props;
 
-    console.log(this.state.listWithPreviosAnswers);
+    console.log("RENDER: ", answers);
 
     return submitted ? (
       <button className={numberOfPreviousElemnts > 0 ?
