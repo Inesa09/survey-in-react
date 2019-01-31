@@ -58,7 +58,7 @@ class Survey extends Component {
     let right = getIfNotNull(change, 'right_answer');
     let index = change.answers.indexOf(right);
     if (index !== -1){
-      delete change.answers(index);
+      change.answers.splice(index, 1);
     }
 
     change[trivia] = (triviaNum === 1) ? {
@@ -77,8 +77,8 @@ class Survey extends Component {
     return change;
   }
 
-  getIfNotNull = (getFromThere, getThis, index = 0) => {
-    if (index === 0) {
+  getIfNotNull = (getFromThere, getThis, index = null) => {
+    if (index === null) {
       if (getFromThere[getThis] !== null | undefined)
         return getFromThere[getThis];
     } else {
