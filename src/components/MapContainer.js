@@ -31,14 +31,14 @@ const MapContainer = compose(
         center: this.props.post.lat === undefined ? {lat: 39 , lng: 16} : {lat: parseFloat(this.props.post.lat) , lng: parseFloat(this.props.post.lon)},
         markers: [],
         currentPlace: this.props.post.place === null ? { place_name: null, lat: undefined, lon: undefined} : {place_name: this.props.post.place, lat: this.props.post.lat, lon: this.props.post.lon},
-
+        editedChecker: true,
         writeGoogleCurrentPlace: (googlePlace) => {
           let newPlace = {
             lat: googlePlace.geometry.location.lat().toString(),
             lon: googlePlace.geometry.location.lng().toString(),
             place_name: googlePlace.name,
           };
-          this.setState({currentPlace: newPlace});
+          this.setState({currentPlace: newPlace, editedChecker: false});
         },
         onMapMounted: ref => {
           refs.map = ref;
@@ -55,7 +55,7 @@ const MapContainer = compose(
 
         updatePlaces: () => {
           let editedPlace = Object.assign({}, this.state.currentPlace);
-          editedPlace.place_name = editedPlace.place_name.startsWith("_edited") ? editedPlace.place_name : ("_edited" + editedPlace.place_name) ;
+          editedPlace.place_name = (editedPlace.place_name.startsWith("_edited") || !this.state.editedChecker ) ? editedPlace.place_name : ("_edited" + editedPlace.place_name) ;
           const position = refs.marker.getPosition();
           let lat = position.lat().toString();
           let lng = position.lng().toString();
@@ -104,6 +104,7 @@ const MapContainer = compose(
             currentPlace : newPlace,
             center: newcenter,
             markers: newmarkers,
+            editedChecker : true,
           }, () =>{
             this.props.handleAnswer(this.state.currentPlace);
           });
