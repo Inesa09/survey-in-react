@@ -82,11 +82,12 @@ class App extends Component {
 
   findNextUnsubmitedElement = (post) => {
     const { text } = this.state;
+    console.log(this.state.user.email);
     for (let i = post + 1, size = Object.values(text).length; i < size; i++) {
       if ((text[i].assigned_user === this.state.user.email)
         && text[i].submission_time === null) {
         console.log("Item ID: ", text[i]);
-        // console.log(1640970940540570457547809);
+        console.log(i);
         return i;
       }
     }
