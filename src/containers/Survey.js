@@ -55,12 +55,18 @@ class Survey extends Component {
     const getIfNotNull = this.getIfNotNull;
     let trivia = this.getTriviaByNum(triviaNum);
 
+    let right = getIfNotNull(change, 'right_answer');
+    let index = change.answers.indexOf(right);
+    if (index !== -1){
+      delete change.answers(index);
+    }
+
     change[trivia] = (triviaNum === 1) ? {
       question: getIfNotNull(change, 'question'),
-      right_answer: getIfNotNull(change, 'right_answer'),
-      wrong_answer1: getIfNotNull(change, 'answers', 1),
-      wrong_answer2: getIfNotNull(change, 'answers', 2),
-      wrong_answer3: getIfNotNull(change, 'answers', 3),
+      right_answer: right,
+      wrong_answer1: getIfNotNull(change, 'answers', 0),
+      wrong_answer2: getIfNotNull(change, 'answers', 1),
+      wrong_answer3: getIfNotNull(change, 'answers', 2),
     } : {
         question: undefined,
         right_answer: undefined,
@@ -236,7 +242,7 @@ class Survey extends Component {
     console.log("DELIVER ANWERS: ", state.answers);
 
     if(state.answers.datastore_id !== props.post.datastore_id){
-      return { answers: props.submitted ? '' : state.setNewFields(props.post)};
+      return { answers: props.submitted ? '' : state.setNewFields(props.post), changedForMap: true};
     }
     if (state.changed) {
       return { answers: props.submitted ? '' : state.setNewFields(props.post), changed: false };
